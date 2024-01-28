@@ -14,6 +14,7 @@ public class Main {
         Window window = Window.get();
         window.run();
 
+        
         // DEBUG
         // WindowFont windowFont = new WindowFont();
         // windowFont.run();
