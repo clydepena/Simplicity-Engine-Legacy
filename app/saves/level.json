@@ -1,6 +1,6 @@
 [
   {
-    "uid": 126,
+    "uid": 0,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -97,7 +97,7 @@
     "isDead": false
   },
   {
-    "uid": 127,
+    "uid": 1,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -194,7 +194,7 @@
     "isDead": false
   },
   {
-    "uid": 128,
+    "uid": 2,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -291,7 +291,7 @@
     "isDead": false
   },
   {
-    "uid": 129,
+    "uid": 3,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -388,7 +388,7 @@
     "isDead": false
   },
   {
-    "uid": 130,
+    "uid": 4,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -485,7 +485,7 @@
     "isDead": false
   },
   {
-    "uid": 131,
+    "uid": 5,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -582,7 +582,7 @@
     "isDead": false
   },
   {
-    "uid": 132,
+    "uid": 6,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -679,7 +679,7 @@
     "isDead": false
   },
   {
-    "uid": 133,
+    "uid": 7,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -776,7 +776,7 @@
     "isDead": false
   },
   {
-    "uid": 134,
+    "uid": 8,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -873,7 +873,7 @@
     "isDead": false
   },
   {
-    "uid": 135,
+    "uid": 9,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -970,7 +970,7 @@
     "isDead": false
   },
   {
-    "uid": 136,
+    "uid": 10,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -1067,7 +1067,7 @@
     "isDead": false
   },
   {
-    "uid": 137,
+    "uid": 11,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -1164,7 +1164,7 @@
     "isDead": false
   },
   {
-    "uid": 138,
+    "uid": 12,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -1261,7 +1261,7 @@
     "isDead": false
   },
   {
-    "uid": 139,
+    "uid": 13,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -1358,7 +1358,7 @@
     "isDead": false
   },
   {
-    "uid": 140,
+    "uid": 14,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -1455,7 +1455,7 @@
     "isDead": false
   },
   {
-    "uid": 141,
+    "uid": 15,
     "name": "Sprite_Object_Gen",
     "components": [
       {

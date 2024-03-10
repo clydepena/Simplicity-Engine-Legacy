@@ -3,6 +3,9 @@ package simplicity;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.openal.*;
+
+import static org.lwjgl.openal.ALC11.*;
 
 import observers.EventSystem;
 import observers.Observer;
@@ -30,7 +33,7 @@ public class Window implements Observer {
     public static final int SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080;
     public static float SCALE = 0.5f;
     private Vector4f bgColor;
-
+    private long audioContext, audioDevice;
     private static Window window;
     private static Scene currentScene;
     private boolean runtimePlaying = false;
@@ -86,6 +89,8 @@ public class Window implements Observer {
         imguiLayer.destroy();
     
         // free memory
+        alcDestroyContext(audioContext);
+        alcCloseDevice(audioDevice);
         glfwFreeCallbacks(glfwWindow);
         glfwDestroyWindow(glfwWindow);
         
@@ -129,6 +134,21 @@ public class Window implements Observer {
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
         });
+
+        // Audio
+        String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
+        audioDevice = alcOpenDevice(defaultDeviceName);
+
+        int[] attributes = {0};
+        audioContext = alcCreateContext(audioDevice, attributes);
+        alcMakeContextCurrent(audioContext);
+
+        ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
+        ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+
+        if (!alCapabilities.OpenAL11) {
+            assert false : "Audio library not supported.";
+        }
 
         // take the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
