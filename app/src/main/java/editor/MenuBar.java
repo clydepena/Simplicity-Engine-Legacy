@@ -9,6 +9,7 @@ public class MenuBar {
     public void imgui() {
         ImGui.beginMenuBar();
 
+
         if(ImGui.beginMenu("File")) {
 
             if(ImGui.menuItem("Save", "Ctrl+S")) {

@@ -13,6 +13,7 @@ import simplicity.Prefabs;
 import simplicity.Transform;
 import simplicity.Window;
 import util.AssetPool;
+import util.AssetUtil;
 import util.Settings;
 
 public class LevelEditorSceneInitializer extends SceneInitializer {
@@ -32,11 +33,14 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
         // loadResources();
         
+        // tileSprites = AssetPool.getSpritesheet("app/assets/images/TilesSpritesheet.png");
+
         tileSprites = AssetPool.getSpritesheet("app/assets/images/TilesSpritesheet.png");
+
 
         objectSprites = AssetPool.getSpritesheet("app/assets/images/ObjectsSpritesheet.png");
 
-        Spritesheet gizmos = AssetPool.getSpritesheet("app/assets/editor_res/gizmos.png");
+        Spritesheet gizmos = AssetPool.getSpritesheetFromRes("editor_res/gizmos.png");
 
 
         levelEditorObj = scene.createGameObject("Level Editor");
@@ -47,10 +51,14 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
         levelEditorObj.addComponent(new GizmoSystem(gizmos));
         scene.addGameObjectToScene(levelEditorObj);
+
+
+        //TEST
     }
 
     @Override
     public void loadResources(Scene scene) {
+
         AssetPool.getShader("app/assets/shaders/default.glsl");
 
         AssetPool.addSpritesheet(
@@ -75,10 +83,17 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
             )
         );
 
-        AssetPool.addSpritesheet(
-            "app/assets/editor_res/gizmos.png", 
+        AssetPool.addSpritesheetToRes(
+            "editor_res/gizmos.png", 
+            // new Spritesheet(
+            //     AssetPool.getTexture("app/assets/editor_res/gizmos.png"), 
+            //     24, 
+            //     48, 
+            //     3, 
+            //     0
+            // )
             new Spritesheet(
-                AssetPool.getTexture("app/assets/editor_res/gizmos.png"), 
+                AssetPool.getTextureFromRes("editor_res/gizmos.png"), 
                 24, 
                 48, 
                 3, 
@@ -158,7 +173,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
     }
 
     private void imgui2() {
-        ImGui.begin("Test Window 2");
+        ImGui.begin("Assets");
         ImVec2 windowPos = new ImVec2();
         ImGui.getWindowPos(windowPos);
         ImVec2 windowSize = new ImVec2();

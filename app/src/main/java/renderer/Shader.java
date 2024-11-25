@@ -2,6 +2,9 @@ package renderer;
 
 import org.joml.*;
 import org.lwjgl.BufferUtils;
+
+import util.AssetUtil;
+
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
@@ -13,15 +16,36 @@ public class Shader {
 
     private int shaderProgramID;
     private boolean beingUsed = false;
-
     private String vertexSource;
     private String fragmentSource;
     private String filepath;
 
-    public Shader(String filepath) {
+    public Shader() {
+
+    }
+
+    public Shader(String externFilepath) {
+        initFromExternal(externFilepath);
+    }
+
+    public void initFromExternal(String filepath) {
         this.filepath = filepath;
         try {
-            String source = new String(Files.readAllBytes(Paths.get(filepath)));
+            parseShaderSource(new String(Files.readAllBytes(Paths.get(filepath))));
+        } catch (IOException e) {
+            assert false : "Error: Could not open file for shader: '" + filepath + "'";
+        };
+        
+    }
+    
+    public void initFromRes(String filepath) {
+        this.filepath = filepath;
+        parseShaderSource(AssetUtil.ResToString(filepath));
+    }
+
+    private void parseShaderSource(String sourceCode) {
+        try {
+            String source = sourceCode;
             String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
 
             // Find the first pattern after #type 'pattern'

@@ -2,6 +2,7 @@ package simplicity;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.openal.*;
@@ -25,6 +26,10 @@ import scenes.LevelEditorSceneInitializer;
 import scenes.Scene;
 import scenes.SceneInitializer;
 import util.AssetPool;
+import util.Debug;
+import util.ImgageParser;
+import util.SResImage;
+import util.Settings;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -42,14 +47,20 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+
 import org.joml.Vector4f;
 
 public class Window implements Observer {
     private int width, height;
+    private int xPos, yPos;
     private String title;
     private String glslVersion = null;
     private long glfwWindow;
-    public static final int SCREEN_WIDTH = 1920, SCREEN_HEIGHT = 1080;
+    // public static final int SCREEN_WIDTH = 1280, SCREEN_HEIGHT = 720;
     public static float SCALE = 0.5f;
     private Vector4f bgColor;
     private long audioContext, audioDevice;
@@ -62,8 +73,8 @@ public class Window implements Observer {
     private PickingTexture pickingTexture;
 
     private Window() {
-        this.width = SCREEN_WIDTH;
-        this.height = SCREEN_HEIGHT;
+        // this.width = SCREEN_WIDTH;
+        // this.height = SCREEN_HEIGHT;
         this.title = "Simplicity-Engine (legacy ver.) @Clyde Peña";
         this.bgColor = new Vector4f(0.0f, 0.0f,0.0f,0.0f);
         EventSystem.addObserver(this);
@@ -137,12 +148,12 @@ public class Window implements Observer {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-
+        glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        System.out.println("Monitor size: " + mode.width() + " | " + mode.height());
         width = mode.width();
         height = mode.height();
-        
 
         // create window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
@@ -150,7 +161,19 @@ public class Window implements Observer {
             throw new IllegalStateException("Failed to create new GLFW window.");
         }
 
-        //set screensize
+
+
+        // set icon
+        GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+        GLFWImage iconImg = GLFWImage.malloc(); 
+        SResImage icon = new SResImage("images/ICON_2.png");
+        iconImg.set(icon.getWidth(), icon.getHeight(), icon.getImg());
+        imagebf.put(0, iconImg);
+
+        glfwSetWindowIcon(glfwWindow, imagebf);
+        glfwSetWindowSizeLimits(glfwWindow, (int) (mode.width() * 0.75f), (int) (mode.height() * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
+
+        //set screensize to monitor
         glfwMaximizeWindow(glfwWindow);
 
         // set listeners
@@ -161,6 +184,10 @@ public class Window implements Observer {
         glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
+        });
+        glfwSetWindowPosCallback(glfwWindow, (w, newXPos, newYPos) -> {
+            Window.setXPos(newXPos);
+            Window.setYPos(newYPos);
         });
 
         // Audio
@@ -193,9 +220,13 @@ public class Window implements Observer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-        this.framebuffer = new Framebuffer(SCREEN_WIDTH, SCREEN_HEIGHT); // TEMP
-        this.pickingTexture = new PickingTexture(SCREEN_WIDTH, SCREEN_HEIGHT); // TEMp
-        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); // TEMP
+        // this.framebuffer = new Framebuffer(SCREEN_WIDTH, SCREEN_HEIGHT); // TEMP
+        // this.pickingTexture = new PickingTexture(SCREEN_WIDTH, SCREEN_HEIGHT); // TEMp
+        // glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); // TEMP
+
+        this.framebuffer = new Framebuffer(width, height); // TEMP
+        this.pickingTexture = new PickingTexture(width, height); // TEMp
+        glViewport(0, 0, width, height); // TEMP
 
     }
 
@@ -209,8 +240,8 @@ public class Window implements Observer {
         float endTime;
         float dt = -1.0f;
 
-        Shader defaultShader = AssetPool.getShader("app/assets/shaders/default.glsl");
-        Shader pickingShader = AssetPool.getShader("app/assets/shaders/pickingShader.glsl");
+        Shader defaultShader = AssetPool.getShaderFromRes("shaders/default.glsl");
+        Shader pickingShader = AssetPool.getShaderFromRes("shaders/pickingShader.glsl");
         // Shader fontShader = AssetPool.getShader("app/assets/shaders/fontShader.glsl");
 
         while(!glfwWindowShouldClose(glfwWindow)) {
@@ -221,7 +252,8 @@ public class Window implements Observer {
             glDisable(GL_BLEND);
             pickingTexture.enableWriting();
 
-            glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            // glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            glViewport(0, 0, width, height);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -285,6 +317,22 @@ public class Window implements Observer {
 
     public static void setHeight(int newHeight) {
         get().height = newHeight;
+    }
+
+    public static int getXPos() {
+        return get().xPos;
+    }
+
+    public static int getYPos() {
+        return get().yPos;
+    }
+
+    public static void setXPos(int newXPos) {
+        get().xPos = newXPos;
+    }
+
+    public static void setYPos(int newYPos) {
+        get().yPos = newYPos;
     }
 
     public static Framebuffer getFramebuffer() {

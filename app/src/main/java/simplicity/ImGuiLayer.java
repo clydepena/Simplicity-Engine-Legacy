@@ -38,12 +38,11 @@ public class ImGuiLayer {
     private void imgui() {
 
         // ImGui.showDemoWindow();
-
     }
 
     public void update(float dt, Scene currentScene) {
         startFrame(dt);
-                
+        
         setupDockspace();
 
         currentScene.imgui();
@@ -62,10 +61,10 @@ public class ImGuiLayer {
 
         ImGuiViewport mainViewport = ImGui.getMainViewport();
         ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
-        ImGui.setNextWindowSize(mainViewport.getWorkSizeX(), mainViewport.getWorkSizeY());
+        // ImGui.setNextWindowSize(mainViewport.getWorkSizeX(), mainViewport.getWorkSizeY());
         ImGui.setNextWindowViewport(mainViewport.getID());
 
-        ImGui.setNextWindowPos(0.0f, 0.0f);
+        ImGui.setNextWindowPos(Window.getXPos(), Window.getYPos());
         ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
@@ -90,6 +89,8 @@ public class ImGuiLayer {
 
     public void initImGui() {
        
+
+
         // initialize ImGui
         ImGui.createContext();
         final ImGuiIO io = ImGui.getIO();

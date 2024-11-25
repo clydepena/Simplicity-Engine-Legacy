@@ -62,6 +62,15 @@ public class MouseListener {
                 get().mouseButtonPressed[button] = false;
                 get().isDragging = false;
             }
+
+            // DEBUGGING
+            System.out.println("Screen:\t" + getScreenX() + "\t| " + getScreenY());
+            System.out.println("World:\t" + getWorldX() + "\t| " + getWorldY());
+            System.out.println("Coords:\t" + getX() + "\t| " + getY());
+            System.out.println("-");
+
+
+
         }
     }
 
@@ -89,14 +98,16 @@ public class MouseListener {
 
     public static float getScreenX() {
         float currentX = getX() - get().gameViewportPos.x;
-        currentX = (currentX / get().gameViewportSize.x) * (float) Window.SCREEN_WIDTH;
+        // currentX = (currentX / get().gameViewportSize.x) * (float) Window.SCREEN_WIDTH;
+        currentX = (currentX / get().gameViewportSize.x) * (float) Window.getWidth();
         
         return currentX;
     }
 
     public static float getScreenY() {
         float currentY = getY() - get().gameViewportPos.y;
-        currentY = ((float) Window.SCREEN_HEIGHT) - ((currentY / get().gameViewportSize.y) * ((float) Window.SCREEN_HEIGHT));
+        // currentY = ((float) Window.SCREEN_HEIGHT) - ((currentY / get().gameViewportSize.y) * ((float) Window.SCREEN_HEIGHT));
+        currentY = ((float) Window.getHeight()) - ((currentY / get().gameViewportSize.y) * ((float) Window.getHeight()));
 
         return currentY;
     }
