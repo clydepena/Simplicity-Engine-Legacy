@@ -2,9 +2,17 @@ package simplicity;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.openal.*;
 
+import static org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.ALC10.alcCloseDevice;
+import static org.lwjgl.openal.ALC10.alcCreateContext;
+import static org.lwjgl.openal.ALC10.alcDestroyContext;
+import static org.lwjgl.openal.ALC10.alcGetString;
+import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
+import static org.lwjgl.openal.ALC10.alcOpenDevice;
 import static org.lwjgl.openal.ALC11.*;
 
 import observers.EventSystem;
@@ -20,6 +28,17 @@ import util.AssetPool;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -45,7 +64,7 @@ public class Window implements Observer {
     private Window() {
         this.width = SCREEN_WIDTH;
         this.height = SCREEN_HEIGHT;
-        this.title = "Simplicity Engine @clydeskye_";
+        this.title = "Simplicity-Engine (legacy ver.) @Clyde Peña";
         this.bgColor = new Vector4f(0.0f, 0.0f,0.0f,0.0f);
         EventSystem.addObserver(this);
     }
@@ -119,11 +138,20 @@ public class Window implements Observer {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
+
+        GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        width = mode.width();
+        height = mode.height();
+        
+
         // create window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if(glfwWindow == NULL) {
             throw new IllegalStateException("Failed to create new GLFW window.");
         }
+
+        //set screensize
+        glfwMaximizeWindow(glfwWindow);
 
         // set listeners
         glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
