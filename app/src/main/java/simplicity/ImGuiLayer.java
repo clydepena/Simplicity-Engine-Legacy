@@ -12,6 +12,13 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import renderer.PickingTexture;
 import scenes.Scene;
+
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL46.*;
 
 public class ImGuiLayer {
@@ -20,11 +27,14 @@ public class ImGuiLayer {
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private long glfwWindow;
-
+    
+    private ImGuiStyle style;
     private GameViewWindow gameViewWindow;
     private PropertiesWindow propertiesWindow;
     private MenuBar menuBar;
     private SceneHierarchyWindow sceneHierarchyWindow;
+
+    
 
 
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
@@ -32,7 +42,8 @@ public class ImGuiLayer {
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
         this.menuBar = new MenuBar();
-        this.sceneHierarchyWindow = new SceneHierarchyWindow();
+        this.sceneHierarchyWindow = new SceneHierarchyWindow();  
+        
     }
 
     private void imgui() {
@@ -87,14 +98,26 @@ public class ImGuiLayer {
         ImGui.end();
     }
 
+    private void setAllUiColors(ImVec4[] colorVec4arr) {
+        for (int i = 0; i < colorVec4arr.length; i++) {
+            if (!colorVec4arr[i].equals(null)) {
+                setUIColor(i, colorVec4arr[i]);
+            }
+        }
+    }
+
+    private void setUIColor(int id, ImVec4 color) {
+        this.style.setColor(id, color.x, color.y, color.z, color.w);
+    }
+
     public void initImGui() {
        
-
-
         // initialize ImGui
         ImGui.createContext();
         final ImGuiIO io = ImGui.getIO();
-
+        
+        
+        
         // =======================================================
         // ImGui settings
         // =======================================================
@@ -104,6 +127,80 @@ public class ImGuiLayer {
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
         // io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors);
         io.setBackendPlatformName("imgui_java_impl_glfw");
+        this.style = ImGui.getStyle();
+        
+        // =======================================================
+        // ui sizes
+        // =======================================================
+        style.setGrabMinSize(8.0f);
+        style.setWindowPadding(2.0f, 4.0f);
+        style.setTabRounding(0.0f);
+        style.setScrollbarRounding(2.0f);
+        style.setGrabRounding(2.0f);
+        style.setWindowMenuButtonPosition(1);
+
+
+        // =======================================================
+        // ui colors
+        // =======================================================
+
+        ImVec4[] colors = new ImVec4[ImGuiCol.COUNT];
+        colors[ImGuiCol.Text]                   = new ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+        colors[ImGuiCol.TextDisabled]           = new ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+        colors[ImGuiCol.WindowBg]               = new ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
+        colors[ImGuiCol.ChildBg]                = new ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        colors[ImGuiCol.PopupBg]                = new ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
+        colors[ImGuiCol.Border]                 = new ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+        colors[ImGuiCol.BorderShadow]           = new ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        colors[ImGuiCol.FrameBg]                = new ImVec4(0.25f, 0.30f, 0.37f, 0.54f);
+        colors[ImGuiCol.FrameBgHovered]         = new ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+        colors[ImGuiCol.FrameBgActive]          = new ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+        colors[ImGuiCol.TitleBg]                = new ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
+        colors[ImGuiCol.TitleBgActive]          = new ImVec4(0.16f, 0.29f, 0.48f, 1.00f);
+        colors[ImGuiCol.TitleBgCollapsed]       = new ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
+        colors[ImGuiCol.MenuBarBg]              = new ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+        colors[ImGuiCol.ScrollbarBg]            = new ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+        colors[ImGuiCol.ScrollbarGrab]          = new ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+        colors[ImGuiCol.ScrollbarGrabHovered]   = new ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+        colors[ImGuiCol.ScrollbarGrabActive]    = new ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+        colors[ImGuiCol.CheckMark]              = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+        colors[ImGuiCol.SliderGrab]             = new ImVec4(0.24f, 0.52f, 0.88f, 1.00f);
+        colors[ImGuiCol.SliderGrabActive]       = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+        colors[ImGuiCol.Button]                 = new ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+        colors[ImGuiCol.ButtonHovered]          = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+        colors[ImGuiCol.ButtonActive]           = new ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
+        colors[ImGuiCol.Header]                 = new ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
+        colors[ImGuiCol.HeaderHovered]          = new ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
+        colors[ImGuiCol.HeaderActive]           = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+        colors[ImGuiCol.Separator]              = new ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+        colors[ImGuiCol.SeparatorHovered]       = new ImVec4(0.10f, 0.40f, 0.75f, 0.78f);
+        colors[ImGuiCol.SeparatorActive]        = new ImVec4(0.10f, 0.40f, 0.75f, 1.00f);
+        colors[ImGuiCol.ResizeGrip]             = new ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
+        colors[ImGuiCol.ResizeGripHovered]      = new ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+        colors[ImGuiCol.ResizeGripActive]       = new ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
+        colors[ImGuiCol.Tab]                    = new ImVec4(0.18f, 0.35f, 0.58f, 0.86f);
+        colors[ImGuiCol.TabHovered]             = new ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
+        colors[ImGuiCol.TabActive]              = new ImVec4(0.20f, 0.41f, 0.68f, 1.00f);
+        colors[ImGuiCol.TabUnfocused]           = new ImVec4(0.07f, 0.10f, 0.15f, 0.97f);
+        colors[ImGuiCol.TabUnfocusedActive]     = new ImVec4(0.14f, 0.26f, 0.42f, 1.00f);
+        colors[ImGuiCol.DockingPreview]         = new ImVec4(0.26f, 0.59f, 0.98f, 0.70f);
+        colors[ImGuiCol.DockingEmptyBg]         = new ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+        colors[ImGuiCol.PlotLines]              = new ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+        colors[ImGuiCol.PlotLinesHovered]       = new ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+        colors[ImGuiCol.PlotHistogram]          = new ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+        colors[ImGuiCol.PlotHistogramHovered]   = new ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+        colors[ImGuiCol.TableHeaderBg]          = new ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
+        colors[ImGuiCol.TableBorderStrong]      = new ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
+        colors[ImGuiCol.TableBorderLight]       = new ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
+        colors[ImGuiCol.TableRowBg]             = new ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        colors[ImGuiCol.TableRowBgAlt]          = new ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+        colors[ImGuiCol.TextSelectedBg]         = new ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
+        colors[ImGuiCol.DragDropTarget]         = new ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
+        colors[ImGuiCol.NavHighlight]           = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+        colors[ImGuiCol.NavWindowingHighlight]  = new ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+        colors[ImGuiCol.NavWindowingDimBg]      = new ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
+        colors[ImGuiCol.ModalWindowDimBg]       = new ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+        setAllUiColors(colors);
 
         // =======================================================
         // keyboard mapping

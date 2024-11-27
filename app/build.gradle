@@ -1,12 +1,13 @@
 plugins {
     id 'java'
+    // id 'base'
 }
 
 //group = 'groupid'
 version = '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = 1.18
+    sourceCompatibility = 21
 }
 
 repositories {
@@ -25,29 +26,72 @@ test {
     useJUnitPlatform()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs 'src'
+            srcDirs 'vendors'
+        }
+    }
+ }
+
+
 project.ext.lwjglVersion = "3.3.3"
 project.ext.jomlVersion = "1.10.5"
 project.ext.lwjglNatives = "natives-windows"
-project.ext.imguiVersion = '1.77-0.17.1'
+project.ext.imguiVersion = '1.86.11'
+
+configurations {
+    toCopy
+}
 
 dependencies {
     // LWJGL
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-    implementation "org.lwjgl:lwjgl"
-    implementation "org.lwjgl:lwjgl-assimp"
-    implementation "org.lwjgl:lwjgl-glfw"
-    implementation "org.lwjgl:lwjgl-nfd"
-    implementation "org.lwjgl:lwjgl-openal"
-    implementation "org.lwjgl:lwjgl-opengl"
-    implementation "org.lwjgl:lwjgl-stb"
-    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-nfd::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
-    implementation "org.joml:joml:${jomlVersion}"
+    // implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    // implementation "org.lwjgl:lwjgl"
+    // implementation "org.lwjgl:lwjgl-assimp"
+    // implementation "org.lwjgl:lwjgl-glfw"
+    // implementation "org.lwjgl:lwjgl-nfd"
+    // implementation "org.lwjgl:lwjgl-openal"
+    // implementation "org.lwjgl:lwjgl-opengl"
+    // implementation "org.lwjgl:lwjgl-stb"
+
+    // runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    // runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    // runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    // runtimeOnly "org.lwjgl:lwjgl-nfd::$lwjglNatives"
+    // runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    // runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    // runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    // implementation "org.joml:joml:${jomlVersion}"
+
+	// implementation "org.lwjgl:lwjgl-egl"
+    // implementation "org.lwjgl:lwjgl-opengles"
+    // runtimeOnly "org.lwjgl:lwjgl-opengles::$lwjglNatives"
+	// implementation "org.lwjgl:lwjgl-vulkan"
+
+    toCopy platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    // toCopy "org.lwjgl:lwjgl"
+    toCopy "org.lwjgl:lwjgl-assimp"
+    // toCopy "org.lwjgl:lwjgl-glfw"
+    toCopy "org.lwjgl:lwjgl-nfd"
+    toCopy "org.lwjgl:lwjgl-openal"
+    toCopy "org.lwjgl:lwjgl-opengl"
+    toCopy "org.lwjgl:lwjgl-stb"
+
+    // toCopy "org.lwjgl:lwjgl::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    // toCopy "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl-nfd::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    toCopy "org.joml:joml:${jomlVersion}"
+
+	toCopy "org.lwjgl:lwjgl-egl"
+    toCopy "org.lwjgl:lwjgl-opengles"
+    toCopy "org.lwjgl:lwjgl-opengles::$lwjglNatives"
+	toCopy "org.lwjgl:lwjgl-vulkan"
 
     // ImGUI
     // implementation "io.imgui.java:binding:$imguiVersion"
@@ -55,8 +99,19 @@ dependencies {
     // runtimeOnly "io.imgui.java:natives-windows:$imguiVersion"
 
     // GSON
-    implementation 'com.google.code.gson:gson:2.10.1'
+    // implementation 'com.google.code.gson:gson:2.11.0'
+
+    toCopy 'com.google.code.gson:gson:2.11.0'
+
+    // annotations
+    // testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
+    toCopy 'com.google.code.findbugs:jsr305:3.0.2'
 
     // Implement all libraries in libs files
     implementation fileTree(dir: "libs", include: ["*.jar"])
+}
+
+task download(type: Copy) {
+    from configurations.toCopy 
+    into 'libs'
 }

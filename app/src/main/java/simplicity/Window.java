@@ -5,6 +5,12 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.MemoryUtil;
+
+import imgui.ImGui;
+import imgui.ImVec4;
+import imgui.flag.ImGuiCol;
+
 import org.lwjgl.openal.*;
 
 import static org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER;
@@ -18,18 +24,13 @@ import static org.lwjgl.openal.ALC11.*;
 
 import observers.EventSystem;
 import observers.Observer;
-import observers.events.Event;
-import observers.events.EventType;
+import observers.events.*;
 import renderer.*;
 import scenes.LevelEditorSceneInitializer;
 // import scenes.LevelScene;
 import scenes.Scene;
 import scenes.SceneInitializer;
-import util.AssetPool;
-import util.Debug;
-import util.ImgageParser;
-import util.SResImage;
-import util.Settings;
+import util.*;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -46,13 +47,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryUtil.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
-import org.joml.Vector4f;
+import org.joml.*;
 
 public class Window implements Observer {
     private int width, height;
@@ -60,14 +55,14 @@ public class Window implements Observer {
     private String title;
     private String glslVersion = null;
     private long glfwWindow;
-    // public static final int SCREEN_WIDTH = 1280, SCREEN_HEIGHT = 720;
+    public static int SCREEN_WIDTH, SCREEN_HEIGHT;
     public static float SCALE = 0.5f;
     private Vector4f bgColor;
     private long audioContext, audioDevice;
     private static Window window;
     private static Scene currentScene;
     private boolean runtimePlaying = false;
-
+    public static long custom_cursor;
     private ImGuiLayer imguiLayer;
     private Framebuffer framebuffer;
     private PickingTexture pickingTexture;
@@ -104,7 +99,9 @@ public class Window implements Observer {
 
     public void run() {
         System.out.println("LWJGL VERSION: " + Version.getVersion());
+
         
+
         initWindow();
         initImGui();
 
@@ -138,22 +135,28 @@ public class Window implements Observer {
             throw new IllegalStateException("Unable to initialize GLFW.");
         }
 
-        // comfigure GLFW
+        // configure GLFW
 
         this.glslVersion = "#version 460";
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
+        //Window hints
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         System.out.println("Monitor size: " + mode.width() + " | " + mode.height());
-        width = mode.width();
-        height = mode.height();
+        // width = mode.width();
+        // height = mode.height();
+
+        SCREEN_WIDTH = mode.width();
+        SCREEN_HEIGHT = mode.height();
+        width = SCREEN_WIDTH;
+        height = SCREEN_HEIGHT;
 
         // create window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
@@ -163,32 +166,30 @@ public class Window implements Observer {
 
 
 
-        // set icon
-        GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
-        GLFWImage iconImg = GLFWImage.malloc(); 
-        SResImage icon = new SResImage("images/ICON_2.png");
-        iconImg.set(icon.getWidth(), icon.getHeight(), icon.getImg());
-        imagebf.put(0, iconImg);
 
-        glfwSetWindowIcon(glfwWindow, imagebf);
-        glfwSetWindowSizeLimits(glfwWindow, (int) (mode.width() * 0.75f), (int) (mode.height() * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
+        // set icon
+        setIcon(Resources.ICON);
 
         //set screensize to monitor
-        glfwMaximizeWindow(glfwWindow);
+        glfwSetWindowSizeLimits(glfwWindow, (int) (SCREEN_WIDTH * 0.75f), (int) (SCREEN_HEIGHT * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
+        // glfwSetWindowSizeLimits(glfwWindow, width, height, width, height);
 
+        // glfwMaximizeWindow(glfwWindow);
+        setWindowPos((SCREEN_WIDTH / 2) - (width / 2), (SCREEN_HEIGHT / 2) - (height / 2));
+
+        // DEBUGGGG
+        GLFWImage cursorImg = GLFWImage.malloc(); 
+        AssetUtil.LoadedByteImg cursor = AssetUtil.GenResImg("images/cursor.png");
+        cursorImg.set(cursor.getWidth(), cursor.getHeight(), cursor.getImg());
+        
+        custom_cursor = glfwCreateCursor(cursorImg, 0, 0);
+        if (custom_cursor == MemoryUtil.NULL) 
+            throw new RuntimeException("Error creating cursor");
+ 
+        glfwMaximizeWindow(glfwWindow);
+        
         // set listeners
-        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
-        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
-        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
-        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
-        glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
-            Window.setWidth(newWidth);
-            Window.setHeight(newHeight);
-        });
-        glfwSetWindowPosCallback(glfwWindow, (w, newXPos, newYPos) -> {
-            Window.setXPos(newXPos);
-            Window.setYPos(newYPos);
-        });
+        setListeners();
 
         // Audio
         String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
@@ -226,8 +227,54 @@ public class Window implements Observer {
 
         this.framebuffer = new Framebuffer(width, height); // TEMP
         this.pickingTexture = new PickingTexture(width, height); // TEMp
-        glViewport(0, 0, width, height); // TEMP
+        glViewport(0, 0, 1920, 1080); // TEMP
 
+    }
+
+    public void setWindowPos(int x, int y) {
+        xPos = x;
+        yPos = y;
+        glfwSetWindowPos(glfwWindow, x, y);
+    }
+
+    public void setCursorImg(String filepath) {
+        GLFWImage cursorImg = GLFWImage.malloc(); 
+        AssetUtil.LoadedByteImg cursor = AssetUtil.GenResImg(filepath);
+        cursorImg.set(cursor.getWidth(), cursor.getHeight(), cursor.getImg());
+        
+        long cursorAddress = glfwCreateCursor(cursorImg, 0, 0);
+        if (cursorAddress == MemoryUtil.NULL) 
+            throw new RuntimeException("Error creating cursor");
+ 
+        glfwSetCursor(glfwWindow, cursorAddress);
+    }
+
+    private void setIcon(String filepath) {
+        GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+        GLFWImage iconImg = GLFWImage.malloc(); 
+        AssetUtil.LoadedByteImg icon = AssetUtil.GenResImg(filepath);
+        iconImg.set(icon.getWidth(), icon.getHeight(), icon.getImg());
+        imagebf.put(0, iconImg);
+        glfwSetWindowIcon(glfwWindow, imagebf);
+    }
+
+    private void setListeners() {
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+        glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
+            get().width = newWidth;
+            get().height = newHeight;
+
+            System.out.println("Window size: " + width + " | " + height);
+        });
+        glfwSetWindowPosCallback(glfwWindow, (w, newXPos, newYPos) -> {
+            get().xPos = newXPos;
+            get().yPos = newYPos;
+
+            System.out.println("Window pos: " + xPos + " | " + yPos);
+        });
     }
 
     public void initImGui() {
@@ -240,8 +287,8 @@ public class Window implements Observer {
         float endTime;
         float dt = -1.0f;
 
-        Shader defaultShader = AssetPool.getShaderFromRes("shaders/default.glsl");
-        Shader pickingShader = AssetPool.getShaderFromRes("shaders/pickingShader.glsl");
+        Shader defaultShader = AssetPool.getShaderFromRes(Resources.MAIN_SHADER);
+        Shader pickingShader = AssetPool.getShaderFromRes(Resources.PICKING_SHADER);
         // Shader fontShader = AssetPool.getShader("app/assets/shaders/fontShader.glsl");
 
         while(!glfwWindowShouldClose(glfwWindow)) {
@@ -252,8 +299,12 @@ public class Window implements Observer {
             glDisable(GL_BLEND);
             pickingTexture.enableWriting();
 
+
+            // DEBUGGING
+            MouseListener.printCoords();
+
             // glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            glViewport(0, 0, width, height);
+            glViewport(0, 0, 1920, 1080);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -311,28 +362,12 @@ public class Window implements Observer {
         return get().height;
     }
 
-    public static void setWidth(int newWidth) {
-        get().width = newWidth;
-    }
-
-    public static void setHeight(int newHeight) {
-        get().height = newHeight;
-    }
-
     public static int getXPos() {
         return get().xPos;
     }
 
     public static int getYPos() {
         return get().yPos;
-    }
-
-    public static void setXPos(int newXPos) {
-        get().xPos = newXPos;
-    }
-
-    public static void setYPos(int newYPos) {
-        get().yPos = newYPos;
     }
 
     public static Framebuffer getFramebuffer() {

@@ -1,5 +1,6 @@
 package simplicity;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import scenes.*;
@@ -62,15 +63,16 @@ public class MouseListener {
                 get().mouseButtonPressed[button] = false;
                 get().isDragging = false;
             }
-
-            // DEBUGGING
+        }
+    }
+    
+    // DEBUGGING
+    public static void printCoords() {
+        if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)) {
             System.out.println("Screen:\t" + getScreenX() + "\t| " + getScreenY());
             System.out.println("World:\t" + getWorldX() + "\t| " + getWorldY());
             System.out.println("Coords:\t" + getX() + "\t| " + getY());
             System.out.println("-");
-
-
-
         }
     }
 
