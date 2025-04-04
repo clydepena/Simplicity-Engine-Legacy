@@ -71,17 +71,19 @@ dependencies {
 	// implementation "org.lwjgl:lwjgl-vulkan"
 
     toCopy platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-    // toCopy "org.lwjgl:lwjgl"
     toCopy "org.lwjgl:lwjgl-assimp"
-    // toCopy "org.lwjgl:lwjgl-glfw"
+    
     toCopy "org.lwjgl:lwjgl-nfd"
     toCopy "org.lwjgl:lwjgl-openal"
     toCopy "org.lwjgl:lwjgl-opengl"
     toCopy "org.lwjgl:lwjgl-stb"
 
-    // toCopy "org.lwjgl:lwjgl::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl"
+    toCopy "org.lwjgl:lwjgl-glfw"
+    toCopy "org.lwjgl:lwjgl::$lwjglNatives"
+    toCopy "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+
     toCopy "org.lwjgl:lwjgl-assimp::$lwjglNatives"
-    // toCopy "org.lwjgl:lwjgl-glfw::$lwjglNatives"
     toCopy "org.lwjgl:lwjgl-nfd::$lwjglNatives"
     toCopy "org.lwjgl:lwjgl-openal::$lwjglNatives"
     toCopy "org.lwjgl:lwjgl-opengl::$lwjglNatives"

@@ -14,6 +14,7 @@ import simplicity.Transform;
 import simplicity.Window;
 import util.AssetPool;
 import util.AssetUtil;
+import util.Resources;
 import util.Settings;
 
 public class LevelEditorSceneInitializer extends SceneInitializer {
@@ -59,7 +60,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
     @Override
     public void loadResources(Scene scene) {
 
-        AssetPool.getShader("app/assets/shaders/default.glsl");
+        AssetPool.getShaderFromRes("default_res/shaders/default.glsl");
 
         AssetPool.addSpritesheet(
             "app/assets/images/TilesSpritesheet.png",

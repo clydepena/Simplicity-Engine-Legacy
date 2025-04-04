@@ -116,12 +116,11 @@ public class ImGuiLayer {
         ImGui.createContext();
         final ImGuiIO io = ImGui.getIO();
         
-        
-        
         // =======================================================
         // ImGui settings
         // =======================================================
-        io.setIniFilename("imgui.ini"); // saves window config
+        ImGui.loadIniSettingsFromMemory(util.AssetUtil.ResToString(util.Resources.IMGUI_INI));
+        io.setIniFilename(null); // saves window config
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
