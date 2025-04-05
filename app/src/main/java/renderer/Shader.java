@@ -3,7 +3,7 @@ package renderer;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
-import util.AssetUtil;
+import util.IOHelper;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -40,7 +40,7 @@ public class Shader {
     
     public void initFromRes(String filepath) {
         this.filepath = filepath;
-        parseShaderSource(AssetUtil.ResToString(filepath));
+        parseShaderSource(IOHelper.ResToString(filepath));
     }
 
     private void parseShaderSource(String sourceCode) {

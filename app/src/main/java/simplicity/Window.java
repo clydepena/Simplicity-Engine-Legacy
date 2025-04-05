@@ -1,39 +1,25 @@
 package simplicity;
 
 import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWImage;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryUtil;
-
-import imgui.ImGui;
-import imgui.ImVec4;
-import imgui.flag.ImGuiCol;
-
+import org.lwjgl.system.*;
+import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFWNativeCocoa.*;
+import static org.lwjgl.glfw.GLFWNativeWin32.*;
+import static org.lwjgl.glfw.GLFWNativeX11.*;
+import static org.lwjgl.opengl.GL11C.*;
+import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.util.nfd.NativeFileDialog.*;
 import org.lwjgl.openal.*;
-
-import static org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER;
-import static org.lwjgl.openal.ALC10.alcCloseDevice;
-import static org.lwjgl.openal.ALC10.alcCreateContext;
-import static org.lwjgl.openal.ALC10.alcDestroyContext;
-import static org.lwjgl.openal.ALC10.alcGetString;
-import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
-import static org.lwjgl.openal.ALC10.alcOpenDevice;
 import static org.lwjgl.openal.ALC11.*;
-
-import observers.EventSystem;
-import observers.Observer;
+import observers.*;
 import observers.events.*;
 import renderer.*;
-import scenes.LevelEditorSceneInitializer;
-// import scenes.LevelScene;
-import scenes.Scene;
-import scenes.SceneInitializer;
+import scenes.*;
 import util.*;
-
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -45,8 +31,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL46.*;
-import static org.lwjgl.system.MemoryUtil.*;
+// import static org.lwjgl.opengl.GL46.*;
 import org.joml.*;
 
 public class Window implements Observer {
@@ -66,11 +51,13 @@ public class Window implements Observer {
     private ImGuiLayer imguiLayer;
     private Framebuffer framebuffer;
     private PickingTexture pickingTexture;
+    private long handleWindow;
+    private int handleType;
 
     private Window() {
         // this.width = SCREEN_WIDTH;
         // this.height = SCREEN_HEIGHT;
-        this.title = "Simplicity-Engine (legacy ver.) @Clyde Peña";
+        this.title = "Simplicity-Engine (legacy ver.) @Peña";
         this.bgColor = new Vector4f(0.0f, 0.0f,0.0f,0.0f);
         EventSystem.addObserver(this);
     }
@@ -81,7 +68,7 @@ public class Window implements Observer {
         }
         getImGuiLayer().getPropertiesWindow().setActiveGameObject(null);
         currentScene = new Scene(sceneInitializer);
-        currentScene.laod();
+        currentScene.load();
         currentScene.init();
         currentScene.start();
     }
@@ -93,20 +80,16 @@ public class Window implements Observer {
         return Window.window;
     }
 
+    @SuppressWarnings("static-access")
     public static Scene getScene() {
         return get().currentScene;
     }
 
     public void run() {
         System.out.println("LWJGL VERSION: " + Version.getVersion());
-
-        
-
         initWindow();
         initImGui();
-
         Window.changeScene(new LevelEditorSceneInitializer());
-
         loop();
         destroy();
     }
@@ -145,7 +128,7 @@ public class Window implements Observer {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -164,9 +147,6 @@ public class Window implements Observer {
             throw new IllegalStateException("Failed to create new GLFW window.");
         }
 
-
-
-
         // set icon
         setIcon(Resources.ICON);
 
@@ -179,7 +159,7 @@ public class Window implements Observer {
 
         // DEBUGGGG
         GLFWImage cursorImg = GLFWImage.malloc(); 
-        AssetUtil.LoadedByteImg cursor = AssetUtil.GenResImg("images/cursor.png");
+        IOHelper.LoadedByteImg cursor = IOHelper.GenResImg("images/cursor.png");
         cursorImg.set(cursor.getWidth(), cursor.getHeight(), cursor.getImg());
         
         custom_cursor = glfwCreateCursor(cursorImg, 0, 0);
@@ -229,6 +209,24 @@ public class Window implements Observer {
         this.pickingTexture = new PickingTexture(width, height); // TEMp
         glViewport(0, 0, 1920, 1080); // TEMP
 
+        switch (Platform.get()) {
+            case FREEBSD:
+            case LINUX:
+                handleType = NFD_WINDOW_HANDLE_TYPE_X11;
+                handleWindow = glfwGetX11Window(glfwWindow);
+                break;
+            case MACOSX:
+                handleType = NFD_WINDOW_HANDLE_TYPE_COCOA;
+                handleWindow = glfwGetCocoaWindow(glfwWindow);
+                break;
+            case WINDOWS:
+                handleType = NFD_WINDOW_HANDLE_TYPE_WINDOWS;
+                handleWindow = glfwGetWin32Window(glfwWindow);
+                break;
+            default:
+                handleType = NFD_WINDOW_HANDLE_TYPE_UNSET;
+                handleWindow = NULL;
+        }
     }
 
     public void setWindowPos(int x, int y) {
@@ -239,7 +237,7 @@ public class Window implements Observer {
 
     public void setCursorImg(String filepath) {
         GLFWImage cursorImg = GLFWImage.malloc(); 
-        AssetUtil.LoadedByteImg cursor = AssetUtil.GenResImg(filepath);
+        IOHelper.LoadedByteImg cursor = IOHelper.GenResImg(filepath);
         cursorImg.set(cursor.getWidth(), cursor.getHeight(), cursor.getImg());
         
         long cursorAddress = glfwCreateCursor(cursorImg, 0, 0);
@@ -252,7 +250,7 @@ public class Window implements Observer {
     private void setIcon(String filepath) {
         GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
         GLFWImage iconImg = GLFWImage.malloc(); 
-        AssetUtil.LoadedByteImg icon = AssetUtil.GenResImg(filepath);
+        IOHelper.LoadedByteImg icon = IOHelper.GenResImg(filepath);
         iconImg.set(icon.getWidth(), icon.getHeight(), icon.getImg());
         imagebf.put(0, iconImg);
         glfwSetWindowIcon(glfwWindow, imagebf);
@@ -267,13 +265,13 @@ public class Window implements Observer {
             get().width = newWidth;
             get().height = newHeight;
 
-            System.out.println("Window size: " + width + " | " + height);
+            // System.out.println("Window size: " + width + " | " + height);
         });
         glfwSetWindowPosCallback(glfwWindow, (w, newXPos, newYPos) -> {
             get().xPos = newXPos;
             get().yPos = newYPos;
 
-            System.out.println("Window pos: " + xPos + " | " + yPos);
+            // System.out.println("Window pos: " + xPos + " | " + yPos);
         });
     }
 
@@ -396,9 +394,26 @@ public class Window implements Observer {
                 Window.changeScene(new LevelEditorSceneInitializer());
                 break;
             case LoadLevel:
-                Window.changeScene(new LevelEditorSceneInitializer());
+                Window.changeScene(new LevelEditorSceneInitializer(util.IOHelper.openSingle(window,"json")));
+                break;
             case SaveLevel:
                 currentScene.save();
+                break;
+            case SaveLevelAs:
+                String path = util.IOHelper.saveFile(window, "level", "json");
+                currentScene.saveAs(path);
+                Window.changeScene(new LevelEditorSceneInitializer(path));
+                break;
+            default:
+                break;
         }
+    }
+
+    public long getHandleWin() {
+        return this.handleWindow;
+    }
+
+    public int getHandleType() {
+        return this.handleType;
     }
 }

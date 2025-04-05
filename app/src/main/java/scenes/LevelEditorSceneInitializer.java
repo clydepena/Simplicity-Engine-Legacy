@@ -1,31 +1,24 @@
 package scenes;
 
-import org.joml.Vector2f;
-import org.joml.Vector4f;
-
+import org.joml.*;
 import components.*;
-import imgui.ImGui;
-import imgui.ImVec2;
-import renderer.DebugDraw;
-import simplicity.Camera;
-import simplicity.GameObject;
-import simplicity.Prefabs;
-import simplicity.Transform;
-import simplicity.Window;
-import util.AssetPool;
-import util.AssetUtil;
-import util.Resources;
-import util.Settings;
+import imgui.*;
+import simplicity.*;
+import util.*;
 
 public class LevelEditorSceneInitializer extends SceneInitializer {
 
     private Spritesheet tileSprites, objectSprites;
-
+    private String currentFile;
 
     private GameObject levelEditorObj;
 
     public LevelEditorSceneInitializer() {
 
+    }
+
+    public LevelEditorSceneInitializer(String levelPath) {
+        this.currentFile = levelPath;
     }
 
     @Override
@@ -35,11 +28,10 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         // loadResources();
         
         // tileSprites = AssetPool.getSpritesheet("app/assets/images/TilesSpritesheet.png");
+        tileSprites = AssetPool.getSpritesheet(Resources.SPRITESHEET_TILES);
 
-        tileSprites = AssetPool.getSpritesheet("app/assets/images/TilesSpritesheet.png");
-
-
-        objectSprites = AssetPool.getSpritesheet("app/assets/images/ObjectsSpritesheet.png");
+        // objectSprites = AssetPool.getSpritesheet("app/assets/images/ObjectsSpritesheet.png");
+        objectSprites = AssetPool.getSpritesheet(Resources.SPRITESHEET_OBJ);
 
         Spritesheet gizmos = AssetPool.getSpritesheetFromRes("editor_res/gizmos.png");
 
@@ -60,12 +52,23 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
     @Override
     public void loadResources(Scene scene) {
 
-        AssetPool.getShaderFromRes("default_res/shaders/default.glsl");
+        AssetPool.getShaderFromRes(Resources.SHADER_GAME_DEFAULT);
 
-        AssetPool.addSpritesheet(
-            "app/assets/images/TilesSpritesheet.png",
+        // AssetPool.addSpritesheet(
+        //     "app/assets/images/TilesSpritesheet.png",
+        //     new Spritesheet(
+        //         AssetPool.getTexture("app/assets/images/TilesSpritesheet.png"),
+        //         32,
+        //         32,
+        //         48,
+        //         0
+        //     )
+        // );
+
+        AssetPool.addSpritesheetToRes(
+            Resources.SPRITESHEET_TILES,
             new Spritesheet(
-                AssetPool.getTexture("app/assets/images/TilesSpritesheet.png"),
+                AssetPool.getTextureFromRes(Resources.SPRITESHEET_TILES),
                 32,
                 32,
                 48,
@@ -73,10 +76,21 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
             )
         );
 
-        AssetPool.addSpritesheet(
-            "app/assets/images/ObjectsSpritesheet.png",
+        // AssetPool.addSpritesheet(
+        //     "app/assets/images/ObjectsSpritesheet.png",
+        //     new Spritesheet(
+        //         AssetPool.getTexture("app/assets/images/ObjectsSpritesheet.png"),
+        //         40,
+        //         30,
+        //         16,
+        //         0
+        //     )
+        // );
+
+        AssetPool.addSpritesheetToRes(
+            Resources.SPRITESHEET_OBJ,
             new Spritesheet(
-                AssetPool.getTexture("app/assets/images/ObjectsSpritesheet.png"),
+                AssetPool.getTextureFromRes(Resources.SPRITESHEET_OBJ),
                 40,
                 30,
                 16,
@@ -85,7 +99,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         );
 
         AssetPool.addSpritesheetToRes(
-            "editor_res/gizmos.png", 
+            Resources.Editor.SPRITESHEET_GIZMO, 
             // new Spritesheet(
             //     AssetPool.getTexture("app/assets/editor_res/gizmos.png"), 
             //     24, 
@@ -94,7 +108,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
             //     0
             // )
             new Spritesheet(
-                AssetPool.getTextureFromRes("editor_res/gizmos.png"), 
+                AssetPool.getTextureFromRes(Resources.Editor.SPRITESHEET_GIZMO), 
                 24, 
                 48, 
                 3, 
@@ -122,16 +136,13 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
     @Override
     public void imgui() {
-        
-        
-
-        ImGui.begin("Level Editor Stuff");
+        ImGui.begin("Editor Inspector");
         levelEditorObj.imgui();
         ImGui.end();
 
         // ===============================================
 
-        ImGui.begin("Test Window");
+        ImGui.begin("Blocks");
         ImVec2 windowPos = new ImVec2();
         ImGui.getWindowPos(windowPos);
         ImVec2 windowSize = new ImVec2();
@@ -174,7 +185,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
     }
 
     private void imgui2() {
-        ImGui.begin("Assets");
+        ImGui.begin("Items");
         ImVec2 windowPos = new ImVec2();
         ImGui.getWindowPos(windowPos);
         ImVec2 windowSize = new ImVec2();
@@ -211,4 +222,8 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         ImGui.end();
     }
 
+    @Override
+    public String getLevelPath() {
+        return currentFile;
+    }
 }

@@ -10,14 +10,13 @@ import org.joml.Vector4f;
 import simplicity.Window;
 
 import static org.lwjgl.opengl.GL46.*;
-import util.AssetPool;
-import util.SMath;
+import util.*;
 
 public class DebugDraw {
     private static int MAX_LINES = 500;
     private static List<Line2D> lines = new ArrayList<>();
     private static float[] vertexArray = new float[MAX_LINES * 7 * 2];
-    private static Shader shader = AssetPool.getShader("app/assets/shaders/debugLine2D.glsl");
+    private static Shader shader = AssetPool.getShaderFromRes(Resources.Editor.SHADER_LINE);
 
     private static int vboID, vaoID;
 

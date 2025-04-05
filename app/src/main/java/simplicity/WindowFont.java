@@ -3,6 +3,7 @@ package simplicity;
 import Fonts.SFont;
 import renderer.Shader;
 import util.AssetPool;
+import util.Resources;
 
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
@@ -88,7 +89,7 @@ public class WindowFont {
         vertices[26] = texCoords[3].x; vertices[27] = texCoords[3].y;
 
         uploadSquare();
-        Shader fontShader = AssetPool.getShader("app/assets/shaders/fontShader.glsl");
+        Shader fontShader = AssetPool.getShaderFromRes(Resources.Editor.SHADER_FONT);
 
         while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT);

@@ -4,6 +4,7 @@ import imgui.ImGui;
 import observers.EventSystem;
 import observers.events.Event;
 import observers.events.EventType;
+import simplicity.Window;
 
 public class MenuBar {
     public void imgui() {
@@ -12,11 +13,15 @@ public class MenuBar {
 
         if(ImGui.beginMenu("File")) {
 
-            if(ImGui.menuItem("Save", "Ctrl+S")) {
+            if(ImGui.menuItem("Save", Window.getScene().getFilename())) {
                 EventSystem.notify(null, new Event(EventType.SaveLevel));
             }
 
-            if(ImGui.menuItem("Load", "Ctrl+O")) {
+            if(ImGui.menuItem("Save As")) {
+                EventSystem.notify(null, new Event(EventType.SaveLevelAs));
+            }
+
+            if(ImGui.menuItem("Load")) {
                 EventSystem.notify(null, new Event(EventType.LoadLevel));
             }
 

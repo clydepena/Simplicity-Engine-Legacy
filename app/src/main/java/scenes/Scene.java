@@ -1,18 +1,10 @@
 package scenes;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 import org.joml.Vector2f;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import com.google.gson.*;
 import components.*;
 import physics2d.Physics2D;
 import renderer.*;
@@ -25,11 +17,24 @@ public class Scene {
     private boolean isRunning;
     private List<GameObject> gameObjects = new ArrayList<>();
     private Physics2D physics2d;
-
     private SceneInitializer sceneInitializer;
+
+    private static String currentFile, levelName;
 
     public Scene(SceneInitializer sceneInitializer) {
         this.sceneInitializer = sceneInitializer;
+        Scene.currentFile = sceneInitializer.getLevelPath() == null ?  currentFile : sceneInitializer.getLevelPath();
+        //"app/saves/level.json"
+        if (Scene.currentFile != null) {
+            for (int i = Scene.currentFile.length() - 1; i >= 0; i--) {
+                char c = Scene.currentFile.charAt(i);
+                if (c == '/' || c == '\\') {
+                    Scene.levelName = Scene.currentFile.substring(i + 1);
+                    break;
+                }
+            }
+        }
+        
         this.physics2d = new Physics2D();
         this.renderer = new Renderer();
         this.gameObjects = new ArrayList<>();
@@ -123,28 +128,43 @@ public class Scene {
     }
 
     public void save() {
-        Gson gson = new GsonBuilder()
-        .setPrettyPrinting()
-        .registerTypeAdapter(Component.class, new ComponentDeserializer())
-        .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
-        .create();
-
-        try {
-            FileWriter writer = new FileWriter("app/saves/level.json");
-            List<GameObject> objsToSerialize = new ArrayList<>();
-            for(GameObject go : this.gameObjects) {
-                if(go.doSerialization()) {
-                    objsToSerialize.add(go);
-                }
-            }
-            writer.write(gson.toJson(objsToSerialize));
-            writer.close();
-        } catch(IOException e) {
-            e.printStackTrace();
+        if (Scene.currentFile != null) {
+            saveAs(Scene.currentFile);
+        } else {
+            String path = util.IOHelper.saveFile(Window.get(), "level", "json");
+            saveAs(path);
+            Window.changeScene(new LevelEditorSceneInitializer(path));
         }
     }
 
-    public void laod() {
+    public void saveAs(String filepath) {
+        if (filepath != null) {
+            Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(Component.class, new ComponentDeserializer())
+            .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
+            .create();
+            try {
+                FileWriter writer = new FileWriter(filepath);
+                List<GameObject> objsToSerialize = new ArrayList<>();
+                for(GameObject go : this.gameObjects) {
+                    if(go.doSerialization()) {
+                        objsToSerialize.add(go);
+                    }
+                }
+                writer.write(gson.toJson(objsToSerialize));
+                writer.close();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void load() {
+        load(Scene.currentFile);
+    }
+
+    private void load(String filepath) {
         Gson gson = new GsonBuilder()
         .setPrettyPrinting()
         .registerTypeAdapter(Component.class, new ComponentDeserializer())
@@ -153,7 +173,7 @@ public class Scene {
 
         String inFile = "";
         try {
-            inFile = new String(Files.readAllBytes(Paths.get("app/saves/level.json")));
+            inFile = filepath == null ? "" : new String(Files.readAllBytes(Paths.get(filepath)));
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -190,5 +210,9 @@ public class Scene {
         for (GameObject go : gameObjects) {
             go.destroy();
         }
+    }
+
+    public String getFilename() {
+        return Scene.levelName;
     }
 }

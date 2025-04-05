@@ -12,6 +12,8 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import renderer.PickingTexture;
 import scenes.Scene;
+import util.IOHelper;
+import util.Resources;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
@@ -48,7 +50,7 @@ public class ImGuiLayer {
 
     private void imgui() {
 
-        // ImGui.showDemoWindow();
+        ImGui.showDemoWindow();
     }
 
     public void update(float dt, Scene currentScene) {
@@ -119,7 +121,7 @@ public class ImGuiLayer {
         // =======================================================
         // ImGui settings
         // =======================================================
-        ImGui.loadIniSettingsFromMemory(util.AssetUtil.ResToString(util.Resources.IMGUI_INI));
+        ImGui.loadIniSettingsFromMemory(util.IOHelper.ResToString(util.Resources.IMGUI_INI));
         io.setIniFilename(null); // saves window config
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
@@ -168,9 +170,9 @@ public class ImGuiLayer {
         colors[ImGuiCol.Button]                 = new ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
         colors[ImGuiCol.ButtonHovered]          = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
         colors[ImGuiCol.ButtonActive]           = new ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
-        colors[ImGuiCol.Header]                 = new ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
-        colors[ImGuiCol.HeaderHovered]          = new ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
-        colors[ImGuiCol.HeaderActive]           = new ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+        colors[ImGuiCol.Header]                 = new ImVec4(0.58f, 0.63f, 0.69f, 0.30f);
+        colors[ImGuiCol.HeaderHovered]          = new ImVec4(0.58f, 0.63f, 0.69f, 0.50f);
+        colors[ImGuiCol.HeaderActive]           = new ImVec4(0.58f, 0.63f, 0.69f, 0.50f);
         colors[ImGuiCol.Separator]              = new ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
         colors[ImGuiCol.SeparatorHovered]       = new ImVec4(0.10f, 0.40f, 0.75f, 0.78f);
         colors[ImGuiCol.SeparatorActive]        = new ImVec4(0.10f, 0.40f, 0.75f, 1.00f);
@@ -327,8 +329,8 @@ public class ImGuiLayer {
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
 
         fontConfig.setPixelSnapH(true);
-        fontAtlas.addFontFromFileTTF("app/assets/fonts/OpenSans.ttf", 12, fontConfig);
-
+        // fontAtlas.addFontFromFileTTF("app/assets/fonts/OpenSans.ttf", 12, fontConfig);
+        fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.Editor.FONT_OPENSANS), 12, fontConfig);
         fontConfig.destroy();
 
         // fontAtlas.setFlags(ImGuiFreeTypeBuilderFlags.LightHinting);

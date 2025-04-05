@@ -59,12 +59,14 @@ public class AssetPool {
         
         if(AssetPool.shaders.containsKey(file.getAbsolutePath())) {
             return AssetPool.shaders.get(file.getAbsolutePath());
-        } else {
-            Shader shader = new Shader(resourceName);
-            shader.compile();
-            AssetPool.shaders.put(file.getAbsolutePath(), shader);
-            return shader;
         }
+        if (AssetPool.shadersRes.containsKey(resourceName)) {
+            return getShaderFromRes(resourceName);
+        }
+        Shader shader = new Shader(resourceName);
+        shader.compile();
+        AssetPool.shaders.put(file.getAbsolutePath(), shader);
+        return shader;
     }
 
     public static Shader getShaderFromRes(String resourceName) {
@@ -89,12 +91,14 @@ public class AssetPool {
         File file = new File(resourceName);
         if(AssetPool.textures.containsKey(file.getAbsolutePath())) {
             return AssetPool.textures.get(file.getAbsolutePath());
-        } else {
-            Texture texture = new Texture();
-            texture.initFromExternal(resourceName);
-            AssetPool.textures.put(file.getAbsolutePath(), texture);
-            return texture;
         }
+        if (AssetPool.texturesRes.containsKey(resourceName)) {
+            return getTextureFromRes(resourceName);
+        }
+        Texture texture = new Texture();
+        texture.initFromExternal(resourceName);
+        AssetPool.textures.put(file.getAbsolutePath(), texture);
+        return texture;
     }
 
     public static Texture getTextureFromRes(String resourceName) {
@@ -126,7 +130,7 @@ public class AssetPool {
     public static Spritesheet getSpritesheet(String resourceName) {
         File file = new File(resourceName);
         if(!AssetPool.spritesheets.containsKey(file.getAbsolutePath())) {
-            assert false : "Error: Tried to acces '" + resourceName + "' and it has not been added to asset pool.";
+            return getSpritesheetFromRes(resourceName);
         }
         return AssetPool.spritesheets.getOrDefault(file.getAbsolutePath(), null);
     }

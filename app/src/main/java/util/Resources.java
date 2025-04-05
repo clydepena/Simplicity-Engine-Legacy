@@ -2,9 +2,29 @@ package util;
 
 public class Resources {
 
-    public static final String ICON = "images/ICON_2.png";
-    public static final String MAIN_SHADER = "shaders/default.glsl";
-    public static final String PICKING_SHADER = "shaders/pickingShader.glsl";
-    public static final String IMGUI_INI = "editor_res/imgui.ini";
+    public static final String ICON =               "images/ICON_2.png";
+    public static final String MAIN_SHADER =        "shaders/default.glsl";
+    public static final String PICKING_SHADER =     "shaders/pickingShader.glsl";
+    public static final String IMGUI_INI =          "editor_res/imgui.ini";
 
+    public static final String SHADER_GAME_DEFAULT= "default_res/shaders/default.glsl";
+
+    public static final String SPRITESHEET_OBJ =    "default_res/sprite sheets/ObjectsSpritesheet.png";
+    public static final String SPRITESHEET_TEST =   "default_res/sprite sheets/spritesheetTest.png";
+    public static final String SPRITESHEET_TILES =  "default_res/sprite sheets/TilesSpritesheet.png";
+
+    public static final String SPRITE_BALL =        "default_res/sprites/TestImgBall.png";
+    public static final String SPRITE_PIRATE =      "default_res/sprites/TestPirate.png";
+    public static final String SPRITE_STAR =        "default_res/sprites/TestStar.png";
+
+    public static class Editor {
+        public static final String SPRITESHEET_GIZMO =     "editor_res/gizmos.png";
+
+        public static final String SHADER_LINE=     "editor_res/shaders/debugLine2D.glsl";
+        public static final String SHADER_DEFAULT=  "editor_res/shaders/default.glsl";
+        public static final String SHADER_FONT=     "editor_res/shaders/fontShader.glsl";
+        public static final String SHADER_PICKING=  "editor_res/shaders/pickingShader.glsl";
+
+        public static final String FONT_OPENSANS=   "fonts/OpenSans.ttf";
+    }
 }

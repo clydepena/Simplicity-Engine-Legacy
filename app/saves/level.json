@@ -1,22 +1,623 @@
 [
   {
-    "uid": 454,
+    "uid": 125,
     "name": "Sprite_Object_Gen",
     "components": [
       {
         "type": "simplicity.Transform",
         "properties": {
           "position": {
-            "x": 1.625,
-            "y": 2.4252467
+            "x": 2.875,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.083333336,
+                "y": 1.0
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.75
+              },
+              {
+                "x": 0.0,
+                "y": 0.75
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 126,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 25
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.16666667,
+                "y": 1.0
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.75
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.75
+              },
+              {
+                "x": 0.083333336,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 26
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 127,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 1.0
+              },
+              {
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.75
+              },
+              {
+                "x": 0.16666667,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 128,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 1.875
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 31
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.16666667,
+                "y": 0.75
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.5
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.5
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.75
+              }
+            ]
+          },
+          "uid": 32
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.75,
+            "y": 0.75
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uid": 49
+        }
+      },
+      {
+        "type": "physics2d.components.Rigidbody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.5,
+          "mass": 100.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 129,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.875
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 34
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.083333336,
+                "y": 0.75
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.75
+              }
+            ]
+          },
+          "uid": 35
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 130,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 1.875
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 37
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.5
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.75
+              }
+            ]
+          },
+          "uid": 38
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 131,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 1.625
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 40
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.25
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.25
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 41
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 132,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.625
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 43
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.083333336,
+                "y": 0.5
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.25
+              },
+              {
+                "x": 0.0,
+                "y": 0.25
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 44
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 133,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 1.625
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 46
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/TilesSpritesheet.png",
+              "width": 384,
+              "height": 128
+            },
+            "texCoords": [
+              {
+                "x": 0.16666667,
+                "y": 0.5
+              },
+              {
+                "x": 0.16666667,
+                "y": 0.25
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.25
+              },
+              {
+                "x": 0.083333336,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 47
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 134,
+    "name": "Barrel",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.625
           },
           "scale": {
             "x": 0.3125,
             "y": 0.2344
           },
-          "rotation": 37.9,
+          "rotation": -11.8,
           "zIndex": 0,
-          "uid": 19
+          "uid": 51
         }
       },
       {
@@ -32,7 +633,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -55,7 +656,7 @@
               }
             ]
           },
-          "uid": 20
+          "uid": 52
         }
       },
       {
@@ -63,229 +664,6 @@
         "properties": {
           "halfSize": {
             "x": 0.18,
-            "y": 0.2
-          },
-          "origin": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "offset": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "uid": 22
-        }
-      },
-      {
-        "type": "physics2d.components.Rigidbody2D",
-        "properties": {
-          "velocity": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "angularDamping": 0.8,
-          "linearDamping": 0.5,
-          "mass": 100.0,
-          "bodyType": "Dynamic",
-          "fixedRotation": false,
-          "continuousCollision": true,
-          "uid": 42
-        }
-      }
-    ],
-    "doSerialization": true,
-    "isDead": false
-  },
-  {
-    "uid": 455,
-    "name": "Sprite_Object_Gen",
-    "components": [
-      {
-        "type": "simplicity.Transform",
-        "properties": {
-          "position": {
-            "x": 1.125,
-            "y": 1.625
-          },
-          "scale": {
-            "x": 0.25,
-            "y": 0.25
-          },
-          "rotation": 0.0,
-          "zIndex": 0,
-          "uid": 62
-        }
-      },
-      {
-        "type": "components.SpriteRenderer",
-        "properties": {
-          "color": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0,
-            "w": 1.0
-          },
-          "sprite": {
-            "width": 32.0,
-            "height": 32.0,
-            "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
-            "texCoords": [
-              {
-                "x": 0.083333336,
-                "y": 1.0
-              },
-              {
-                "x": 0.083333336,
-                "y": 0.75
-              },
-              {
-                "x": 0.0,
-                "y": 0.75
-              },
-              {
-                "x": 0.0,
-                "y": 1.0
-              }
-            ]
-          },
-          "uid": 63
-        }
-      }
-    ],
-    "doSerialization": true,
-    "isDead": false
-  },
-  {
-    "uid": 456,
-    "name": "Sprite_Object_Gen",
-    "components": [
-      {
-        "type": "simplicity.Transform",
-        "properties": {
-          "position": {
-            "x": 1.375,
-            "y": 1.625
-          },
-          "scale": {
-            "x": 0.25,
-            "y": 0.25
-          },
-          "rotation": 0.0,
-          "zIndex": 0,
-          "uid": 65
-        }
-      },
-      {
-        "type": "components.SpriteRenderer",
-        "properties": {
-          "color": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0,
-            "w": 1.0
-          },
-          "sprite": {
-            "width": 32.0,
-            "height": 32.0,
-            "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
-            "texCoords": [
-              {
-                "x": 0.16666667,
-                "y": 1.0
-              },
-              {
-                "x": 0.16666667,
-                "y": 0.75
-              },
-              {
-                "x": 0.083333336,
-                "y": 0.75
-              },
-              {
-                "x": 0.083333336,
-                "y": 1.0
-              }
-            ]
-          },
-          "uid": 66
-        }
-      }
-    ],
-    "doSerialization": true,
-    "isDead": false
-  },
-  {
-    "uid": 457,
-    "name": "Sprite_Object_Gen",
-    "components": [
-      {
-        "type": "simplicity.Transform",
-        "properties": {
-          "position": {
-            "x": 1.625,
-            "y": 1.625
-          },
-          "scale": {
-            "x": 0.25,
-            "y": 0.25
-          },
-          "rotation": 0.0,
-          "zIndex": 0,
-          "uid": 65
-        }
-      },
-      {
-        "type": "components.SpriteRenderer",
-        "properties": {
-          "color": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0,
-            "w": 1.0
-          },
-          "sprite": {
-            "width": 32.0,
-            "height": 32.0,
-            "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
-            "texCoords": [
-              {
-                "x": 0.16666667,
-                "y": 1.0
-              },
-              {
-                "x": 0.16666667,
-                "y": 0.75
-              },
-              {
-                "x": 0.083333336,
-                "y": 0.75
-              },
-              {
-                "x": 0.083333336,
-                "y": 1.0
-              }
-            ]
-          },
-          "uid": 66
-        }
-      },
-      {
-        "type": "physics2d.components.Box2DCollider",
-        "properties": {
-          "halfSize": {
-            "x": 1.25,
             "y": 0.24
           },
           "origin": {
@@ -296,7 +674,7 @@
             "x": 0.0,
             "y": 0.0
           },
-          "uid": 71
+          "uid": 54
         }
       },
       {
@@ -308,137 +686,11 @@
           },
           "angularDamping": 0.8,
           "linearDamping": 0.5,
-          "mass": 500.0,
-          "bodyType": "Static",
+          "mass": 10.0,
+          "bodyType": "Dynamic",
           "fixedRotation": false,
           "continuousCollision": true,
-          "uid": 91
-        }
-      }
-    ],
-    "doSerialization": true,
-    "isDead": false
-  },
-  {
-    "uid": 458,
-    "name": "Sprite_Object_Gen",
-    "components": [
-      {
-        "type": "simplicity.Transform",
-        "properties": {
-          "position": {
-            "x": 1.875,
-            "y": 1.625
-          },
-          "scale": {
-            "x": 0.25,
-            "y": 0.25
-          },
-          "rotation": 0.0,
-          "zIndex": 0,
-          "uid": 65
-        }
-      },
-      {
-        "type": "components.SpriteRenderer",
-        "properties": {
-          "color": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0,
-            "w": 1.0
-          },
-          "sprite": {
-            "width": 32.0,
-            "height": 32.0,
-            "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
-            "texCoords": [
-              {
-                "x": 0.16666667,
-                "y": 1.0
-              },
-              {
-                "x": 0.16666667,
-                "y": 0.75
-              },
-              {
-                "x": 0.083333336,
-                "y": 0.75
-              },
-              {
-                "x": 0.083333336,
-                "y": 1.0
-              }
-            ]
-          },
-          "uid": 66
-        }
-      }
-    ],
-    "doSerialization": true,
-    "isDead": false
-  },
-  {
-    "uid": 459,
-    "name": "Sprite_Object_Gen",
-    "components": [
-      {
-        "type": "simplicity.Transform",
-        "properties": {
-          "position": {
-            "x": 2.125,
-            "y": 1.625
-          },
-          "scale": {
-            "x": 0.25,
-            "y": 0.25
-          },
-          "rotation": 0.0,
-          "zIndex": 0,
-          "uid": 68
-        }
-      },
-      {
-        "type": "components.SpriteRenderer",
-        "properties": {
-          "color": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0,
-            "w": 1.0
-          },
-          "sprite": {
-            "width": 32.0,
-            "height": 32.0,
-            "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
-            "texCoords": [
-              {
-                "x": 0.25,
-                "y": 1.0
-              },
-              {
-                "x": 0.25,
-                "y": 0.75
-              },
-              {
-                "x": 0.16666667,
-                "y": 0.75
-              },
-              {
-                "x": 0.16666667,
-                "y": 1.0
-              }
-            ]
-          },
-          "uid": 69
+          "uid": 55
         }
       }
     ],

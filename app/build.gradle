@@ -30,7 +30,7 @@ sourceSets {
     main {
         java {
             srcDirs 'src'
-            srcDirs 'vendors'
+            // srcDirs 'vendors'
         }
     }
  }
