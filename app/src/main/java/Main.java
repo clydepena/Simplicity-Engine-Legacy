@@ -1,9 +1,9 @@
 /* TODO:
-   
+    -Not selecting objects in viewport while minimize
+    -Object viewport selection is still offset
 */
 
 import simplicity.Window;
-import simplicity.WindowFont;
 
 public class Main {
     
@@ -11,7 +11,6 @@ public class Main {
         Window window = Window.get();
         window.run();
 
-        
         // DEBUG
         // WindowFont windowFont = new WindowFont();
         // windowFont.run();

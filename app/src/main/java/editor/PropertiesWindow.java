@@ -10,7 +10,7 @@ import scenes.Scene;
 import simplicity.GameObject;
 import simplicity.MouseListener;
 
-public class PropertiesWindow {
+public class PropertiesWindow extends ImGuiInterface {
     private GameObject activeGameObject = null;
     private PickingTexture pickingTexture;
     private float debounce = 0.2f;
@@ -38,7 +38,7 @@ public class PropertiesWindow {
     public void imgui() {
         if(activeGameObject != null) {
             ImGui.begin("Properties");
-
+            updateCalc();
             if(ImGui.beginPopupContextWindow("ComponentAdder")) {
                 if(ImGui.menuItem("Add Rigidbody")) {
                     if(activeGameObject.getComponent(Rigidbody2D.class) == null) {

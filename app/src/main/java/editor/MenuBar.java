@@ -6,7 +6,7 @@ import observers.events.Event;
 import observers.events.EventType;
 import simplicity.Window;
 
-public class MenuBar {
+public class MenuBar extends ImGuiInterface {
     public void imgui() {
         ImGui.beginMenuBar();
 

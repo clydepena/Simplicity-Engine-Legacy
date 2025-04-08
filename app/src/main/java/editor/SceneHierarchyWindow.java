@@ -7,12 +7,13 @@ import imgui.flag.ImGuiTreeNodeFlags;
 import simplicity.GameObject;
 import simplicity.Window;
 
-public class SceneHierarchyWindow {
+public class SceneHierarchyWindow extends ImGuiInterface {
 
     private static String playLoadDragDropType = "SceneHierarchy";
     
     public void imgui() {
         ImGui.begin("Scene Hierarchy");
+        updateCalc();
         List<GameObject> gameObjects = Window.getScene().getGameObjectList();
         int index = 0;
         for (GameObject go : gameObjects) {

@@ -11,13 +11,14 @@ import observers.events.EventType;
 import simplicity.MouseListener;
 import simplicity.Window;
 
-public class GameViewWindow {
+public class GameViewWindow extends ImGuiInterface {
     
     private float leftX, rightX, topY, bottomY;
     private boolean  isPlaying = false;
 
     public void imgui() {
-        ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.MenuBar);
+        ImGui.begin("Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.MenuBar);
+        updateCalc();
 
         ImGui.beginMenuBar();
         if(ImGui.menuItem("Play", "", isPlaying, !isPlaying)) {
@@ -31,28 +32,20 @@ public class GameViewWindow {
         ImGui.endMenuBar();
 
         ImGui.setCursorPos(ImGui.getCursorPosX(), ImGui.getCursorPosY());
-        // System.out.println(ImGui.getCursorPosX() + " | " + ImGui.getCursorPosY());
-
         ImVec2 windowSize = getLargestSizeForViewport();
         ImVec2 windowPos = getCenteredPositionForViewport(windowSize);
         ImGui.setCursorPos(windowPos.x, windowPos.y);
+        ImVec2 relativePos = new ImVec2(position.x - Window.getXPos(), position.y - Window.getYPos());
 
-        // ImVec2 topLeft = new ImVec2();
-        // ImGui.getCursorScreenPos(topLeft);
-        // topLeft.x -= ImGui.getScrollX();
-        // topLeft.y -= ImGui.getScrollY();
-
-        float val = 210;
-
-        leftX = windowPos.x + val;
-        bottomY = windowPos.y;
-        rightX = windowPos.x + windowSize.x + val;
-        topY = windowPos.y + windowSize.y;
+        leftX = windowPos.x + relativePos.x;
+        bottomY = windowPos.y + windowSize.y + relativePos.y;
+        rightX = windowPos.x + windowSize.x + relativePos.x;
+        topY = windowPos.y + relativePos.y;
 
         int textureId = Window.getFramebuffer().getTexId();
         ImGui.image(textureId, windowSize.x, windowSize.y, 0, 1, 1, 0);
 
-        MouseListener.setGameViewportPos(new Vector2f(windowPos.x + val, windowPos.y));
+        MouseListener.setGameViewportPos(new Vector2f(windowPos.x + relativePos.x, windowPos.y + relativePos.y));
         MouseListener.setGameViewportSize(new Vector2f(windowSize.x, windowSize.y));
 
         ImGui.end();
@@ -86,6 +79,6 @@ public class GameViewWindow {
 
     public boolean getWantCaptureMouse() {
         return MouseListener.getX() >= leftX && MouseListener.getX() <= rightX &&
-        MouseListener.getY() >= bottomY && MouseListener.getY() <= topY;
+        MouseListener.getY() <= bottomY && MouseListener.getY() >= topY && isDocked;
     }
 }

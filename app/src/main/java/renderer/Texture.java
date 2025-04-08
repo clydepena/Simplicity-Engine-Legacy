@@ -1,7 +1,7 @@
 package renderer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL46.*;
+// import static org.lwjgl.opengl.GL46.*;
 import java.nio.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryUtil.NULL;

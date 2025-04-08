@@ -44,6 +44,7 @@ public abstract class Component {
                     field.setAccessible(true);
                 }
 
+                @SuppressWarnings("rawtypes")
                 Class type = field.getType();
                 Object value = field.get(this);
                 String name = field.getName();
@@ -77,7 +78,9 @@ public abstract class Component {
                         val.set(imVec4f[0], imVec4f[1], imVec4f[2], imVec4f[3]);
                     }
                 } else if (type.isEnum()) {
+                    @SuppressWarnings("unchecked")
                     String[] enumVals = getEnumValues(type);
+                    @SuppressWarnings("rawtypes")
                     String enumType = ((Enum)value).name();
                     ImInt index = new ImInt(indexOf(enumType, enumVals));
                     if(ImGui.combo(field.getName(), index, enumVals, enumVals.length)) {

@@ -20,13 +20,19 @@ public class KeyListener {
     }
 
     public static void keyCallback(long window, int key, int scancode, int action, int mods) {
+        keyCallback(window, key, scancode, action, mods, "");
+    }
+
+    public static void keyCallback(long window, int key, int scancode, int action, int mods, Object location) {
         if(action == GLFW_PRESS) {
             get().keyPressed[key] = true;
             get().keyBeginPress[key] = true;
+
         } else if (action == GLFW_RELEASE) {
             get().keyPressed[key] = false;
             get().keyBeginPress[key] = false;
         }
+        // System.out.println("KEY: " + key + "\t| MOD: " + mods + "\t| LOC: " + location.getClass().getName());
     }
 
     public static boolean isKeyPressed(int keyCode) {

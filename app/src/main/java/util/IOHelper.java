@@ -66,6 +66,11 @@ public class IOHelper {
         public int getHeight() {
             return this.height;
         }
+
+        @Override
+        public String toString() {
+            return resFilepath + " | " + width + ", " + height;
+        }
     }
 
     public static String openSingle(Window window, String... fileExtensions)
@@ -124,13 +129,13 @@ public class IOHelper {
         switch (result)
         {
             case NFD_OKAY:
-                System.out.println("Success!");
-                System.out.println(path.getStringUTF8(0));
+                // System.out.println("Success!");
+                // System.out.println(path.getStringUTF8(0));
                 String filepath = path.getStringUTF8(0);
                 NFD_FreePath(path.get(0));
                 return filepath;
             case NFD_CANCEL:
-                System.out.println("User pressed cancel.");
+                // System.out.println("User pressed cancel.");
                 return null;
             default: // NFD_ERROR
                 System.err.format("Error: %s\n", NFD_GetError());
@@ -148,7 +153,7 @@ public class IOHelper {
             byte[] asset = is.readAllBytes();
             return asset;
         } catch (Exception e) {
-            System.out.println("Could not load into byte array " + filepath);
+            // System.out.println("Could not load into byte array " + filepath);
         }
 
         return null;    }
@@ -163,7 +168,7 @@ public class IOHelper {
 
             return assetBuffer;
         } catch (Exception e) {
-            System.out.println("Could not load into byte buffer " + filepath);
+            // System.out.println("Could not load into byte buffer " + filepath);
         }
 
         return null;
@@ -180,7 +185,7 @@ public class IOHelper {
 
             return baos.toString("UTF-8");
         } catch (Exception e) {
-            System.out.println("Could not load string " + filepath);
+            // System.out.println("Could not load string " + filepath);
         }
 
         return null;

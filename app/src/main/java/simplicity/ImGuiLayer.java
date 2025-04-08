@@ -21,7 +21,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
-import static org.lwjgl.opengl.GL46.*;
+// import static org.lwjgl.opengl.GL46.*;
 
 public class ImGuiLayer {
 
@@ -123,6 +123,8 @@ public class ImGuiLayer {
         // =======================================================
         ImGui.loadIniSettingsFromMemory(util.IOHelper.ResToString(util.Resources.IMGUI_INI));
         io.setIniFilename(null); // saves window config
+
+        // io.setIniFilename("imgui.ini"); // saves window config
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
@@ -249,22 +251,22 @@ public class ImGuiLayer {
         // =======================================================
         // GLFW callbacks to handle user input
         // =======================================================
-        // glfwSetKeyCallback(glfwWindow, (w, key, scancode, action, mods) -> {
-        //     if (action == GLFW_PRESS) {
-        //         io.setKeysDown(key, true);
-        //     } else if (action == GLFW_RELEASE) {
-        //         io.setKeysDown(key, false);
-        //     }
+        glfwSetKeyCallback(glfwWindow, (w, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                io.setKeysDown(key, true);
+            } else if (action == GLFW_RELEASE) {
+                io.setKeysDown(key, false);
+            }
 
-        //     io.setKeyCtrl(io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL));
-        //     io.setKeyShift(io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT));
-        //     io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
-        //     io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
+            io.setKeyCtrl(io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL));
+            io.setKeyShift(io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT));
+            io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
+            io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
 
-        //     if (!io.getWantCaptureKeyboard() || gameViewWindow.getWantCaptureMouse()) {
-        //         KeyListener.keyCallback(w, key, scancode, action, mods);
-        //     }
-        // });
+            if (!io.getWantCaptureKeyboard() || gameViewWindow.getWantCaptureMouse()) {
+                KeyListener.keyCallback(w, key, scancode, action, mods, "IMGUI");
+            }
+        });
 
         glfwSetCharCallback(glfwWindow, (w, c) -> {
             if (c != GLFW_KEY_DELETE) {
@@ -330,7 +332,7 @@ public class ImGuiLayer {
 
         fontConfig.setPixelSnapH(true);
         // fontAtlas.addFontFromFileTTF("app/assets/fonts/OpenSans.ttf", 12, fontConfig);
-        fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.Editor.FONT_OPENSANS), 12, fontConfig);
+        fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.FONT_RETHINK), 13, fontConfig);
         fontConfig.destroy();
 
         // fontAtlas.setFlags(ImGuiFreeTypeBuilderFlags.LightHinting);

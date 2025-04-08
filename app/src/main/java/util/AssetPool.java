@@ -23,7 +23,7 @@ public class AssetPool {
     private static Map<String, Spritesheet> spritesheetsRes = new HashMap<>();
 
     private static Map<String, Sound> sounds = new HashMap<>();
-    private static Map<String, Sound> soundsRes = new HashMap<>();
+    // private static Map<String, Sound> soundsRes = new HashMap<>();
 
     // SOUNDS
     public static Collection<Sound> getAllSounds() {
