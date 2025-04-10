@@ -1,9 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "java.compile.nullAnalysis.mode": "disabled",
-    // "java.project.referencedLibraries": [
-    //     "lib/**/*.jar",
-    //     "c:\\Users\\User\\Documents\\JavaProjects\\LIB\\GLSL4Idea\\lib\\GLSL4Idea-1.24.jar",
-    //     "c:\\Users\\User\\Documents\\JavaProjects\\LIB\\GLSL4Idea\\lib\\searchableOptions-1.24.jar"
-    // ]
 }

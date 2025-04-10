@@ -1,0 +1,6875 @@
+[
+  {
+    "uid": 364,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 365,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 366,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 367,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 368,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 369,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 370,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 371,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 372,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 373,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 374,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 375,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 376,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 377,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.625,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 378,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 379,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 380,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 381,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 0.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 382,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 0.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 383,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 0.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 384,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.875,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 385,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 386,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 387,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 388,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 389,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.625,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 390,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 0.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 391,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.875,
+            "y": 0.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 392,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.375,
+            "y": 1.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 19
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.25,
+                "y": 0.5
+              },
+              {
+                "x": 0.25,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 20
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 393,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 394,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 395,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 396,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 397,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 398,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 399,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 22
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.125,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 23
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 400,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              },
+              {
+                "x": 0.5,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 401,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              },
+              {
+                "x": 0.5,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 402,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              },
+              {
+                "x": 0.5,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 403,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              },
+              {
+                "x": 0.5,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 404,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              },
+              {
+                "x": 0.5,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 405,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 28
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              },
+              {
+                "x": 0.5,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.0
+              },
+              {
+                "x": 0.375,
+                "y": 0.5
+              }
+            ]
+          },
+          "uid": 29
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 406,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 407,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 408,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 409,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 410,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 411,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.625,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 412,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.375,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 413,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 414,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 415,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 4.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 416,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.125,
+            "y": 3.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 417,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 418,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 419,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 420,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 421,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 422,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 423,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 424,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 425,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 2.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 426,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 427,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 428,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 429,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 2.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 430,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 431,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.875,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 432,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 433,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.625,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 434,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.875,
+            "y": 1.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 435,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.375,
+            "y": 1.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 436,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 1.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 437,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.375,
+            "y": 1.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 438,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.875,
+            "y": 1.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 439,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 440,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 441,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 2.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 442,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 443,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 2.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 444,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 445,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 446,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 447,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 448,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 2.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 49
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 50
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 454,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": -3.125,
+            "y": 5.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 0.8,
+            "y": 0.8,
+            "z": 0.8,
+            "w": 0.5
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      },
+      {
+        "type": "components.NonPickable",
+        "properties": {
+          "uid": 72
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 456,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.375,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 458,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.375,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 460,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.375,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 462,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.375,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 464,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 466,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 3.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 468,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.625,
+            "y": 3.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 470,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.125,
+            "y": 3.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 472,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 474,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 476,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.375,
+            "y": 3.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 478,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 4.625,
+            "y": 3.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 480,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.875,
+            "y": 4.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 482,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 3.375,
+            "y": 4.625
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 484,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.375,
+            "y": 3.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 486,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 488,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 3.125
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 490,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 492,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 2.125,
+            "y": 2.875
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 494,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 496,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 498,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  },
+  {
+    "uid": 500,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "simplicity.Transform",
+        "properties": {
+          "position": {
+            "x": 1.625,
+            "y": 3.375
+          },
+          "scale": {
+            "x": 0.3125,
+            "y": 0.2344
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uid": 70
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "width": 40.0,
+            "height": 30.0,
+            "texture": {
+              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "width": 320,
+              "height": 60
+            },
+            "texCoords": [
+              {
+                "x": 0.125,
+                "y": 1.0
+              },
+              {
+                "x": 0.125,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 0.5
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "uid": 71
+        }
+      }
+    ],
+    "doSerialization": true,
+    "isDead": false
+  }
+]

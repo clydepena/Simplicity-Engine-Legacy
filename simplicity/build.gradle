@@ -35,9 +35,28 @@ graalvmNative {
     }
 }
 
-// java {
-//     sourceCompatibility = 21
-// }
+java {
+    sourceCompatibility = 21
+}
+
+//  compileJava.options.fork = true
+//  compileJava.options.forkOptions.executable = 'C:/Program Files/Java/jre1.8.0_441/bin/javacpl'
+
+application {
+  // Define the main class for the application.
+  mainClass = 'Main'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    // baseName 'Simplicity'
+}
 
 // repositories {
 //     mavenCentral()
@@ -69,6 +88,7 @@ project.ext.lwjglVersion = "3.3.3"
 project.ext.jomlVersion = "1.10.5"
 project.ext.lwjglNatives = "natives-windows"
 project.ext.imguiVersion = '1.86.11'
+project.ext.applicationName = "Simplicity";
 
 configurations {
     toCopy
