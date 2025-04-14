@@ -2,6 +2,11 @@ package util;
 
 import java.io.*;
 import java.nio.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.util.nfd.NativeFileDialog.NFD_CANCEL;
@@ -18,6 +23,7 @@ import org.lwjgl.util.nfd.NFDFilterItem;
 import org.lwjgl.util.nfd.NFDOpenDialogArgs;
 import org.lwjgl.util.nfd.NFDSaveDialogArgs;
 
+import simplicity.GameObject;
 import simplicity.Window;
 
 public class IOHelper {
@@ -193,6 +199,30 @@ public class IOHelper {
 
     public static String GetResAbsolouteDir(String filepath) {
         return IOHelper.class.getResource("/" + filepath).getPath();
+    }
+
+    public static boolean WriteToFile(String filepath, String text) {
+        try {
+            if (filepath == null) {
+                return false;
+            }
+            FileWriter writer = new FileWriter(filepath);
+            writer.write(text == null ? "" : text);
+            writer.close();
+            return true;
+        } catch(IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static String ReadFromFile(String filepath) {
+        try {
+            return filepath == null ? filepath : new String(Files.readAllBytes(Paths.get(filepath)));
+        } catch(IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

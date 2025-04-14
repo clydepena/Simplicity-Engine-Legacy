@@ -42,11 +42,12 @@ import static org.lwjgl.opengl.GL11.glViewport;
 // import static org.lwjgl.opengl.GL46.*;
 import org.joml.*;
 
+
 public class Window implements Observer {
     private int width, height;
     private int xPos, yPos;
     private String title;
-    private String glslVersion = null;
+    private String glslVersion = "#version 460";
     private long glfwWindow;
     public static int SCREEN_WIDTH, SCREEN_HEIGHT;
     public static float SCALE = 0.5f;
@@ -128,7 +129,6 @@ public class Window implements Observer {
 
         // configure GLFW
 
-        this.glslVersion = "#version 460";
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
@@ -136,13 +136,10 @@ public class Window implements Observer {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, 0);
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
-        GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        // System.out.println("Monitor size: " + mode.width() + " | " + mode.height());
-        // width = mode.width();
-        // height = mode.height();
+        GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());        
 
         SCREEN_WIDTH = mode.width();
         SCREEN_HEIGHT = mode.height();
@@ -151,21 +148,22 @@ public class Window implements Observer {
         int tmpWidth = (int) (this.width * 0.75);
         int tmpHeight = (int) (this.height * 0.75);
 
+
         // create window
         glfwWindow = glfwCreateWindow(tmpWidth, tmpHeight, this.title, NULL, NULL);
         if(glfwWindow == NULL) {
             throw new IllegalStateException("Failed to create new GLFW window.");
         }
 
+        // System.out.println("Monitor size: " + mode.width() + " | " + mode.height() + " [" + tmpWidth + " | " + tmpHeight + "]");
+
         // set icon
         setIcon(Resources.ICON, Resources.ICON_SMALL);
-
         //set screensize to monitor
         glfwSetWindowSizeLimits(glfwWindow, (int) (SCREEN_WIDTH * 0.75f), (int) (SCREEN_HEIGHT * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
         // glfwSetWindowSizeLimits(glfwWindow, width, height, width, height);
 
-        setWindowPos((SCREEN_WIDTH / 2) - (width / 2), (SCREEN_HEIGHT / 2) - (height / 2));
-        glfwMaximizeWindow(glfwWindow);
+        setWindowPos((SCREEN_WIDTH - tmpWidth) / 2, ((SCREEN_HEIGHT - tmpHeight) / 2));
         
         // set listeners
         setListeners();
@@ -201,6 +199,7 @@ public class Window implements Observer {
         this.pickingTexture = new PickingTexture(width, height); // TEMp
         glViewport(0, 0, 1920, 1080); // TEMP
         glfwShowWindow(glfwWindow);
+        glfwMaximizeWindow(glfwWindow);
 
         switch (Platform.get()) {
             case FREEBSD:
@@ -295,7 +294,7 @@ public class Window implements Observer {
         Shader defaultShader = AssetPool.getShaderFromRes(Resources.MAIN_SHADER);
         Shader pickingShader = AssetPool.getShaderFromRes(Resources.PICKING_SHADER);
         // Shader fontShader = AssetPool.getShader("app/assets/shaders/fontShader.glsl");
-        
+
         while(!glfwWindowShouldClose(glfwWindow)) {
             // poll events
             glfwPollEvents();
@@ -388,7 +387,7 @@ public class Window implements Observer {
     }
 
     @Override
-    public void onNotify(GameObject obj, Event event) {
+    public void onNotify(Object obj, Event event) {
         
         switch (event.type) {
             case GameEngineStartPlay:

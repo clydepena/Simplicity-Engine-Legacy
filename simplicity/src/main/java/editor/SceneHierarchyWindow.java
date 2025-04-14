@@ -61,4 +61,9 @@ public class SceneHierarchyWindow extends ImGuiInterface {
 
         return treeNodeOpen;
     }
+
+    @Override
+    public void destroy() {
+        
+    }
 }

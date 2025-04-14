@@ -14,7 +14,7 @@ public class EventSystem {
         observers.add(observer);
     }
 
-    public static void notify(GameObject obj, Event event) {
+    public static void notify(Object obj, Event event) {
         for(Observer observer : observers) {
             observer.onNotify(obj, event);
         }

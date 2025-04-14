@@ -76,4 +76,9 @@ public class PropertiesWindow extends ImGuiInterface {
     public void setActiveGameObject(GameObject go) {
         this.activeGameObject = go;
     }
+
+    @Override
+    public void destroy() {
+        
+    }
 }

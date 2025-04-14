@@ -1,0 +1,7 @@
+dwadwwawd
+
+dwkladbab
+
+public satatic void main(String[] args) {
+	dwa
+}

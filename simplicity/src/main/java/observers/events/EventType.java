@@ -7,6 +7,7 @@ public enum EventType {
     SaveLevel,
     SaveLevelAs,
     LoadLevel,
-    UserEvent
+    UserEvent,
+    EventLogged
     
 }

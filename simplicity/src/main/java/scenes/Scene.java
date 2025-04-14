@@ -154,7 +154,9 @@ public class Scene {
                 }
                 writer.write(gson.toJson(objsToSerialize));
                 writer.close();
+                logger.Logger.info("Successfully saved '" + levelName + "'");
             } catch(IOException e) {
+                logger.Logger.error("Unable to save '" + levelName + "'");
                 e.printStackTrace();
             }
         }
@@ -174,7 +176,11 @@ public class Scene {
         String inFile = "";
         try {
             inFile = filepath == null ? "" : new String(Files.readAllBytes(Paths.get(filepath)));
+            if (filepath != null) {
+                logger.Logger.info("Successfully loaded '" + filepath + "'");
+            }
         } catch(IOException e) {
+            logger.Logger.error("Unable to load '" + filepath + "'");
             e.printStackTrace();
         }
         if(!inFile.equals("")) {
@@ -198,7 +204,6 @@ public class Scene {
             maxCompId++;
             GameObject.init(maxGoId);
             Component.init(maxCompId);
-
         }
     }
 

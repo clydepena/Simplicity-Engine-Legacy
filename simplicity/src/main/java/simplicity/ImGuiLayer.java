@@ -10,6 +10,7 @@ import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
+import logger.Logger;
 import renderer.PickingTexture;
 import scenes.Scene;
 import util.IOHelper;
@@ -33,40 +34,41 @@ public class ImGuiLayer {
     private ImGuiStyle style;
     private GameViewWindow gameViewWindow;
     private PropertiesWindow propertiesWindow;
+    private LoggerWindow loggerWindow;
     private MenuBar menuBar;
     private SceneHierarchyWindow sceneHierarchyWindow;
-
-    
-
+    private TextEditorWindow textEditorWindow;
+    private boolean tmpOnce = true;
 
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
         this.glfwWindow = glfwWindow;
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
         this.menuBar = new MenuBar();
-        this.sceneHierarchyWindow = new SceneHierarchyWindow();  
-        
-    }
-
-    private void imgui() {
-
-        ImGui.showDemoWindow();
+        this.sceneHierarchyWindow = new SceneHierarchyWindow();
+        this.loggerWindow = new LoggerWindow();
+        this.textEditorWindow = new TextEditorWindow();
     }
 
     public void update(float dt, Scene currentScene) {
         startFrame(dt);
-        
-        setupDockspace();
 
+        setupDockspace();
+        ImGui.showDemoWindow();
+        // ImGui.showAboutWindow();
+        // ImGui.showDemoWindow();
         currentScene.imgui();
-        imgui();
         gameViewWindow.imgui();
         propertiesWindow.update(dt, currentScene);
         propertiesWindow.imgui();
         sceneHierarchyWindow.imgui();
-
+        loggerWindow.imgui();
+        textEditorWindow.imgui();
         endFrame();
+    }
 
+    private void destroyWindows() {
+        textEditorWindow.destroy();
     }
 
     private void setupDockspace() {
@@ -88,15 +90,9 @@ public class ImGuiLayer {
         ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
 
-
-
-
         // dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"));
-
-
         menuBar.imgui();
-
         ImGui.end();
     }
 
@@ -386,9 +382,14 @@ public class ImGuiLayer {
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
         // ImGui.end();
+        if (tmpOnce) {
+            gameViewWindow.makeFocused();
+            tmpOnce = false;
+        }
     }
 
     public void destroy() {
+        destroyWindows();
         imGuiGl3.dispose();
         imGuiGlfw.dispose();
         ImGui.destroyContext();

@@ -1,6 +1,8 @@
 /* TODO:
     -Not selecting objects in viewport while minimize
     -Object viewport selection is still offset
+    -Text editor coding
+    -JS scripting
 */
 
 import simplicity.Window;

@@ -30,4 +30,9 @@ public class MenuBar extends ImGuiInterface {
 
         ImGui.endMenuBar();
     }
+
+    @Override
+    public void destroy() {
+       
+    }
 }

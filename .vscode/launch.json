@@ -15,7 +15,7 @@
             "name": "MAIN LAUNCH",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "app",
+            "projectName": "simplicity",
             "vmArgs": "-enableassertions",
             "args": "java.library.path=app/libs"
         }

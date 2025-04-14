@@ -15,8 +15,13 @@ public class GameViewWindow extends ImGuiInterface {
     
     private float leftX, rightX, topY, bottomY;
     private boolean  isPlaying = false;
+    private boolean tempFocused = true;
 
     public void imgui() {
+        if (tempFocused) {
+            ImGui.setNextWindowFocus();
+            tempFocused = false;
+        }
         ImGui.begin("Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.MenuBar);
         updateCalc();
 
@@ -35,7 +40,7 @@ public class GameViewWindow extends ImGuiInterface {
         ImVec2 windowSize = getLargestSizeForViewport();
         ImVec2 windowPos = getCenteredPositionForViewport(windowSize);
         ImGui.setCursorPos(windowPos.x, windowPos.y);
-        ImVec2 relativePos = new ImVec2(position.x - Window.getXPos(), position.y - Window.getYPos());
+        ImVec2 relativePos = new ImVec2(winPosition.x - Window.getXPos(), winPosition.y - Window.getYPos());
 
         leftX = windowPos.x + relativePos.x;
         bottomY = windowPos.y + windowSize.y + relativePos.y;
@@ -79,6 +84,15 @@ public class GameViewWindow extends ImGuiInterface {
 
     public boolean getWantCaptureMouse() {
         return MouseListener.getX() >= leftX && MouseListener.getX() <= rightX &&
-        MouseListener.getY() <= bottomY && MouseListener.getY() >= topY && isDocked;
+        MouseListener.getY() <= bottomY && MouseListener.getY() >= topY && isDocked && isHovered;
+    }
+
+    public void makeFocused() {
+        tempFocused = true;
+    }
+
+    @Override
+    public void destroy() {
+        
     }
 }
