@@ -5,6 +5,7 @@ import org.joml.Vector4f;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.type.ImString;
 
@@ -132,7 +133,7 @@ public class SImGui {
         ImGui.nextColumn();
 
         ImString outString = new ImString(text, 256);
-        if (ImGui.inputText("##" + label, outString)) {
+        if (ImGui.inputText("##" + label, outString, ImGuiInputTextFlags.EnterReturnsTrue)) {
             ImGui.columns(1);
             ImGui.popID();
 

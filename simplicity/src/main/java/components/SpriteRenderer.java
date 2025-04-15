@@ -70,6 +70,10 @@ public class SpriteRenderer extends Component{
         this.isDirty = true;
     }
 
+    public Sprite getSprite() {
+        return this.sprite;
+    }
+
     public void setColor(Vector4f color) {
         if(!this.color.equals(color)) {
             this.isDirty = true;

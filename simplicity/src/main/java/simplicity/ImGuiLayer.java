@@ -165,7 +165,7 @@ public class ImGuiLayer implements Observer {
         style.setScrollbarRounding(2.0f);
         style.setFrameRounding(4.0f);
         style.setGrabRounding(4.0f);
-        style.setWindowMenuButtonPosition(1);
+        style.setWindowMenuButtonPosition(-1);
 
 
         // =======================================================
