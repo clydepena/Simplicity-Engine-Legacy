@@ -1,19 +1,13 @@
 package editor;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
 import imgui.*;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.*;
 import logger.Log;
-import observers.EventSystem;
-import observers.Observer;
-import observers.events.Event;
-import simplicity.GameObject;
-import static logger.Log.LogLevel.*;
 
-public class LoggerWindow extends ImGuiInterface implements Observer{
+public class LoggerWindow extends ImGuiInterface {
 
     private class Entry {
         private static int lineStatic = 1;
@@ -49,11 +43,14 @@ public class LoggerWindow extends ImGuiInterface implements Observer{
         scrollBotton = false;
         autoScroll = false;
         entries = new ArrayList<>();
-        EventSystem.addObserver(this);
     }
 
-    private void print(final String message) {
+    public void print(final String message) {
         entries.add(new Entry(message));
+    }
+
+    private void print(final ImString message) {
+        entries.add(new Entry(message.get()));
     }
     
     @Override
@@ -94,7 +91,11 @@ public class LoggerWindow extends ImGuiInterface implements Observer{
         ImGui.text(label);
         ImGui.nextColumn();
 
-        if (ImGui.inputTextWithHint("##" + label, "Enter Console", textInput)) {
+        if (ImGui.inputTextWithHint("##" + label, "Enter Command", textInput, ImGuiInputTextFlags.EnterReturnsTrue)) {
+            if (textInput != null && textInput.isNotEmpty()) {
+                print(textInput);
+                textInput.clear();
+            }
             ImGui.columns(1);
             ImGui.popID();
         } else {
@@ -112,30 +113,22 @@ public class LoggerWindow extends ImGuiInterface implements Observer{
 
     }
 
-    @Override
-    public void onNotify(Object obj, Event event) {
-        switch (event.type) {
-            case EventLogged:
-                Log log = (Log) obj;
-                switch (log.getLogLevel()) {
-                    case INFO:
-                        entries.add(new Entry(log.toString()));
-                        break;
-                    case WARN:
-                        entries.add(new Entry(log.toString(), 238, 210, 2, 127));
-                        break;
-                    case ERROR:
-                    case FATAL:
-                        entries.add(new Entry(log.toString(), 255, 50, 50, 127));
-                        break;
-                    default:
-                        break;
-                }
-                scrollBotton = true;
+    public void log(Log log) {
+        switch (log.getLogLevel()) {
+            case INFO:
+                entries.add(new Entry(log.toString()));
+                break;
+            case WARN:
+                entries.add(new Entry(log.toString(), 238, 210, 2, 127));
+                break;
+            case ERROR:
+            case FATAL:
+                entries.add(new Entry(log.toString(), 255, 50, 50, 127));
                 break;
             default:
                 break;
         }
+        scrollBotton = true;
     }
     
 }

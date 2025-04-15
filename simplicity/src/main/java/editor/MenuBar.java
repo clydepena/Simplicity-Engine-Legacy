@@ -28,6 +28,41 @@ public class MenuBar extends ImGuiInterface {
             ImGui.endMenu();
         }
 
+        if(ImGui.beginMenu("Editor")) {
+
+            if(ImGui.beginMenu("Preferences")) {
+
+                if(ImGui.beginMenu("Theme")) {
+
+                    if (ImGui.menuItem("Default")) {
+                        Window.getImGuiLayer().setUIColors(0);
+                    }
+
+                    if (ImGui.menuItem("Dark blue")) {
+                        Window.getImGuiLayer().setUIColors(1);
+                    }
+
+                    if (ImGui.menuItem("Dark purple")) {
+                        Window.getImGuiLayer().setUIColors(2);
+                    }
+
+                    if (ImGui.menuItem("Light")) {
+                        Window.getImGuiLayer().setUIColors(3);
+                    }
+
+                    if (ImGui.menuItem("Gray")) {
+                        Window.getImGuiLayer().setUIColors(4);
+                    }
+
+                    ImGui.endMenu();
+                }
+
+                ImGui.endMenu();
+            }
+
+            ImGui.endMenu();
+        }
+
         ImGui.endMenuBar();
     }
 

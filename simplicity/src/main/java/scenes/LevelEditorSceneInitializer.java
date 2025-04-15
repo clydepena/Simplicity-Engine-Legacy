@@ -3,8 +3,13 @@ package scenes;
 import org.joml.*;
 import components.*;
 import imgui.*;
+import imgui.flag.ImGuiCol;
 import simplicity.*;
 import util.*;
+
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 
 public class LevelEditorSceneInitializer extends SceneInitializer {
 
@@ -45,6 +50,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         levelEditorObj.addComponent(new GizmoSystem(gizmos));
         scene.addGameObjectToScene(levelEditorObj);
 
+        Window.getImGuiLayer().setEditorGameObject(levelEditorObj);
 
         //TEST
     }
@@ -137,11 +143,16 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
     @Override
     public void imgui() {
         ImGui.begin("Editor Inspector");
+        if (ImGui.button("Copy Style Colors")) {
+            StringSelection selection = new StringSelection(getStyleCode());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, selection);
+        }
         levelEditorObj.imgui();
         ImGui.end();
 
         // ===============================================
-
+        /*
         ImGui.begin("Blocks");
         ImVec2 windowPos = new ImVec2();
         ImGui.getWindowPos(windowPos);
@@ -181,7 +192,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         // ===============================================
 
         imgui2();
-
+        */
     }
 
     private void imgui2() {
@@ -225,5 +236,21 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
     @Override
     public String getLevelPath() {
         return currentFile;
+    }
+
+    private String getStyleCode() {
+        StringBuilder builder = new StringBuilder();
+        // builder.append("ImVec4[] colors = new ImVec4[ImGuiCol.COUNT];\n");
+        ImGuiStyle style = ImGui.getStyle();
+        for (int i = 0; i < ImGuiCol.COUNT; i++) {
+            ImVec4 c = new ImVec4(style.getColor(i));
+            c.x = (float) (java.lang.Math.round(c.x * 100.0) / 100.0);
+            c.y = (float) (java.lang.Math.round(c.y * 100.0) / 100.0);
+            c.z = (float) (java.lang.Math.round(c.z * 100.0) / 100.0);
+            c.w = (float) (java.lang.Math.round(c.w * 100.0) / 100.0);
+            builder.append("colors[" + i + "]\t= new ImVec4(" + c.x + "f,\t" + c.y + "f,\t" + c.z + "f,\t" + c.w + "f);\n");
+        }
+
+        return builder.toString();
     }
 }
