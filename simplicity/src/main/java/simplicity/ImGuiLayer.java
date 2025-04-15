@@ -49,6 +49,7 @@ public class ImGuiLayer implements Observer {
     private TextEditorWindow textEditorWindow;
     private SpriteSelectorWindow spriteSelectorWindow;
     private NodeEditorWindow nodeEditorWindow;
+    private FileExplorerWIndow tempWindow;
     private boolean tmpOnce = true;
 
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
@@ -62,6 +63,7 @@ public class ImGuiLayer implements Observer {
         this.textEditorWindow = new TextEditorWindow();
         this.spriteSelectorWindow = new SpriteSelectorWindow();
         this.nodeEditorWindow = new NodeEditorWindow();
+        this.tempWindow = new FileExplorerWIndow();
     }
 
     public void update(float dt, Scene currentScene) {
@@ -80,6 +82,7 @@ public class ImGuiLayer implements Observer {
         textEditorWindow.imgui();
         spriteSelectorWindow.imgui();
         nodeEditorWindow.imgui();
+        tempWindow.imgui();
         endFrame();
     }
 

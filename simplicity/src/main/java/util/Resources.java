@@ -5,6 +5,7 @@ public class Resources {
     public static final String ICON =               "images/ICON_2.png";
     public static final String ICON_SMALL =         "images/ICON_2_SMALL.png";
 
+
     public static final String MAIN_SHADER =        "shaders/default.glsl";
     public static final String PICKING_SHADER =     "shaders/pickingShader.glsl";
     public static final String IMGUI_INI =          "editor_res/imgui.ini";
@@ -33,5 +34,8 @@ public class Resources {
         public static final String SHADER_FONT=     "editor_res/shaders/fontShader.glsl";
         public static final String SHADER_PICKING=  "editor_res/shaders/pickingShader.glsl";
 
+        public static final String SPRITE_FOLDER=       "editor_res/folder_icon.png";
+        public static final String SPRITE_FOLDER_OPEN=  "editor_res/folder_icon_opened.png";
+        public static final String SPRITE_FILE=         "editor_res/file_icon.png";
     }
 }

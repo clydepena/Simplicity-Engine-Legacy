@@ -4,7 +4,9 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import imgui.ImGui;
+import imgui.ImGuiStyle;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.type.ImString;
@@ -114,7 +116,7 @@ public class SImGui {
         ImGui.nextColumn();
 
         float[] imColor = {color.x, color.y, color.z, color.w};
-        if(ImGui.colorEdit4("##colorPicker", imColor)) {
+        if(ImGui.colorEdit4("##colorPicker", imColor, ImGuiColorEditFlags.AlphaBar)) {
             color.set(imColor[0], imColor[1], imColor[2], imColor[3]);
             res = true;
         }
@@ -144,6 +146,32 @@ public class SImGui {
         ImGui.popID();
 
         return text;
+    }
+
+    public static void textColoredAligned(float r, float g, float b, float a, String text, float alignment) {
+        if (alignment > 0.0f) {
+            ImGuiStyle style = ImGui.getStyle();
+            float size = ImGui.calcTextSize(text).x + style.getFramePaddingX() * 2.0f;
+            float avail = ImGui.getContentRegionAvail().x;
+            float off = (avail - size) * (alignment > 1.0f ? 1.0f : alignment);
+            if (off > 0.0f) {
+                ImGui.setCursorPosX(ImGui.getCursorPosX() + off);
+            }
+        }
+        ImGui.textColored(r, g, b, a, text);
+    }
+
+    public static void textAligned(String text, float alignment) {
+        if (alignment > 0.0f) {
+            ImGuiStyle style = ImGui.getStyle();
+            float size = ImGui.calcTextSize(text).x + style.getFramePaddingX() * 2.0f;
+            float avail = ImGui.getContentRegionAvail().x;
+            float off = (avail - size) * (alignment > 1.0f ? 1.0f : alignment);
+            if (off > 0.0f) {
+                ImGui.setCursorPosX(ImGui.getCursorPosX() + off);
+            }
+        }
+        ImGui.text(text);
     }
 
 }

@@ -1,5 +1,8 @@
 package util;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.nio.*;
 import java.nio.file.Files;
@@ -225,4 +228,10 @@ public class IOHelper {
         }
     }
 
+    public static boolean CopyToClipboard(String text) {
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+        return true;
+    }
 }

@@ -61,15 +61,8 @@ public class PropertiesWindow extends ImGuiInterface {
             int id = sprite.getTexId();
             Vector2f[] texCoords = sprite.getTexCoords();
 
-            ImGuiStyle style = ImGui.getStyle();
             String label = sprite.getWidth() + " x " + sprite.getHeight();
-            float size = ImGui.calcTextSize(label).x + style.getFramePaddingX() * 2.0f;
-            float avail = ImGui.getContentRegionAvail().x;
-            float off = (avail - size) * 0.5f;
-            if (off > 0.0f) {
-                ImGui.setCursorPosX(ImGui.getCursorPosX() + off);
-            }
-            ImGui.text(label);
+            SImGui.textAligned(label, 0.5f);
 
             float spriteWidth = winSize.x * 0.5f;
             float spriteHeight = sprite.getHeight() * (spriteWidth / sprite.getWidth());
@@ -82,8 +75,9 @@ public class PropertiesWindow extends ImGuiInterface {
             ImGui.setCursorPosX(((winSize.x - spriteWidth) / 2));
             ImGui.image(id, spriteWidth, spriteHeight, texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y, c.x, c.y, c.z, c.w);
         }
-        ImGui.text("\tSelected: " + activeGameObject.name);
-        ImGui.text("\tUID: " + activeGameObject.getUid());
+        ImGui.separator();
+        ImGui.text("\tSelected:\t" + activeGameObject.name);
+        ImGui.text("\tUID:\t" + activeGameObject.getUid());
     }
 
     private void components() {
