@@ -7,11 +7,14 @@ public class Settings {
     public static float GRID_WIDTH = 0.25f;
     public static float GRID_HEIGHT = 0.25f;
 
+    public static final float FONT_SIZE = 16f;
     public static final int STYLE_COLOR_DEF = 0;
     public static final int STYLE_COLOR_BLUE = 1;
     public static final int STYLE_COLOR_PURPLE = 2;
     public static final int STYLE_COLOR_LIGHT = 3;
     public static final int STYLE_COLOR_GRAY = 4;
+
+    public static ImVec4[] colorsCustom;
 
     public static ImVec4[] getStyleColors(int style) {
         ImVec4[] colors = new ImVec4[ImGuiCol.COUNT];
@@ -35,7 +38,14 @@ public class Settings {
                 getDefaultColors(colors);
                 break;
         }
+        setCustomColors(colors);
         return colors;
+    }
+
+    private static void setCustomColors(ImVec4[] colors) {
+        colorsCustom = new ImVec4[1];
+        ImVec4 tmp = colors[ImGuiCol.ButtonHovered];
+        colorsCustom[0] = new ImVec4(tmp.x, tmp.y, tmp.z, tmp.w * 0.25f);
     }
 
     private static ImVec4[] getDefaultColors(ImVec4[] colors) {

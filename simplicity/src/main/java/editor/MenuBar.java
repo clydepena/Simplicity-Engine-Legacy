@@ -7,22 +7,22 @@ import observers.events.EventType;
 import simplicity.Window;
 
 public class MenuBar extends ImGuiInterface {
-    public void imgui() {
+    public void imgui(float dt) {
         ImGui.beginMenuBar();
 
 
         if(ImGui.beginMenu("File")) {
 
             if(ImGui.menuItem("Save", Window.getScene().getFilename())) {
-                EventSystem.notify(null, new Event(EventType.SaveLevel));
+                EventSystem.notify(new Event(EventType.SaveLevel));
             }
 
             if(ImGui.menuItem("Save As")) {
-                EventSystem.notify(null, new Event(EventType.SaveLevelAs));
+                EventSystem.notify(new Event(EventType.SaveLevelAs));
             }
 
             if(ImGui.menuItem("Load")) {
-                EventSystem.notify(null, new Event(EventType.LoadLevel));
+                EventSystem.notify(new Event(EventType.LoadLevel));
             }
 
             ImGui.endMenu();

@@ -387,7 +387,7 @@ public class Window implements Observer {
     }
 
     @Override
-    public void onNotify(Object obj, Event event) {
+    public void onNotify(Event event) {
         
         switch (event.type) {
             case GameEngineStartPlay:

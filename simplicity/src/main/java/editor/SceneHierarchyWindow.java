@@ -11,7 +11,7 @@ public class SceneHierarchyWindow extends ImGuiInterface {
 
     private static String playLoadDragDropType = "SceneHierarchy";
     
-    public void imgui() {
+    public void imgui(float dt) {
         ImGui.begin("Scene Hierarchy");
         updateCalc();
         List<GameObject> gameObjects = Window.getScene().getGameObjectList();

@@ -37,5 +37,8 @@ public class Resources {
         public static final String SPRITE_FOLDER=       "editor_res/folder_icon.png";
         public static final String SPRITE_FOLDER_OPEN=  "editor_res/folder_icon_opened.png";
         public static final String SPRITE_FILE=         "editor_res/file_icon.png";
+        public static final String SPRITE_ADDFOLDER=         "editor_res/add_folder.png";
+        public static final String SPRITE_COLLAPSEFOLDERS=         "editor_res/collapse_folders.png";
+        public static final String SPRITE_REFRESHFILES=         "editor_res/refresh_files.png";
     }
 }

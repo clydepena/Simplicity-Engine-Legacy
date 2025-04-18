@@ -1,12 +1,8 @@
 package editor;
 
-import imgui.ImVec2;
-import imgui.extension.nodeditor.NodeEditor;
-import imgui.extension.nodeditor.NodeEditorConfig;
-import imgui.extension.nodeditor.NodeEditorContext;
+import imgui.extension.nodeditor.*;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
-import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.*;
 import imgui.internal.ImGui;
 import imgui.type.ImLong;
 
@@ -31,7 +27,7 @@ public class NodeEditorWindow extends ImGuiInterface {
     private final Graph graph = new Graph();
 
     @Override
-    public void imgui() {
+    public void imgui(float dt) {
         // ImGui.setNextWindowSize(500, 400, ImGuiCond.Once);
         // ImGui.setNextWindowPos(ImGui.getMainViewport().getPosX() + 100, ImGui.getMainViewport().getPosY() + 200, ImGuiCond.Once);
         if (ImGui.begin("Node Editor", ImGuiWindowFlags.MenuBar)) {

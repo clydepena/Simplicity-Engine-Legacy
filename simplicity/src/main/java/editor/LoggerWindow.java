@@ -7,6 +7,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.*;
 import logger.Log;
 
+@SuppressWarnings("unused")
 public class LoggerWindow extends ImGuiInterface {
 
     private class Entry {
@@ -54,7 +55,7 @@ public class LoggerWindow extends ImGuiInterface {
     }
     
     @Override
-    public void imgui() {
+    public void imgui(float dt) {
         ImGui.begin("Terminal");
         updateCalc();
 
@@ -73,6 +74,7 @@ public class LoggerWindow extends ImGuiInterface {
         ImGui.beginChild("##", 0, -footer);
 
         for (Entry entry : entries) {
+            ImGui.setCursorPosX(10f);
             ImGui.textColored(entry.r, entry.g, entry.b, entry.a, entry.text);
         }
 

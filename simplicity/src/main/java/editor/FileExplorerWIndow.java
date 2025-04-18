@@ -8,19 +8,18 @@ import java.util.Map;
 
 import org.joml.Vector4f;
 
-import components.Sprite;
 import imgui.ImGui;
 import imgui.ImGuiStyle;
 import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiSelectableFlags;
-import imgui.flag.ImGuiTreeNodeFlags;
-import logger.Log;
+import imgui.flag.ImGuiWindowFlags;
 import logger.Logger;
 import renderer.Texture;
+import simplicity.Window;
 import util.AssetPool;
 import util.IOHelper;
 import util.Resources;
 
+@Deprecated
 public class FileExplorerWIndow extends ImGuiInterface{
 
     private Texture folderIcon, folderIconOpen, fileIcon;
@@ -39,53 +38,73 @@ public class FileExplorerWIndow extends ImGuiInterface{
         this.folderC = new Vector4f(1.00f, 0.49f, 0.00f, 1.00f);
         this.fileC = new Vector4f(0.77f, 0.38f, 0.00f, 1.00f);
         this.nodes = new HashMap<>();
-
+        this.isEnabled = false;
     }
 
     @Override
-    public void imgui() {
-        // ImGui.setNextWindowSize(500, 500, ImGuiCond.Once);
-        ImGui.begin("Project Explorer");
+    public void imgui(float dt) {
+        if (!isEnabled) {
+            return;
+        }
+        ImGui.setNextWindowSize(500, 500, ImGuiCond.Once);
+        ImGui.begin("FIle Explorer", ImGuiWindowFlags.MenuBar);
+        updateCalc();
 
         if (once) {
             indent = ImGui.calcTextSize("BIG").x;
             once = false;
         }
 
-        updateCalc();
+        // if (ImGui.button("Recurse")) {
+        //     globalId = 0;
+        //     nodes.clear();
+        //     startRecurse(System.getProperty("user.dir"));
+        // }
 
-        if (ImGui.button("Recurse")) {
-            globalId = 0;
-            nodes.clear();
-            startRecurse(System.getProperty("user.dir"));
-        }
+        // ImGui.sameLine();
 
-        ImGui.sameLine();
+        // if (ImGui.button("Flush All")) {
+        //     globalId = 0;
+        //     nodes.clear();
+        //     data = "";
+        // }
 
-        if (ImGui.button("Flush All")) {
-            globalId = 0;
-            nodes.clear();
-            data = "";
-        }
+        // ImGui.sameLine();
 
-        ImGui.sameLine();
-
-        if (ImGui.button("print")) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("\nNodes: " + globalId);
-            builder.append("\nMap Size: " + nodes.size());
+        // if (ImGui.button("print")) {
+        //     StringBuilder builder = new StringBuilder();
+        //     builder.append("\nNodes: " + globalId);
+        //     builder.append("\nMap Size: " + nodes.size());
     
-            for (Node n : nodes.values()) {
-                builder.append("\n" + n.toString());
-            }
-            data = builder.toString();
-        }
+        //     for (Node n : nodes.values()) {
+        //         builder.append("\n" + n.toString());
+        //     }
+        //     data = builder.toString();
+        // }
+
+        menubar();
 
         displayFileTree();
-        ImGui.text(data);
+        // ImGui.text(data);
         ImGui.end();
     }
 
+    private void menubar() {
+        ImGui.beginMenuBar();
+        if(ImGui.menuItem("Open Folder", "", false, true)) {
+            open();
+        }
+        ImGui.endMenuBar();
+    }
+
+    private void open() {
+        String path = IOHelper.openFolder(Window.get());
+        if (path != null) {
+            globalId = 0;
+            nodes.clear();
+            startRecurse(path);
+        }
+    }
 
     private void recurseFolders(String folderpath, String rootName, Node prevNode) {
         File[] dirContents = new File(folderpath).listFiles();
@@ -224,6 +243,10 @@ public class FileExplorerWIndow extends ImGuiInterface{
             if (!isLeaf) {
                 this.children.add(child);
             }
+        }
+
+        public void deleteChildren() {
+            
         }
 
         public void imgui() {

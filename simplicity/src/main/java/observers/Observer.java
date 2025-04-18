@@ -5,6 +5,6 @@ import simplicity.GameObject;
 
 public interface Observer {
     
-    void onNotify(Object obj, Event event);
+    void onNotify(Event event);
 
 }

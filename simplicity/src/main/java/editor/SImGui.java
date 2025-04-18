@@ -5,11 +5,10 @@ import org.joml.Vector4f;
 
 import imgui.ImGui;
 import imgui.ImGuiStyle;
-import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiColorEditFlags;
-import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiStyleVar;
+import imgui.ImVec4;
+import imgui.flag.*;
 import imgui.type.ImString;
+import util.Settings;
 
 public class SImGui {
 
@@ -172,6 +171,16 @@ public class SImGui {
             }
         }
         ImGui.text(text);
+    }
+
+    public static boolean imageButtonClear(int textureId, float width, float height, int args) {
+        ImVec4 btnHovered = Settings.colorsCustom[0];
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, btnHovered.x, btnHovered.y, btnHovered.z, btnHovered.w);
+        ImGui.pushStyleColor(ImGuiCol.Button, 0f, 0f, 0f, 0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0f, 0f, 0f, 0f);
+        boolean result = ImGui.imageButton(textureId, width, height, 0f, 1f, 1f, 0f, args);
+        ImGui.popStyleColor(3);
+        return result;
     }
 
 }

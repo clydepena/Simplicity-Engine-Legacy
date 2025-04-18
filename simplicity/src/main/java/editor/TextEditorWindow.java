@@ -20,7 +20,7 @@ public class TextEditorWindow extends ImGuiInterface {
     }
     
     @Override
-    public void imgui() {
+    public void imgui(float dt) {
         ImGui.begin("Text Editor", ImGuiWindowFlags.MenuBar);
 
         menuBar();

@@ -18,12 +18,14 @@ import static org.lwjgl.util.nfd.NativeFileDialog.NFD_GetError;
 import static org.lwjgl.util.nfd.NativeFileDialog.NFD_OKAY;
 import static org.lwjgl.util.nfd.NativeFileDialog.NFD_OpenDialog_With;
 import static org.lwjgl.util.nfd.NativeFileDialog.NFD_SaveDialog_With;
+import static org.lwjgl.util.nfd.NativeFileDialog.*;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.nfd.NFDFilterItem;
 import org.lwjgl.util.nfd.NFDOpenDialogArgs;
+import org.lwjgl.util.nfd.NFDPickFolderArgs;
 import org.lwjgl.util.nfd.NFDSaveDialogArgs;
 
 import simplicity.GameObject;
@@ -132,6 +134,23 @@ public class IOHelper {
             );
         }
     }
+
+    public static String openFolder(Window window) {
+        int handleType = window.getHandleType();
+        long handleWindow = window.getHandleWin();
+
+        try (MemoryStack stack = stackPush()) {
+            PointerBuffer outPath = stack.mallocPointer(1);
+            return checkResult(
+                NFD_PickFolder_With(outPath, NFDPickFolderArgs.calloc(stack)
+                    .parentWindow(it -> it
+                        .type(handleType)
+                        .handle(handleWindow))),
+                outPath
+            );
+        }
+    }
+
 
     private static String checkResult(int result, PointerBuffer path)
     {

@@ -16,8 +16,8 @@ public class GameViewWindow extends ImGuiInterface {
     private float leftX, rightX, topY, bottomY;
     private boolean  isPlaying = false;
     private boolean tempFocused = true;
-
-    public void imgui() {
+    
+    public void imgui(float dt) {
         if (tempFocused) {
             ImGui.setNextWindowFocus();
             tempFocused = false;
@@ -28,11 +28,11 @@ public class GameViewWindow extends ImGuiInterface {
         ImGui.beginMenuBar();
         if(ImGui.menuItem("Play", "", isPlaying, !isPlaying)) {
             isPlaying = true;
-            EventSystem.notify(null, new Event(EventType.GameEngineStartPlay));
+            EventSystem.notify(new Event(EventType.GameEngineStartPlay));
         }
         if(ImGui.menuItem("Stop", "", !isPlaying, isPlaying)) {
             isPlaying = false;
-            EventSystem.notify(null, new Event(EventType.GameEngineStopPlay));
+            EventSystem.notify(new Event(EventType.GameEngineStopPlay));
         }
         ImGui.endMenuBar();
 

@@ -9,7 +9,6 @@ import components.NonPickable;
 import components.Sprite;
 import components.SpriteRenderer;
 import imgui.ImGui;
-import imgui.ImGuiStyle;
 import physics2d.components.*;
 import renderer.PickingTexture;
 import scenes.Scene;
@@ -41,7 +40,7 @@ public class PropertiesWindow extends ImGuiInterface {
         }
     }
 
-    public void imgui() {
+    public void imgui(float dt) {
         ImGui.begin("Properties");
         updateCalc();
         if(activeGameObject != null) {

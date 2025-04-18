@@ -50,11 +50,17 @@ public class ImGuiLayer implements Observer {
     private SpriteSelectorWindow spriteSelectorWindow;
     private NodeEditorWindow nodeEditorWindow;
     private FileExplorerWIndow tempWindow;
+    private ProjectExplorerWindow projectExplorerWindow;
     private boolean tmpOnce = true;
+    private PickingTexture pickingTexture;
 
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
         EventSystem.addObserver(this);
         this.glfwWindow = glfwWindow;
+        this.pickingTexture = pickingTexture;
+    }
+
+    private void initComponents() {
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
         this.menuBar = new MenuBar();
@@ -64,25 +70,26 @@ public class ImGuiLayer implements Observer {
         this.spriteSelectorWindow = new SpriteSelectorWindow();
         this.nodeEditorWindow = new NodeEditorWindow();
         this.tempWindow = new FileExplorerWIndow();
+        this.projectExplorerWindow = new ProjectExplorerWindow();
     }
 
     public void update(float dt, Scene currentScene) {
         startFrame(dt);
 
-        setupDockspace();
+        setupDockspace(dt);
         ImGui.showDemoWindow();
         // ImGui.showAboutWindow();
-        // ImGui.showDemoWindow();
         currentScene.imgui();
-        gameViewWindow.imgui();
+        gameViewWindow.imgui(dt);
         propertiesWindow.update(dt, currentScene);
-        propertiesWindow.imgui();
-        sceneHierarchyWindow.imgui();
-        loggerWindow.imgui();
-        textEditorWindow.imgui();
-        spriteSelectorWindow.imgui();
-        nodeEditorWindow.imgui();
-        tempWindow.imgui();
+        propertiesWindow.imgui(dt);
+        sceneHierarchyWindow.imgui(dt);
+        loggerWindow.imgui(dt);
+        textEditorWindow.imgui(dt);
+        spriteSelectorWindow.imgui(dt);
+        nodeEditorWindow.imgui(dt);
+        tempWindow.imgui(dt);
+        projectExplorerWindow.imgui(dt);
         endFrame();
     }
 
@@ -98,7 +105,7 @@ public class ImGuiLayer implements Observer {
         return ImGuiLayer.editorObject;
     }
 
-    private void setupDockspace() {
+    private void setupDockspace(float dt) {
         int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
 
         ImGuiViewport mainViewport = ImGui.getMainViewport();
@@ -119,7 +126,7 @@ public class ImGuiLayer implements Observer {
 
         // dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"));
-        menuBar.imgui();
+        menuBar.imgui(dt);
         ImGui.end();
     }
 
@@ -303,7 +310,7 @@ public class ImGuiLayer implements Observer {
 
         fontConfig.setPixelSnapH(true);
         // fontAtlas.addFontFromFileTTF("app/assets/fonts/OpenSans.ttf", 12, fontConfig);
-        fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.FONT_RETHINK), 13.5f, fontConfig);
+        fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.FONT_RETHINK), Settings.FONT_SIZE, fontConfig);
         fontConfig.destroy();
 
         // fontAtlas.setFlags(ImGuiFreeTypeBuilderFlags.LightHinting);
@@ -314,6 +321,7 @@ public class ImGuiLayer implements Observer {
 
         imGuiGlfw.init(glfwWindow, false);
         imGuiGl3.init(Window.getGlslVersion());
+        initComponents();
     }
 
     private void startFrame(final float deltaTime) {
@@ -375,10 +383,10 @@ public class ImGuiLayer implements Observer {
     }
 
     @Override
-    public void onNotify(Object obj, Event event) {
+    public void onNotify(Event event) {
         switch (event.type) {
             case EventLogged:
-                loggerWindow.log((Log) obj);
+                loggerWindow.log((Log) event.getObject());
                 break;
             default:
                 break;

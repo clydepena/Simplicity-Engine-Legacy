@@ -74,6 +74,6 @@ public class Logger {
     }
 
     private static void notifyEventLogged(Log log) {
-        EventSystem.notify(log, new Event(EventType.EventLogged));
+        EventSystem.notify(new Event(EventType.EventLogged, log));
     }
 }

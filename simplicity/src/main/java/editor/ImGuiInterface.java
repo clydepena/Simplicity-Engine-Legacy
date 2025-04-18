@@ -6,9 +6,9 @@ public abstract class ImGuiInterface {
     
     protected ImVec2 winPosition;
     protected ImVec2 winSize;
-    protected boolean isDocked, isFocused, isHovered;
+    protected boolean isDocked, isFocused, isHovered, isEnabled = true;
 
-    public abstract void imgui();
+    public abstract void imgui(float dt);
     public abstract void destroy();
 
     protected void updateCalc() {
