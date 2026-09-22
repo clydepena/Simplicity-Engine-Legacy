@@ -1,9 +1,37 @@
-# Ignore Gradle project-specific cache directory
+# Gradle
 .gradle
-
-# Ignore Gradle build output directory
 build
+bin
+
+# Old / no-longer-used artifacts
 Simplicity-Engine-Legacy.jar
 libsold
-assets
+
+# Not part of the source tree
 examples
+assets
+
+# IDE - keep shared launch configs, ignore personal workspace settings
+**/.vscode/*
+!**/.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs / crash dumps
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# Scratch files
+temp.png
+simplicity/pomdel

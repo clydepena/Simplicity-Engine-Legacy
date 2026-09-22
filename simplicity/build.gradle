@@ -7,6 +7,14 @@ plugins {
 
 //group = 'groupid'
 version = '1.0-SNAPSHOT'
+
+project.ext.lwjglVersion = "3.3.3"
+project.ext.jomlVersion = "1.10.5"
+project.ext.lwjglNatives = "natives-windows"
+project.ext.imguiVersion = '1.86.11'
+project.ext.applicationName = "Simplicity"
+project.ext.appVersion = "1.0.0"
+
 graalvmNative {
     toolchainDetection = true
     
@@ -19,11 +27,11 @@ graalvmNative {
     binaries.main {
         // options to configure the main binary
         javaLauncher = javaToolchains.launcherFor {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(23)
             vendor = JvmVendorSpec.matching("Oracle Corporation")
         }
         sharedLibrary = false
-        imageName = 'myApp'
+        imageName = project.ext.applicationName
         mainClass = 'Main'
         buildArgs.add('-O3') // enables additional compiler optimizations
     }
@@ -36,7 +44,9 @@ graalvmNative {
 }
 
 java {
-    sourceCompatibility = 21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
 }
 
 //  compileJava.options.fork = true
@@ -58,12 +68,12 @@ jar {
     // baseName 'Simplicity'
 }
 
-// repositories {
-//     mavenCentral()
-//     // flatDir {
-//     //     dirs 'app/libs'
-//     // }
-// }
+repositories {
+    mavenCentral()
+    // flatDir {
+    //     dirs 'app/libs'
+    // }
+}
 
 // dependencies {
 //     testImplementation platform('org.junit:junit-bom:5.9.1')
@@ -73,22 +83,6 @@ jar {
 // test {
 //     useJUnitPlatform()
 // }
-
-sourceSets {
-    main {
-        java {
-            srcDirs 'src'
-            // srcDirs 'vendors'
-        }
-    }
- }
-
-
-project.ext.lwjglVersion = "3.3.3"
-project.ext.jomlVersion = "1.10.5"
-project.ext.lwjglNatives = "natives-windows"
-project.ext.imguiVersion = '1.86.11'
-project.ext.applicationName = "Simplicity";
 
 configurations {
     toCopy
@@ -163,6 +157,50 @@ dependencies {
 }
 
 task download(type: Copy) {
-    from configurations.toCopy 
+    from configurations.toCopy
     into 'libs'
+}
+
+task jpackage(type: Exec) {
+    group = 'distribution'
+    description = 'Packages the application into a native app image or installer using jpackage'
+    dependsOn jar
+
+    def packageType = project.hasProperty('jpackageType') ? project.jpackageType : 'app-image'
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def outputDir = layout.buildDirectory.dir('jpackage').get().asFile
+    def iconFile = file('src/main/resources/images/ICON_MAIN.ico')
+
+    def jpackageLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+
+    doFirst {
+        delete outputDir
+        outputDir.mkdirs()
+
+        def javaHome = jpackageLauncher.get().metadata.installationPath.asFile
+        def jpackageExe = new File(javaHome, 'bin/jpackage' + (isWindows ? '.exe' : '')).path
+
+        def args = [
+                jpackageExe,
+                '--type', packageType,
+                '--input', jar.destinationDirectory.get().asFile.path,
+                '--main-jar', jar.archiveFileName.get(),
+                '--main-class', application.mainClass.get(),
+                '--name', project.ext.applicationName,
+                '--app-version', project.ext.appVersion,
+                '--vendor', project.ext.applicationName,
+                '--dest', outputDir.path
+        ]
+
+        if (isWindows && iconFile.exists()) {
+            args += ['--icon', iconFile.path]
+        }
+        if (packageType in ['msi', 'exe']) {
+            args += ['--win-menu', '--win-shortcut']
+        }
+
+        commandLine = args
+    }
 }
