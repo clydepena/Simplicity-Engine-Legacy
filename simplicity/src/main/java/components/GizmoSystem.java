@@ -5,7 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import com.google.gson.annotations.Expose;
 
 import simplicity.KeyListener;
-import simplicity.Window;
+import simplicity.OldWindow;
 
 public class GizmoSystem extends Component {
     private Spritesheet gizmos;
@@ -18,8 +18,8 @@ public class GizmoSystem extends Component {
 
     @Override
     public void start() {
-        gameObject.addComponent(new TranslateTool(gizmos.getSprite(1), Window.getImGuiLayer().getPropertiesWindow()));
-        gameObject.addComponent(new ScaleTool(gizmos.getSprite(2), Window.getImGuiLayer().getPropertiesWindow()));
+        gameObject.addComponent(new TranslateTool(gizmos.getSprite(1), OldWindow.getImGuiLayer().getPropertiesWindow()));
+        gameObject.addComponent(new ScaleTool(gizmos.getSprite(2), OldWindow.getImGuiLayer().getPropertiesWindow()));
     }
 
     @Override

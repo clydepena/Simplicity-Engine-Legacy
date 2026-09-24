@@ -5,7 +5,7 @@ import org.joml.Vector4f;
 
 import renderer.DebugDraw;
 import simplicity.Camera;
-import simplicity.Window;
+import simplicity.OldWindow;
 import util.Settings;
 
 
@@ -14,7 +14,7 @@ public class GrindLines extends Component {
 
     @Override
     public void editorUpdate(float dt) {
-        Camera camera = Window.getScene().camera();
+        Camera camera = OldWindow.getScene().camera();
 
         Vector2f cameraPos = camera.getPosition();
         Vector2f projectionSize = camera.getProjectionSize();

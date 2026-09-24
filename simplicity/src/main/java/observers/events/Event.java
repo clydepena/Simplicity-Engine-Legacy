@@ -1,8 +1,9 @@
 package observers.events;
 
 public class Event {
-    public EventType type;
+    public EventType type = EventType.Unset;
     public Object obj;
+    public boolean stopPropagate = false;
 
     public Event(EventType type) {
         this.type = type;
@@ -21,5 +22,18 @@ public class Event {
 
     public Object getObject() {
         return this.obj;
+    }
+
+    public void stopPropagate() {
+        stopPropagate = true;
+    }
+
+    public void onEnd() {
+        obj = null;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "'" + type + "'";
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-import simplicity.Window;
+import simplicity.OldWindow;
 
 import static org.lwjgl.opengl.GL46.*;
 import util.*;
@@ -88,8 +88,8 @@ public class DebugDraw {
 
         // use shader
         shader.use();
-        shader.uploadMat4f("uProjection", Window.getScene().camera().getProjectionMatrix());
-        shader.uploadMat4f("uView", Window.getScene().camera().getViewMatrix());
+        shader.uploadMat4f("uProjection", OldWindow.getScene().camera().getProjectionMatrix());
+        shader.uploadMat4f("uView", OldWindow.getScene().camera().getViewMatrix());
 
         // bind vao
         glBindVertexArray(vaoID);

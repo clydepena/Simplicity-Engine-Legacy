@@ -1,8 +1,8 @@
-package simplicity;
+package editor;
 
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFW;
-import editor.*;
+
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -17,6 +17,12 @@ import observers.Observer;
 import observers.events.Event;
 import renderer.PickingTexture;
 import scenes.Scene;
+import simplicity.Application;
+import simplicity.Application.Layer;
+import simplicity.GameObject;
+import simplicity.KeyListener;
+import simplicity.MouseListener;
+import simplicity.OldWindow;
 import util.IOHelper;
 import util.Resources;
 import util.Settings;
@@ -33,7 +39,7 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 // import static org.lwjgl.opengl.GL46.*;
 
-public class ImGuiLayer implements Observer {
+public class ImGuiLayer {
 
     // private final long[] mouseCursors = new long[ImGuiMouseCursor.COUNT];
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
@@ -55,7 +61,6 @@ public class ImGuiLayer implements Observer {
     private PickingTexture pickingTexture;
 
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
-        EventSystem.addObserver(this);
         this.glfwWindow = glfwWindow;
         this.pickingTexture = pickingTexture;
     }
@@ -113,8 +118,8 @@ public class ImGuiLayer implements Observer {
         // ImGui.setNextWindowSize(mainViewport.getWorkSizeX(), mainViewport.getWorkSizeY());
         ImGui.setNextWindowViewport(mainViewport.getID());
 
-        ImGui.setNextWindowPos(Window.getXPos(), Window.getYPos());
-        ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
+        ImGui.setNextWindowPos(OldWindow.getXPos(), OldWindow.getYPos());
+        ImGui.setNextWindowSize(OldWindow.getWidth(), OldWindow.getHeight());
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
         windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize 
@@ -320,7 +325,7 @@ public class ImGuiLayer implements Observer {
 
 
         imGuiGlfw.init(glfwWindow, false);
-        imGuiGl3.init(Window.getGlslVersion());
+        imGuiGl3.init(OldWindow.getGlslVersion());
         initComponents();
     }
 
@@ -350,7 +355,7 @@ public class ImGuiLayer implements Observer {
 
     private void endFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, Window.getWidth(), Window.getHeight());
+        glViewport(0, 0, OldWindow.getWidth(), OldWindow.getHeight());
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -382,15 +387,17 @@ public class ImGuiLayer implements Observer {
         return this.propertiesWindow;
     }
 
-    @Override
-    public void onNotify(Event event) {
-        switch (event.type) {
-            case EventLogged:
-                loggerWindow.log((Log) event.getObject());
-                break;
-            default:
-                break;
-        }
-    }
+    // @Override
+    // public void onNotify(Event event) {
+    //     switch (event.type) {
+    //         case EventLogged:
+    //             loggerWindow.log((Log) event.getObject());
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
+
+    
 
 }

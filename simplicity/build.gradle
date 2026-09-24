@@ -204,3 +204,7 @@ task jpackage(type: Exec) {
         commandLine = args
     }
 }
+
+tasks.named('run') {
+    outputs.upToDateWhen { false }
+}

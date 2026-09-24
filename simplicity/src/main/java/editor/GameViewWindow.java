@@ -9,7 +9,7 @@ import observers.EventSystem;
 import observers.events.Event;
 import observers.events.EventType;
 import simplicity.MouseListener;
-import simplicity.Window;
+import simplicity.OldWindow;
 
 public class GameViewWindow extends ImGuiInterface {
     
@@ -40,14 +40,14 @@ public class GameViewWindow extends ImGuiInterface {
         ImVec2 windowSize = getLargestSizeForViewport();
         ImVec2 windowPos = getCenteredPositionForViewport(windowSize);
         ImGui.setCursorPos(windowPos.x, windowPos.y);
-        ImVec2 relativePos = new ImVec2(winPosition.x - Window.getXPos(), winPosition.y - Window.getYPos());
+        ImVec2 relativePos = new ImVec2(winPosition.x - OldWindow.getXPos(), winPosition.y - OldWindow.getYPos());
 
         leftX = windowPos.x + relativePos.x;
         bottomY = windowPos.y + windowSize.y + relativePos.y;
         rightX = windowPos.x + windowSize.x + relativePos.x;
         topY = windowPos.y + relativePos.y;
 
-        int textureId = Window.getFramebuffer().getTexId();
+        int textureId = OldWindow.getFramebuffer().getTexId();
         ImGui.image(textureId, windowSize.x, windowSize.y, 0, 1, 1, 0);
 
         MouseListener.setGameViewportPos(new Vector2f(windowPos.x + relativePos.x, windowPos.y + relativePos.y));
@@ -73,10 +73,10 @@ public class GameViewWindow extends ImGuiInterface {
         // windowSize.x -= ImGui.getScrollX();
         // windowSize.y -= ImGui.getScrollY();
         float aspectWidth = windowSize.x;
-        float aspectHeight = aspectWidth / Window.getTargetAspectRatio();
+        float aspectHeight = aspectWidth / OldWindow.getTargetAspectRatio();
         if(aspectHeight > windowSize.y) {
             aspectHeight = windowSize.y;
-            aspectWidth = aspectHeight * Window.getTargetAspectRatio();
+            aspectWidth = aspectHeight * OldWindow.getTargetAspectRatio();
         }
 
         return new ImVec2(aspectWidth, aspectHeight);

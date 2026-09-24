@@ -7,7 +7,7 @@ import org.joml.Vector4f;
 import simplicity.GameObject;
 import simplicity.KeyListener;
 import simplicity.MouseListener;
-import simplicity.Window;
+import simplicity.OldWindow;
 import util.Settings;
 
 public class MouseControls extends Component {
@@ -23,7 +23,7 @@ public class MouseControls extends Component {
         this.holdingObject = go;
         this.holdingObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0.8f, 0.8f, 0.8f, 0.5f));
         this.holdingObject.addComponent(new NonPickable());
-        Window.getScene().addGameObjectToScene(go);
+        OldWindow.getScene().addGameObjectToScene(go);
     }
 
     public void place() {
@@ -33,7 +33,7 @@ public class MouseControls extends Component {
         }
         newObj.getComponent(SpriteRenderer.class).setColor(new Vector4f(1, 1, 1, 1));
         newObj.removeComponent(NonPickable.class);
-        Window.getScene().addGameObjectToScene(newObj);
+        OldWindow.getScene().addGameObjectToScene(newObj);
     }
 
     @Override

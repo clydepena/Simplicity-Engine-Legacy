@@ -11,7 +11,7 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiTabBarFlags;
 import simplicity.GameObject;
 import simplicity.Prefabs;
-import simplicity.Window;
+import simplicity.OldWindow;
 import util.AssetPool;
 import util.Resources;
 import util.Settings;
@@ -47,7 +47,7 @@ public class SpriteSelectorWindow extends ImGuiInterface{
                         GameObject object = Prefabs.generateSpriteObject(sprite, sizeX, sizeY);
                         
                         // attach to mouse cursor
-                        Window.getImGuiLayer().getEditorGameObject().getComponent(MouseControls.class).pickupObject(object);
+                        OldWindow.getImGuiLayer().getEditorGameObject().getComponent(MouseControls.class).pickupObject(object);
                     }
                     ImGui.popID();
         

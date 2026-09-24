@@ -1,54 +1,54 @@
 package renderer;
 
-import simplicity.GameObject;
-import simplicity.OldWindow;
-
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
-import static org.lwjgl.opengl.GL46.*;
+import static org.lwjgl.opengl.GL33.*;
 import components.SpriteRenderer;
-import util.AssetPool;
+import simplicity.Transform;
 import java.util.*;
 
+public class NewRenderBatch implements Comparable<NewRenderBatch> {
 
-public class RenderBatch implements Comparable<RenderBatch> {
-    
     // vertex
     // ======
-    // pos                  // color                        // texture coords       // texture id
-    // float, float,        float, float, float, float      float, float            float
+    // pos              // color                        // texture coords   // texture id   // entity id
+    // float, float,    float, float, float, float      float, float        float           float
 
-    private final int POS_SIZE = 2;
-    private final int COLOR_SIZE = 4;
-    private final int TEX_COORDS_SIZE = 2;
-    private final int TEX_ID_SIZE = 1;
-    private final int ENTITY_ID_SIZE = 1;
+    private static final int POS_SIZE = 2;
+    private static final int COLOR_SIZE = 4;
+    private static final int TEX_COORDS_SIZE = 2;
+    private static final int TEX_ID_SIZE = 1;
+    private static final int ENTITY_ID_SIZE = 1;
 
-    private final int POS_OFFSET = 0;
-    private final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
-    private final int TEX_COORDS_OFFSET = COLOR_OFFSET + COLOR_SIZE * Float.BYTES;
-    private final int TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.BYTES;
-    private final int ENTITY_ID_OFFSET = TEX_ID_OFFSET + TEX_ID_SIZE * Float.BYTES;
+    private static final int POS_OFFSET = 0;
+    private static final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
+    private static final int TEX_COORDS_OFFSET = COLOR_OFFSET + COLOR_SIZE * Float.BYTES;
+    private static final int TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.BYTES;
+    private static final int ENTITY_ID_OFFSET = TEX_ID_OFFSET + TEX_ID_SIZE * Float.BYTES;
 
-    private final int VERTEX_SIZE = 10;
-    private final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+    private static final int VERTEX_SIZE = 10;
+    private static final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+
+    // slot 0 is reserved for "no texture", so a batch holds at most 7 textures (units 1..7)
+    private static final int MAX_TEXTURES = 7;
+    private static final int[] TEX_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7};
 
     private SpriteRenderer[] sprites;
     private int numSprites;
     private boolean hasRoom;
     private float[] vertices;
-    private int[] texSlots = {0, 1, 2, 3, 4, 5, 6, 7};
 
     private List<Texture> textures;
-    private int vaoID, vboID;
+    private int vaoID, vboID, eboID;
     private int maxBatchSize;
     private int zIndex;
-    private RendererOld renderer;
 
-    public RenderBatch(int maxBatchSize, int zIndex, RendererOld renderer) {
-        this.renderer = renderer;
+    // reused by loadVertexProperties to avoid allocating per sprite
+    private final Matrix4f transformMatrix = new Matrix4f();
+    private final Vector4f currentPos = new Vector4f();
 
+    public NewRenderBatch(int maxBatchSize, int zIndex) {
         this.zIndex = zIndex;
         this.sprites = new SpriteRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;
@@ -72,12 +72,12 @@ public class RenderBatch implements Comparable<RenderBatch> {
         glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
         // create & upload indices buffer
-        int eboID = glGenBuffers();
+        eboID = glGenBuffers();
         int[] indices = generateIndices();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
-        // enable buffer attribute pointers
+        // enable buffer attribute pointers (the VAO remembers these)
         glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
         glEnableVertexAttribArray(0);
 
@@ -93,6 +93,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
         glVertexAttribPointer(4, ENTITY_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, ENTITY_ID_OFFSET);
         glEnableVertexAttribArray(4);
 
+        glBindVertexArray(0);
+    }
+
+    public void destroy() {
+        glDeleteVertexArrays(vaoID);
+        glDeleteBuffers(vboID);
+        glDeleteBuffers(eboID);
     }
 
     public void addSprite(SpriteRenderer spr) {
@@ -101,8 +108,8 @@ public class RenderBatch implements Comparable<RenderBatch> {
         this.sprites[index] = spr;
         this.numSprites++;
 
-        if(spr.getTexture() != null) {
-            if(!textures.contains(spr.getTexture())) {
+        if (spr.getTexture() != null) {
+            if (!textures.contains(spr.getTexture())) {
                 textures.add(spr.getTexture());
             }
         }
@@ -110,64 +117,62 @@ public class RenderBatch implements Comparable<RenderBatch> {
         // add properties to local vertices array
         loadVertexProperties(index);
 
-        if(numSprites >= this.maxBatchSize) {
+        if (numSprites >= this.maxBatchSize) {
             this.hasRoom = false;
         }
     }
 
-    public void render() {
+    /**
+     * Draws this batch with the shader already in use (bound and given its camera uniforms by Renderer.begin()).
+     * Sprites whose zIndex no longer matches this batch are removed and added to movedOut;
+     * the caller re-adds them after all batches have been drawn.
+     */
+    public void render(Shader shader, List<SpriteRenderer> movedOut) {
         boolean rebufferData = false;
-        for(int i = 0; i < numSprites; i++) {
+        for (int i = 0; i < numSprites; i++) {
             SpriteRenderer spr = sprites[i];
-            if(spr.isDirty()) {
+
+            if (spr.gameObject.transform.zIndex != this.zIndex) {
+                movedOut.add(spr);
+                removeAt(i);
+                i--;
+                continue;
+            }
+
+            if (spr.isDirty()) {
                 loadVertexProperties(i);
                 spr.setClean();
                 rebufferData = true;
             }
-
-            if (spr.gameObject.transform.zIndex != this.zIndex) {
-                destroyIfExists(spr.gameObject);
-                renderer.add(spr.gameObject);
-                i--;
-            }
-
         }
+
+        if (numSprites == 0) return;
+
         if (rebufferData) {
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
         }
 
-        // use shader
-        Shader shader = RendererOld.getBoundShader();
-        shader.use();
-        shader.uploadMat4f("uProjection", OldWindow.getScene().camera().getProjectionMatrix());
-        shader.uploadMat4f("uView", OldWindow.getScene().camera().getViewMatrix());
-        
         for (int i = 0; i < textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i + 1);
             textures.get(i).bind();
         }
-        shader.uploadIntArray("uTextures", texSlots);
+        shader.uploadIntArray("uTextures", TEX_SLOTS);
 
         glBindVertexArray(vaoID);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
         glDrawElements(GL_TRIANGLES, this.numSprites * 6, GL_UNSIGNED_INT, 0);
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
-        
+
         for (int i = 0; i < textures.size(); i++) {
+            glActiveTexture(GL_TEXTURE0 + i + 1);
             textures.get(i).unbind();
         }
-
-        shader.detach();
+        glActiveTexture(GL_TEXTURE0);
     }
 
     private void loadVertexProperties(int index) {
         SpriteRenderer sprite = this.sprites[index];
+        Transform transform = sprite.gameObject.transform;
 
         // find offset within array (4 vertices per sprite)
         int offset = index * 4 * VERTEX_SIZE;
@@ -185,19 +190,19 @@ public class RenderBatch implements Comparable<RenderBatch> {
             }
         }
 
-        boolean isRotated = sprite.gameObject.transform.rotation != 0.0f;
-        Matrix4f transformationMatrix = new Matrix4f().identity();
-        if(isRotated) {
-            transformationMatrix.translate(sprite.gameObject.transform.position.x, sprite.gameObject.transform.position.y, 0);
-            transformationMatrix.rotate((float) Math.toRadians(sprite.gameObject.transform.rotation), 0, 0, 1);
-            transformationMatrix.scale(sprite.gameObject.transform.scale.x, sprite.gameObject.transform.scale.y, 1);
+        boolean isRotated = transform.rotation != 0.0f;
+        if (isRotated) {
+            transformMatrix.identity()
+                .translate(transform.position.x, transform.position.y, 0)
+                .rotate((float) Math.toRadians(transform.rotation), 0, 0, 1)
+                .scale(transform.scale.x, transform.scale.y, 1);
         }
 
         // add vertices with the appropriate properties
         float xAdd = 0.5f;
         float yAdd = 0.5f;
-        for(int i = 0; i < 4; i++) {
-            if(i == 1) {
+        for (int i = 0; i < 4; i++) {
+            if (i == 1) {
                 yAdd = -0.5f;
             } else if (i == 2) {
                 xAdd = -0.5f;
@@ -205,15 +210,15 @@ public class RenderBatch implements Comparable<RenderBatch> {
                 yAdd = 0.5f;
             }
 
-            Vector4f currentPos = new Vector4f(
-                sprite.gameObject.transform.position.x + (xAdd * sprite.gameObject.transform.scale.x),
-                sprite.gameObject.transform.position.y + (yAdd * sprite.gameObject.transform.scale.y), 
-                0 , 
-                1
-            );
-
-            if(isRotated) {
-                currentPos = new Vector4f(xAdd, yAdd, 0 ,1).mul(transformationMatrix);
+            if (isRotated) {
+                currentPos.set(xAdd, yAdd, 0, 1).mul(transformMatrix);
+            } else {
+                currentPos.set(
+                    transform.position.x + (xAdd * transform.scale.x),
+                    transform.position.y + (yAdd * transform.scale.y),
+                    0,
+                    1
+                );
             }
 
             // load position
@@ -243,7 +248,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private int[] generateIndices() {
         // 6 indices per quad (3 per triangle)
         int[] elements = new int[6 * maxBatchSize];
-        for(int i = 0; i < maxBatchSize; i++) {
+        for (int i = 0; i < maxBatchSize; i++) {
             loadElementIndices(elements, i);
         }
         return elements;
@@ -263,7 +268,6 @@ public class RenderBatch implements Comparable<RenderBatch> {
         elements[offsetArrayIndex + 3] = offset + 0;
         elements[offsetArrayIndex + 4] = offset + 2;
         elements[offsetArrayIndex + 5] = offset + 1;
-
     }
 
     public boolean hasRoom() {
@@ -271,7 +275,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
     }
 
     public boolean hasTextureRoom() {
-        return this.textures.size() < 8;
+        return this.textures.size() < MAX_TEXTURES;
     }
 
     public boolean hasTexture(Texture tex) {
@@ -282,24 +286,33 @@ public class RenderBatch implements Comparable<RenderBatch> {
         return this.zIndex;
     }
 
+    public boolean isEmpty() {
+        return this.numSprites == 0;
+    }
+
     @Override
-    public int compareTo(RenderBatch o) {
+    public int compareTo(NewRenderBatch o) {
         return Integer.compare(this.zIndex, o.getZIndex());
     }
 
-    public boolean destroyIfExists(GameObject go) {
-        SpriteRenderer sprite = go.getComponent(SpriteRenderer.class);
-        for(int i = 0; i < numSprites; i++) {
-            if(sprites[i] == sprite) {
-                for(int j = i; j < numSprites - 1; j++) {
-                    sprites[j] = sprites[j + 1];
-                    sprites[j].setDirty(true);
-                }
-                numSprites--;
+    public boolean remove(SpriteRenderer sprite) {
+        for (int i = 0; i < numSprites; i++) {
+            if (sprites[i] == sprite) {
+                removeAt(i);
                 return true;
             }
         }
         return false;
     }
 
+    // shifts the following sprites down one slot and marks them dirty so their vertices are reloaded
+    private void removeAt(int index) {
+        for (int j = index; j < numSprites - 1; j++) {
+            sprites[j] = sprites[j + 1];
+            sprites[j].setDirty(true);
+        }
+        numSprites--;
+        sprites[numSprites] = null;
+        hasRoom = true;
+    }
 }

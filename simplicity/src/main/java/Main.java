@@ -5,13 +5,21 @@
     -JS scripting
 */
 
-import simplicity.Window;
+import simplicity.OldWindow;
+import simplicity.TestApp;
 
 public class Main {
     
     public static void main(String[] args) {
-        Window window = Window.get();
-        window.run();
+        boolean test = true;
+        if (test) {
+            TestApp app = new TestApp();
+            app.run();
+        } else {
+            OldWindow window = OldWindow.get();
+            window.run();
+        }
+
 
         // DEBUG
         // WindowFont windowFont = new WindowFont();

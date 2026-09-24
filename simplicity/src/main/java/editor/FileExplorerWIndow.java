@@ -14,7 +14,7 @@ import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiWindowFlags;
 import logger.Logger;
 import renderer.Texture;
-import simplicity.Window;
+import simplicity.OldWindow;
 import util.AssetPool;
 import util.IOHelper;
 import util.Resources;
@@ -98,7 +98,7 @@ public class FileExplorerWIndow extends ImGuiInterface{
     }
 
     private void open() {
-        String path = IOHelper.openFolder(Window.get());
+        String path = IOHelper.openFolder(OldWindow.get());
         if (path != null) {
             globalId = 0;
             nodes.clear();

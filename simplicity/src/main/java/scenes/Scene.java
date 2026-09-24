@@ -12,7 +12,7 @@ import simplicity.*;
 
 public class Scene {
     
-    private Renderer renderer = new Renderer();
+    private RendererOld renderer = new RendererOld();
     private Camera camera;
     private boolean isRunning;
     private List<GameObject> gameObjects = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Scene {
         }
         
         this.physics2d = new Physics2D();
-        this.renderer = new Renderer();
+        this.renderer = new RendererOld();
         this.gameObjects = new ArrayList<>();
         this.isRunning = false;
     }
@@ -131,9 +131,9 @@ public class Scene {
         if (Scene.currentFile != null) {
             saveAs(Scene.currentFile);
         } else {
-            String path = util.IOHelper.saveFile(Window.get(), "level", "json");
+            String path = util.IOHelper.saveFile(OldWindow.get(), "level", "json");
             saveAs(path);
-            Window.changeScene(new LevelEditorSceneInitializer(path));
+            OldWindow.changeScene(new LevelEditorSceneInitializer(path));
         }
     }
 

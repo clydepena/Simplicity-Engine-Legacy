@@ -101,7 +101,7 @@ public class MouseListener {
     public static float getScreenX() {
         float currentX = getX() - get().gameViewportPos.x;
         // currentX = (currentX / get().gameViewportSize.x) * (float) Window.SCREEN_WIDTH;
-        currentX = (currentX / get().gameViewportSize.x) * (float) Window.getWidth();
+        currentX = (currentX / get().gameViewportSize.x) * (float) OldWindow.getWidth();
         
         return currentX;
     }
@@ -109,7 +109,7 @@ public class MouseListener {
     public static float getScreenY() {
         float currentY = getY() - get().gameViewportPos.y;
         // currentY = ((float) Window.SCREEN_HEIGHT) - ((currentY / get().gameViewportSize.y) * ((float) Window.SCREEN_HEIGHT));
-        currentY = ((float) Window.getHeight()) - ((currentY / get().gameViewportSize.y) * ((float) Window.getHeight()));
+        currentY = ((float) OldWindow.getHeight()) - ((currentY / get().gameViewportSize.y) * ((float) OldWindow.getHeight()));
 
         return currentY;
     }
@@ -127,7 +127,7 @@ public class MouseListener {
         currentX = (currentX / get().gameViewportSize.x) * 2.0f - 1.0f;
         Vector4f temp = new Vector4f(currentX, 0, 0, 1);
 
-        Camera camera = Window.getScene().camera();
+        Camera camera = OldWindow.getScene().camera();
         Matrix4f viewProjection = new Matrix4f();
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection);
         temp.mul(viewProjection);
@@ -140,7 +140,7 @@ public class MouseListener {
         currentY = -((currentY / get().gameViewportSize.y) * 2.0f - 1.0f);
         Vector4f temp = new Vector4f(0, currentY, 0, 1);
         
-        Camera camera = Window.getScene().camera();
+        Camera camera = OldWindow.getScene().camera();
         Matrix4f viewProjection = new Matrix4f();
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection);
         temp.mul(viewProjection);
@@ -158,7 +158,7 @@ public class MouseListener {
 
         Vector4f temp = new Vector4f(currentX, currentY, 0, 1);
         
-        Camera camera = Window.getScene().camera();
+        Camera camera = OldWindow.getScene().camera();
         Matrix4f inverseView = new Matrix4f(camera.getInverseView());
         Matrix4f inverseProjection = new Matrix4f(camera.getInverseProjection());
         temp.mul(inverseView.mul(inverseProjection));
@@ -220,7 +220,4 @@ public class MouseListener {
     public static void setGameViewportSize(Vector2f gameViewportSize) {
         get().gameViewportSize.set(gameViewportSize);
     }
-
-    
-
 }

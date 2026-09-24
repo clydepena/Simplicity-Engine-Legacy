@@ -28,7 +28,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
     @Override
     public void init(Scene scene) {
-        Window.setWindowBgColor(new Vector4f(0.3f, 0.3f, 0.3f, 1.0f));
+        OldWindow.setWindowBgColor(new Vector4f(0.3f, 0.3f, 0.3f, 1.0f));
 
         // loadResources();
         
@@ -50,7 +50,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         levelEditorObj.addComponent(new GizmoSystem(gizmos));
         scene.addGameObjectToScene(levelEditorObj);
 
-        Window.getImGuiLayer().setEditorGameObject(levelEditorObj);
+        OldWindow.getImGuiLayer().setEditorGameObject(levelEditorObj);
 
         //TEST
     }

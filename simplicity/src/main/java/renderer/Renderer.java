@@ -1,72 +1,202 @@
 package renderer;
 
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL33.GL_BLEND;
+import static org.lwjgl.opengl.GL33.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL33.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL33.GL_NEAREST;
+import static org.lwjgl.opengl.GL33.GL_ONE;
+import static org.lwjgl.opengl.GL33.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL33.glBlendFunc;
+import static org.lwjgl.opengl.GL33.glClear;
+import static org.lwjgl.opengl.GL33.glClearColor;
+import static org.lwjgl.opengl.GL33.glDisable;
+import static org.lwjgl.opengl.GL33.glEnable;
+import static org.lwjgl.opengl.GL33.GL_DRAW_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL33.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL33.GL_READ_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL33.glBindFramebuffer;
+import static org.lwjgl.opengl.GL33.glBlitFramebuffer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.joml.Vector2f;
+import org.joml.Vector4f;
+import org.lwjgl.opengl.*;
+
+import simplicity.Camera;
+import simplicity.Window;
+import util.AssetPool;
+import util.Resources;
 import components.SpriteRenderer;
-import simplicity.GameObject;
+
 
 public class Renderer {
+
+    private Shader defaultShader;
+    private GLCapabilities capabilities;
+    private Window window;
+    private Shader shader;
+    private boolean isBlending = true;
+    private boolean isClearing = false;
+    private Vector4f clearColor;
+    private Camera camera;
+    private NewFramebuffer framebuffer;
     private final int MAX_BATCH_SIZE = 1000;
-    private List<RenderBatch> batches;
-    private static Shader currentShader;
+    private final List<NewRenderBatch> batches = new ArrayList<>();
+    private boolean beginStart = false;
 
-    public Renderer() {
-        this.batches = new ArrayList<>();
+    public Renderer(Window window) {
+        this.window = window;
     }
 
-    public void add(GameObject go) {
-        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-        if(spr != null) {
-            add(spr);
-        }
-    }
-
-    private void add(SpriteRenderer sprite) {
-        boolean added = false;
-        for(RenderBatch batch : batches) {
-            if (batch.hasRoom() && batch.getZIndex() == sprite.gameObject.transform.zIndex) {
-                Texture tex = sprite.getTexture();
-                if(tex == null || (batch.hasTexture(tex) || batch.hasTextureRoom())) {
-                    batch.addSprite(sprite);
-                    added = true;
-                    break;
-                }
-            }
-        }
-
-        if(!added) {
-            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, sprite.gameObject.transform.zIndex, this);
-            newBatch.start();
-            batches.add(newBatch);
-            newBatch.addSprite(sprite);
-            Collections.sort(batches);
-        }
-    }
-
-    public static void bindShader(Shader shader) {
-        currentShader = shader;
-    }
-
-    public static Shader getBoundShader() {
-        return currentShader;
-    }
-
-    public void render() {
-        currentShader.use();;
-        for(int i = 0; i < batches.size(); i++) {
-            RenderBatch batch = batches.get(i);
-            batch.render();
-        }
-    }
-
-    public void destroyGameObject(GameObject go) {
-        if(go.getComponent(SpriteRenderer.class) == null) return;
-        for(RenderBatch batch : batches) {
-            if (batch.destroyIfExists(go)) {
+    public void add(SpriteRenderer spr) {
+        int z = spr.gameObject.transform.zIndex;
+        Texture tex = spr.getTexture();
+        for (NewRenderBatch b : batches) {
+            if (b.hasRoom() && b.getZIndex() == z && (tex == null || b.hasTexture(tex) || b.hasTextureRoom())) {
+                b.addSprite(spr);
                 return;
             }
         }
+        NewRenderBatch b = new NewRenderBatch(MAX_BATCH_SIZE, z);
+        b.start();
+        b.addSprite(spr);
+        batches.add(b);
+        Collections.sort(batches);
+    }
+
+    public void remove(SpriteRenderer spr) {
+        for (NewRenderBatch b : batches) if (b.remove(spr)) return;
+    }
+
+    public void drawSprites() {
+        checkInPass("drawSprites()");
+        List<SpriteRenderer> moved = new ArrayList<>();
+        for (NewRenderBatch b : batches) b.render(shader, moved);
+        for (SpriteRenderer spr : moved) add(spr);
+
+        // free batches that lost all their sprites (removals or zIndex moves)
+        batches.removeIf(b -> {
+            if (!b.isEmpty()) return false;
+            b.destroy();
+            return true;
+        });
+    }
+
+    public void init() {
+        glfwMakeContextCurrent(window.ptr());
+        glfwSwapInterval(1);
+        capabilities = GL.createCapabilities();
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+        defaultShader = AssetPool.getShaderFromRes(Resources.MAIN_SHADER);
+        shader = defaultShader;
+        clearColor = new Vector4f(0, 0, 0, 1);
+        camera = new Camera(new Vector2f(0, 0));
+    }
+
+    public void onUpdate(float dt) {
+        
+    }
+
+    public void destroy() {
+        while (!batches.isEmpty()) {
+            batches.removeLast().destroy();
+        }
+    }
+    
+    public void begin() {
+        checkNotInPass("begin()");
+        framebuffer.bind();
+        if (isBlending) {
+            glEnable(GL_BLEND);
+        } else {
+            glDisable(GL_BLEND);
+        }
+        if (isClearing) {
+            clear();
+        }
+        shader.use();
+        shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        shader.uploadMat4f("uView", camera.getViewMatrix());
+        beginStart = true;
+    }
+
+    public void end() {
+        checkInPass("end()");
+        beginStart = false;
+        // DebugDraw.draw(camera);                         // #17 (before sprites = behind them, as in the old loop)
+        // for (RenderBatch b : batches) b.render(shader); // #13
+        // applyPendingZIndexMoves();
+        shader.detach();
+        framebuffer.unbind();
+    }
+
+    public void present(NewFramebuffer source) {
+        checkNotInPass("present()");
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, source.getFboID());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitFramebuffer(0, 0, source.getWidth(), source.getHeight(),
+                        0, 0, window.getFramebufferWidth(), window.getFramebufferHeight(),
+                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    public void setShader(Shader shader) {
+        checkNotInPass("setShader()");
+        this.shader = shader;
+    }
+
+    public void restoreDefaultShader() {
+        checkNotInPass("restoreDefaultShader()");
+        this.shader = defaultShader;
+    }
+
+    public void swapBuffers() {
+        checkNotInPass("swapBuffers()");
+        glfwSwapBuffers(window.ptr());
+    }
+
+    public void setBlending(boolean isBlending) {
+        checkNotInPass("setBlending()");
+        this.isBlending = isBlending;
+    }
+
+    public void setClearing(boolean isClearing) {
+        checkNotInPass("setClearing()");
+        this.isClearing = isClearing;
+    }
+
+    public void setClearColor(Vector4f rgba) {
+        checkNotInPass("setClearColor()");
+        clearColor = rgba;
+    }
+
+    public void setCamera(Camera camera) {
+        checkNotInPass("setCamera()");
+        this.camera = camera;
+    }
+
+    public void setFramebuffer(NewFramebuffer framebuffer) {
+        checkNotInPass("setFramebuffer()");
+        this.framebuffer = framebuffer;
+    }
+
+    // pass settings are applied in begin(), so they must not change until end()
+    private void checkNotInPass(String caller) {
+        if (beginStart) throw new IllegalStateException(caller + " can't be called between begin() and end()");
+    }
+
+    private void checkInPass(String caller) {
+        if (!beginStart) throw new IllegalStateException(caller + " must be called between begin() and end()");
+    }
+
+    public void clear() {
+        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }

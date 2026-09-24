@@ -10,7 +10,7 @@ import simplicity.GameObject;
 import simplicity.KeyListener;
 import simplicity.MouseListener;
 import simplicity.Prefabs;
-import simplicity.Window;
+import simplicity.OldWindow;
 
 public class Gizmo extends Component {
     private Vector4f xAxisColor = new Vector4f(0.9f, 0.3f, 0.3f, 0.9f);
@@ -47,8 +47,8 @@ public class Gizmo extends Component {
         this.xAxisObject.addComponent(new NonPickable());
         this.yAxisObject.addComponent(new NonPickable());
 
-        Window.getScene().addGameObjectToScene(this.xAxisObject);
-        Window.getScene().addGameObjectToScene(this.yAxisObject);
+        OldWindow.getScene().addGameObjectToScene(this.xAxisObject);
+        OldWindow.getScene().addGameObjectToScene(this.yAxisObject);
     }
 
     @Override
@@ -79,13 +79,13 @@ public class Gizmo extends Component {
             this.setActive();
 
             
-            if(KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW_KEY_D)) {
+            if(KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.isKeyPressed(GLFW_KEY_D)) {
                 GameObject newObj = this.activeGameObject.copy();
-                Window.getScene().addGameObjectToScene(newObj);
+                OldWindow.getScene().addGameObjectToScene(newObj);
                 newObj.transform.position.add(0.1f, 0.1f);
                 this.propertiesWindow.setActiveGameObject(newObj);
                 return;
-            } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
+            } else if (KeyListener.isKeyPressed(GLFW_KEY_DELETE)) {
                 activeGameObject.destroy();
                 this.setInactive();
                 this.propertiesWindow.setActiveGameObject(null);

@@ -7,7 +7,7 @@ import imgui.ImVec4;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
-import simplicity.Window;
+import simplicity.OldWindow;
 import util.AssetPool;
 import util.IOHelper;
 import util.Resources;
@@ -118,7 +118,7 @@ public class ProjectExplorerWindow extends ImGuiInterface{
         ImGui.pushStyleColor(ImGuiCol.Button, 0f, 0f, 0f, 0f);
         ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0f, 0f, 0f, 0f);
         if (ImGui.imageButton(addFolderIcon, size, size, 0f, 1f, 1f, 0f, ImGuiButtonFlags.MouseButtonLeft)) {
-            String path = IOHelper.openFolder(Window.get());
+            String path = IOHelper.openFolder(OldWindow.get());
             if (path != null) {
                 rootPath = path;
                 rootFile = null;

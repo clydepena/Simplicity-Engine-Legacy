@@ -5,7 +5,7 @@ import java.util.List;
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
 import simplicity.GameObject;
-import simplicity.Window;
+import simplicity.OldWindow;
 
 public class SceneHierarchyWindow extends ImGuiInterface {
 
@@ -14,7 +14,7 @@ public class SceneHierarchyWindow extends ImGuiInterface {
     public void imgui(float dt) {
         ImGui.begin("Scene Hierarchy");
         updateCalc();
-        List<GameObject> gameObjects = Window.getScene().getGameObjectList();
+        List<GameObject> gameObjects = OldWindow.getScene().getGameObjectList();
         int index = 0;
         for (GameObject go : gameObjects) {
             if (!go.doSerialization()) {

@@ -3,7 +3,7 @@ package editor;
 import imgui.*;
 import imgui.extension.texteditor.*;
 import imgui.flag.ImGuiWindowFlags;
-import simplicity.Window;
+import simplicity.OldWindow;
 
 import util.IOHelper;
 
@@ -54,7 +54,7 @@ public class TextEditorWindow extends ImGuiInterface {
     }
 
     private void saveAs() {
-        String filepath = IOHelper.saveFile(Window.get(), null, "txt");
+        String filepath = IOHelper.saveFile(OldWindow.get(), null, "txt");
         if (IOHelper.WriteToFile(filepath, textEditor.getText())) {
             currentFile = filepath;
             updateFilename();
@@ -62,7 +62,7 @@ public class TextEditorWindow extends ImGuiInterface {
     }
 
     private void open() {
-        String filepath = IOHelper.openSingle(Window.get(), "txt");
+        String filepath = IOHelper.openSingle(OldWindow.get(), "txt");
         String newText = IOHelper.ReadFromFile(filepath);
         if (newText != null) {
             currentFile = filepath;
