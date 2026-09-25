@@ -93,7 +93,8 @@ public abstract class Application implements Observer {
                 mainFramebuffer = new NewFramebuffer(resize.width, resize.height);
             }
         }
-        if (event instanceof FramebufferResizeEvent ||
+        if (event instanceof MouseDroppedPathEvent ||
+            event instanceof FramebufferResizeEvent ||
             event instanceof WindowCloseEvent ||
             event instanceof KeyEvent ||
             event instanceof CharEvent ||

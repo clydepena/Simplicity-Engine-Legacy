@@ -19,5 +19,6 @@ public enum EventType {
     MouseButton,
     MouseMoved,
     MouseScroll,
+    MouseDroppedPath
     
 }

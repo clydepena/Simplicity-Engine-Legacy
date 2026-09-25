@@ -25,6 +25,7 @@ public class Resources {
     public static final String FONT_PIXELIFY =      "fonts/PixelifySans.ttf";
     public static final String FONT_RETHINK =       "fonts/RethinkSans-SemiBold.ttf";
     public static final String FONT_HONK =          "fonts/Honk-Regular.ttf";
+    public static final String FONT_SOURCE_SANS =   "fonts/SourceSans3-Regular.ttf";   // SIL OFL, see fonts/SourceSans3-OFL.txt
 
     public static class Editor {
         public static final String SPRITESHEET_GIZMO =     "editor_res/gizmos.png";

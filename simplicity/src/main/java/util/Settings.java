@@ -13,6 +13,7 @@ public class Settings {
     public static final int STYLE_COLOR_PURPLE = 2;
     public static final int STYLE_COLOR_LIGHT = 3;
     public static final int STYLE_COLOR_GRAY = 4;
+    public static final int STYLE_COLOR_DARK = 5;
 
     public static ImVec4[] colorsCustom;
 
@@ -33,6 +34,9 @@ public class Settings {
                 break;
             case 4:
                 getGrayColors(colors);
+                break;
+            case 5:
+                getAdobeColors(colors);
                 break;
             default:
                 getDefaultColors(colors);
@@ -342,4 +346,122 @@ public class Settings {
         colors[54]	= new ImVec4(0.2f,	0.2f,	0.2f,	0.35f);
         return colors;
     }
+
+    private static ImVec4[] getAdobeColors(ImVec4[] colors) {
+        colors[0]	= new ImVec4(0.84f,	0.84f,	0.84f,	1.0f); 
+        colors[1]	= new ImVec4(0.50f,	0.50f,	0.50f,	1.0f); 
+        colors[2]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+        colors[3]	= new ImVec4(0.18f,	0.18f,	0.18f,	1.0f); 
+        colors[4]	= new ImVec4(0.16f,	0.16f,	0.16f,	0.98f);
+        colors[5]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+        colors[6]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.0f); 
+        colors[7]	= new ImVec4(0.13f,	0.13f,	0.13f,	1.0f); 
+        colors[8]	= new ImVec4(0.15f,	0.15f,	0.15f,	1.0f); 
+        colors[9]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+        colors[10]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[11]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[12]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[13]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[14]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+        colors[15]	= new ImVec4(0.33f,	0.33f,	0.33f,	1.0f); 
+        colors[16]	= new ImVec4(0.40f,	0.40f,	0.40f,	1.0f); 
+        colors[17]	= new ImVec4(0.47f,	0.47f,	0.47f,	1.0f); 
+        colors[18]	= new ImVec4(0.90f,	0.47f,	0.05f,	1.0f); 
+        colors[19]	= new ImVec4(0.60f,	0.60f,	0.60f,	1.0f); 
+        colors[20]	= new ImVec4(0.90f,	0.47f,	0.05f,	1.0f); 
+        colors[21]	= new ImVec4(0.26f,	0.26f,	0.26f,	1.0f); 
+        colors[22]	= new ImVec4(0.31f,	0.31f,	0.31f,	1.0f); 
+        colors[23]	= new ImVec4(0.75f,	0.37f,	0.0f,	1.0f); 
+        colors[24]	= new ImVec4(0.75f,	0.37f,	0.0f,	0.45f);
+        colors[25]	= new ImVec4(1.0f,	1.0f,	1.0f,	0.06f);
+        colors[26]	= new ImVec4(0.75f,	0.37f,	0.0f,	0.65f);
+        colors[27]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+        colors[28]	= new ImVec4(0.90f,	0.47f,	0.05f,	0.60f);
+        colors[29]	= new ImVec4(0.90f,	0.47f,	0.05f,	1.0f); 
+        colors[30]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.0f); 
+        colors[31]	= new ImVec4(0.90f,	0.47f,	0.05f,	0.40f);
+        colors[32]	= new ImVec4(0.90f,	0.47f,	0.05f,	0.80f);
+        colors[33]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[34]	= new ImVec4(0.24f,	0.24f,	0.24f,	1.0f); 
+        colors[35]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+        colors[36]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[37]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+        colors[38]	= new ImVec4(0.90f,	0.47f,	0.05f,	0.30f);
+        colors[39]	= new ImVec4(0.13f,	0.13f,	0.13f,	1.0f); 
+        colors[40]	= new ImVec4(0.70f,	0.70f,	0.70f,	1.0f); 
+        colors[41]	= new ImVec4(0.90f,	0.47f,	0.05f,	1.0f); 
+        colors[42]	= new ImVec4(0.90f,	0.47f,	0.05f,	1.0f); 
+        colors[43]	= new ImVec4(1.0f,	0.60f,	0.0f,	1.0f); 
+        colors[44]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+        colors[45]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+        colors[46]	= new ImVec4(0.15f,	0.15f,	0.15f,	1.0f); 
+        colors[47]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.0f); 
+        colors[48]	= new ImVec4(1.0f,	1.0f,	1.0f,	0.03f);
+        colors[49]	= new ImVec4(0.75f,	0.37f,	0.0f,	0.45f);
+        colors[50]	= new ImVec4(0.90f,	0.47f,	0.05f,	0.90f);
+        colors[51]	= new ImVec4(0.90f,	0.47f,	0.05f,	1.0f); 
+        colors[52]	= new ImVec4(1.0f,	1.0f,	1.0f,	0.70f);
+        colors[53]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.40f);
+        colors[54]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.50f);
+        return colors;
+    }
+
+    // private static ImVec4[] getAdobeColors(ImVec4[] colors) {
+    //     colors[0]	= new ImVec4(0.84f,	0.84f,	0.84f,	1.0f); 
+    //     colors[1]	= new ImVec4(0.50f,	0.50f,	0.50f,	1.0f); 
+    //     colors[2]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+    //     colors[3]	= new ImVec4(0.18f,	0.18f,	0.18f,	1.0f); 
+    //     colors[4]	= new ImVec4(0.16f,	0.16f,	0.16f,	0.98f);
+    //     colors[5]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+    //     colors[6]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.0f); 
+    //     colors[7]	= new ImVec4(0.13f,	0.13f,	0.13f,	1.0f); 
+    //     colors[8]	= new ImVec4(0.15f,	0.15f,	0.15f,	1.0f); 
+    //     colors[9]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+    //     colors[10]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[11]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[12]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[13]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[14]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+    //     colors[15]	= new ImVec4(0.33f,	0.33f,	0.33f,	1.0f); 
+    //     colors[16]	= new ImVec4(0.40f,	0.40f,	0.40f,	1.0f); 
+    //     colors[17]	= new ImVec4(0.47f,	0.47f,	0.47f,	1.0f); 
+    //     colors[18]	= new ImVec4(0.15f,	0.52f,	0.95f,	1.0f); 
+    //     colors[19]	= new ImVec4(0.60f,	0.60f,	0.60f,	1.0f); 
+    //     colors[20]	= new ImVec4(0.15f,	0.52f,	0.95f,	1.0f); 
+    //     colors[21]	= new ImVec4(0.26f,	0.26f,	0.26f,	1.0f); 
+    //     colors[22]	= new ImVec4(0.31f,	0.31f,	0.31f,	1.0f); 
+    //     colors[23]	= new ImVec4(0.08f,	0.45f,	0.90f,	1.0f); 
+    //     colors[24]	= new ImVec4(0.08f,	0.45f,	0.90f,	0.45f);
+    //     colors[25]	= new ImVec4(1.0f,	1.0f,	1.0f,	0.06f);
+    //     colors[26]	= new ImVec4(0.08f,	0.45f,	0.90f,	0.65f);
+    //     colors[27]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+    //     colors[28]	= new ImVec4(0.15f,	0.52f,	0.95f,	0.60f);
+    //     colors[29]	= new ImVec4(0.15f,	0.52f,	0.95f,	1.0f); 
+    //     colors[30]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.0f); 
+    //     colors[31]	= new ImVec4(0.15f,	0.52f,	0.95f,	0.40f);
+    //     colors[32]	= new ImVec4(0.15f,	0.52f,	0.95f,	0.80f);
+    //     colors[33]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[34]	= new ImVec4(0.24f,	0.24f,	0.24f,	1.0f); 
+    //     colors[35]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+    //     colors[36]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[37]	= new ImVec4(0.20f,	0.20f,	0.20f,	1.0f); 
+    //     colors[38]	= new ImVec4(0.15f,	0.52f,	0.95f,	0.30f);
+    //     colors[39]	= new ImVec4(0.13f,	0.13f,	0.13f,	1.0f); 
+    //     colors[40]	= new ImVec4(0.70f,	0.70f,	0.70f,	1.0f); 
+    //     colors[41]	= new ImVec4(0.15f,	0.52f,	0.95f,	1.0f); 
+    //     colors[42]	= new ImVec4(0.15f,	0.52f,	0.95f,	1.0f); 
+    //     colors[43]	= new ImVec4(0.30f,	0.62f,	1.0f,	1.0f); 
+    //     colors[44]	= new ImVec4(0.16f,	0.16f,	0.16f,	1.0f); 
+    //     colors[45]	= new ImVec4(0.11f,	0.11f,	0.11f,	1.0f); 
+    //     colors[46]	= new ImVec4(0.15f,	0.15f,	0.15f,	1.0f); 
+    //     colors[47]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.0f); 
+    //     colors[48]	= new ImVec4(1.0f,	1.0f,	1.0f,	0.03f);
+    //     colors[49]	= new ImVec4(0.08f,	0.45f,	0.90f,	0.45f);
+    //     colors[50]	= new ImVec4(0.15f,	0.52f,	0.95f,	0.90f);
+    //     colors[51]	= new ImVec4(0.15f,	0.52f,	0.95f,	1.0f); 
+    //     colors[52]	= new ImVec4(1.0f,	1.0f,	1.0f,	0.70f);
+    //     colors[53]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.40f);
+    //     colors[54]	= new ImVec4(0.0f,	0.0f,	0.0f,	0.50f);
+    //     return colors;
+    // }
 }

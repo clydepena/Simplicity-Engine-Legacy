@@ -2,6 +2,7 @@ package simplicity;
 
 import static org.lwjgl.glfw.GLFW.*;
 import org.joml.*;
+import org.lwjgl.glfw.GLFWDropCallback;
 
 import observers.EventSystem;
 import observers.events.Event;
@@ -45,6 +46,19 @@ public class NewMouseListener {
             super(MouseScroll);
             this.scrollX = scrollX;
             this.scrollY = scrollY;
+        }
+
+    }
+
+    public static class MouseDroppedPathEvent extends Event {
+        public final String[] paths;
+        public final int x, y;
+
+        public MouseDroppedPathEvent(int x, int y, String[] paths) {
+            super(MouseDroppedPath);
+            this.x = x;
+            this.y = y;
+            this.paths = paths;
         }
 
     }
@@ -110,6 +124,12 @@ public class NewMouseListener {
         get().scrollX = xOffset;
         get().scrollY = yOffset;
         EventSystem.publishCoalescing(new MouseScrollEvent(xOffset, yOffset));
+    }
+
+    public static void mouseDroppedPathCallback(long windowPtr, int count, long names) {
+        String[] paths = new String[count];
+        for (int i = 0; i < count; i++) paths[i] =GLFWDropCallback.getName(names, i);
+        EventSystem.publish(new MouseDroppedPathEvent(get().x, get().y, paths));
     }
 
     // public static void endFrame() {

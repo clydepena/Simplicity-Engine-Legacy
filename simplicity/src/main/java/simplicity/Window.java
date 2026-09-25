@@ -22,11 +22,13 @@ import static org.lwjgl.openal.ALC10.alcGetString;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC10.alcOpenDevice;
 import static org.lwjgl.openal.ALC11.*;
+import static simplicity.NewMouseListener.MouseDroppedPathEvent;
 
 import observers.*;
 import observers.events.*;
 import static observers.events.EventType.*;
 import renderer.*;
+import simplicity.NewMouseListener.MouseDroppedPathEvent;
 import util.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 
@@ -219,7 +221,7 @@ public class Window {
 
     private void setListeners() {
         glfwSetCursorPosCallback(glfwWindow, (w, x, y) -> {
-            NewMouseListener.mousePosCallback(this, xPos, yPos);
+            NewMouseListener.mousePosCallback(this, (int) x, (int) y);
         });
         glfwSetMouseButtonCallback(glfwWindow, NewMouseListener::mouseButtonCallback);
         glfwSetScrollCallback(glfwWindow, NewMouseListener::mouseScrollCallback);
@@ -244,6 +246,8 @@ public class Window {
         glfwSetWindowIconifyCallback(glfwWindow, (w, iconified) -> {
             isMinimized = iconified;
         });
+
+        glfwSetDropCallback(glfwWindow, NewMouseListener::mouseDroppedPathCallback);
 
         glfwSetWindowCloseCallback(glfwWindow, (w) -> EventSystem.publish(new WindowCloseEvent(this)));
     }
@@ -327,6 +331,10 @@ public class Window {
 
     public boolean isMinimized() {
         return get().isMinimized;
+    }
+
+    public void focusWindow() {
+        glfwFocusWindow(glfwWindow);
     }
     
     // old code -> never call this
