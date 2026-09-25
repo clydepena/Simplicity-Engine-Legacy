@@ -52,7 +52,7 @@ public class Renderer {
         this.window = window;
     }
 
-    public void add(SpriteRenderer spr) {
+    public void addSprite(SpriteRenderer spr) {
         int z = spr.gameObject.transform.zIndex;
         Texture tex = spr.getTexture();
         for (NewRenderBatch b : batches) {
@@ -68,15 +68,21 @@ public class Renderer {
         Collections.sort(batches);
     }
 
-    public void remove(SpriteRenderer spr) {
+    public void removeSprite(SpriteRenderer spr) {
         for (NewRenderBatch b : batches) if (b.remove(spr)) return;
+    }
+
+    public void removeAllSprites() {
+        while (!batches.isEmpty()) {
+            batches.removeLast().destroy();
+        }
     }
 
     public void drawSprites() {
         checkInPass("drawSprites()");
         List<SpriteRenderer> moved = new ArrayList<>();
         for (NewRenderBatch b : batches) b.render(shader, moved);
-        for (SpriteRenderer spr : moved) add(spr);
+        for (SpriteRenderer spr : moved) addSprite(spr);
 
         // free batches that lost all their sprites (removals or zIndex moves)
         batches.removeIf(b -> {
@@ -104,9 +110,7 @@ public class Renderer {
     }
 
     public void destroy() {
-        while (!batches.isEmpty()) {
-            batches.removeLast().destroy();
-        }
+        removeAllSprites();
     }
     
     public void begin() {
@@ -186,7 +190,6 @@ public class Renderer {
         this.framebuffer = framebuffer;
     }
 
-    // pass settings are applied in begin(), so they must not change until end()
     private void checkNotInPass(String caller) {
         if (beginStart) throw new IllegalStateException(caller + " can't be called between begin() and end()");
     }

@@ -24,6 +24,17 @@ public class Camera {
         adjustProjection();
     }
 
+    /**
+     * Keeps the visible height fixed and widens/narrows the view to match the render target,
+     * so world units stay square on any window size.
+     */
+    public void setAspectRatio(float aspectRatio) {
+        float width = projectionHeight * aspectRatio;
+        if (projectionSize.x == width && projectionSize.y == projectionHeight) return;
+        projectionSize.set(width, projectionHeight);
+        adjustProjection();
+    }
+
     public void adjustProjection() {
         projectionMatrix.identity();
         projectionMatrix.ortho(0.0f, projectionSize.x * this.zoom, 0.0f, projectionSize.y * this.zoom, 0.0f, 100.0f);

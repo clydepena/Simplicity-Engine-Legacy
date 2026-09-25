@@ -1,37 +1,37 @@
 package simplicity;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL20.glAttachShader;
-import static org.lwjgl.opengl.GL20.glCompileShader;
-import static org.lwjgl.opengl.GL20.glCreateProgram;
-import static org.lwjgl.opengl.GL20.glCreateShader;
-import static org.lwjgl.opengl.GL20.glDeleteProgram;
-import static org.lwjgl.opengl.GL20.glDeleteShader;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
-import static org.lwjgl.opengl.GL20.glGetProgrami;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
-import static org.lwjgl.opengl.GL20.glGetShaderi;
-import static org.lwjgl.opengl.GL20.glLinkProgram;
-import static org.lwjgl.opengl.GL20.glShaderSource;
-import static org.lwjgl.opengl.GL20.glUseProgram;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL33.GL_FALSE;
+import static org.lwjgl.opengl.GL33.GL_FLOAT;
+import static org.lwjgl.opengl.GL33.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL33.glDrawArrays;
+import static org.lwjgl.opengl.GL33.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL33.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL33.glBindBuffer;
+import static org.lwjgl.opengl.GL33.glBufferData;
+import static org.lwjgl.opengl.GL33.glDeleteBuffers;
+import static org.lwjgl.opengl.GL33.glGenBuffers;
+import static org.lwjgl.opengl.GL33.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL33.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL33.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL33.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL33.glAttachShader;
+import static org.lwjgl.opengl.GL33.glCompileShader;
+import static org.lwjgl.opengl.GL33.glCreateProgram;
+import static org.lwjgl.opengl.GL33.glCreateShader;
+import static org.lwjgl.opengl.GL33.glDeleteProgram;
+import static org.lwjgl.opengl.GL33.glDeleteShader;
+import static org.lwjgl.opengl.GL33.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL33.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL33.glGetProgrami;
+import static org.lwjgl.opengl.GL33.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL33.glGetShaderi;
+import static org.lwjgl.opengl.GL33.glLinkProgram;
+import static org.lwjgl.opengl.GL33.glShaderSource;
+import static org.lwjgl.opengl.GL33.glUseProgram;
+import static org.lwjgl.opengl.GL33.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL33.glBindVertexArray;
+import static org.lwjgl.opengl.GL33.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL33.glGenVertexArrays;
 import static org.lwjgl.opengl.GL33.*;
 
 import observers.events.Event;
@@ -41,7 +41,7 @@ import renderer.*;
 import simplicity.KeyListener.KeyEvent;
 import static util.Inputs.*;
 
-public class TestLayer implements Layer {
+public class TestLayerTriangle implements Layer {
 
     private static final String VERTEX_SRC = """
         #version 460 core
@@ -77,6 +77,7 @@ public class TestLayer implements Layer {
     private Application context;
     private boolean isFrozen = false;
     private boolean isACtive = true;
+    private boolean isHidden = false;
 
     private int programID, vaoID, vboID;
 
@@ -148,8 +149,17 @@ public class TestLayer implements Layer {
     public void onNotify(Event event) {
         // System.out.println(event);
         if (event instanceof KeyEvent) {
-            if (((KeyEvent) event).key == KEY_BACKSPACE) {
-                isACtive = false;
+            KeyEvent keyEvent = ((KeyEvent) event);
+            if (keyEvent.action == INPUT_RELEASE) {
+                if (keyEvent.key == KEY_ENTER) {
+                    isHidden = !isHidden;
+                }
+                if (keyEvent.key == KEY_BACKSPACE) {
+                    context.removeLayer(this);
+                }
+                if (keyEvent.key == KEY_ESCAPE) {
+                    context.close();
+                }
             }
         }
     }
@@ -199,5 +209,15 @@ public class TestLayer implements Layer {
     @Override
     public boolean isActive() {
         return  isACtive;
+    }
+
+    @Override
+    public void setHidden(boolean bool) {
+        isHidden = bool;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return isHidden;
     }
 }

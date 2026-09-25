@@ -62,10 +62,12 @@ public abstract class Application implements Observer {
         abstract void onAttach(Application context);
         abstract void onDetach();
         abstract void onNotify(Event event);
-        abstract boolean isFrozen();
         abstract void setFrozen(boolean bool);
+        abstract boolean isFrozen();
         abstract void setActive(boolean bool);
         abstract boolean isActive();
+        abstract void setHidden(boolean bool);
+        abstract boolean isHidden();
     }
 
     protected List<Layer> layerStack = new ArrayList<>();
@@ -103,7 +105,7 @@ public abstract class Application implements Observer {
             while (i >= 0) {
                 if (event.stopPropagate) break;
                 Layer layer = layerStack.get(i);
-                if(layer.isActive()) layer.onNotify(event);
+                if(layer.isActive() && !layer.isFrozen()) layer.onNotify(event);
                 i--;
             }
             event.stopPropagate();
@@ -116,7 +118,7 @@ public abstract class Application implements Observer {
 
     public void popLayer() {
         if (layerStack.isEmpty()) return;
-        layerCommands.add(() -> { Layer l = layerStack.removeLast(); l.onDetach(); l.destroy(); });
+        layerCommands.add(() -> { Layer l = layerStack.removeLast(); l.onDetach(); });
     }
 
     public <T extends Layer> T getLayer(Class<T> type) {
@@ -125,7 +127,27 @@ public abstract class Application implements Observer {
     }
 
     public void removeLayer(Layer layer) {
-        layerCommands.add(() -> { if (layerStack.remove(layer)) { layer.onDetach(); layer.destroy(); } });
+        layerCommands.add(() -> { if (layerStack.remove(layer)) { layer.onDetach(); } });
+    }
+
+    public void swapLayer(Layer layer1, Layer layer2) {
+        layerCommands.add(() -> { 
+           if (layerStack.contains(layer1) && layerStack.contains(layer2)) {
+                // take both indices before writing: after the first set, indexOf(layer2) would find the new copy
+                int i = layerStack.indexOf(layer1);
+                int j = layerStack.indexOf(layer2);
+                layerStack.set(i, layer2);
+                layerStack.set(j, layer1);
+           } else if (layerStack.contains(layer1) && !layerStack.contains(layer2)) {
+                layer1.onDetach();
+                layerStack.set(layerStack.indexOf(layer1), layer2);
+                layer2.onAttach(this);
+           } else if (!layerStack.contains(layer1) && layerStack.contains(layer2)) {
+                layer2.onDetach();
+                layerStack.set(layerStack.indexOf(layer2), layer1);
+                layer1.onAttach(this);
+           }
+        });
     }
 
     private void applyLayerCommands() {
@@ -157,7 +179,7 @@ public abstract class Application implements Observer {
                 mainFramebuffer.unbind();
                 NewFramebuffer currFramebuffer = mainFramebuffer;
                 for (Layer layer : layerStack) {
-                    if (!layer.isActive()) continue;
+                    if (layer.isHidden() || !layer.isActive()) continue;
                     renderer.setFramebuffer(currFramebuffer);
                     RenderContext renderContext = new RenderContext(renderer, currFramebuffer);
                     layer.onRender(renderContext);
