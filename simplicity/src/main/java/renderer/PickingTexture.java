@@ -2,78 +2,49 @@ package renderer;
 
 import static org.lwjgl.opengl.GL46.*;
 
-
+/**
+ * Id buffer for picking: pickingShader.glsl writes each sprite's entity id (uid + 1) into it, 0 = nothing.
+ * Render into getFramebuffer() through the Renderer (clear to 0, blending off), then readPixel().
+ */
 public class PickingTexture {
-    
-    private int pickingTextureId;
-    private int fboId;
-    private int depthTexture;
+
+    private Framebuffer framebuffer;
 
     public PickingTexture(int width, int height) {
-        if(!init(width, height)) {
-            assert false : "Error intitializing picking texture";
-        }
+        framebuffer = create(width, height);
     }
 
-    public boolean init(int width, int height) {
-        // Generate framebuffer
-        fboId = glGenFramebuffers();
-        glBindFramebuffer(GL_FRAMEBUFFER, fboId);
-
-        // Create the texture to render the data to, and attach it to our framebuffer
-        pickingTextureId = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, pickingTextureId);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0,
-                GL_RGB, GL_FLOAT, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                this.pickingTextureId, 0);
-
-        // Create the texture object for the depth buffer
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_DEPTH_TEST);
-        depthTexture = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, depthTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0,
-                GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                GL_TEXTURE_2D, depthTexture, 0);
-
-        // Disable the reading
-        glReadBuffer(GL_NONE);
-        glDrawBuffer(GL_COLOR_ATTACHMENT0);
-
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            assert false : "Error: Framebuffer is not complete";
-            return false;
-        }
-
-        // Unbind the texture and framebuffer
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        return true;
+    private static Framebuffer create(int width, int height) {
+        // float storage keeps ids exact up to 2^24; nearest so ids are never blended
+        return new Framebuffer(width, height, GL_RGB32F, GL_RGB, GL_FLOAT, GL_NEAREST);
     }
 
-    public void enableWriting() {
-        glEnable(GL_DEPTH_TEST);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
+    /** Recreates the buffer if its size differs (contents are lost). */
+    public void resize(int width, int height) {
+        if (framebuffer.getWidth() == width && framebuffer.getHeight() == height) return;
+        framebuffer.destroy();
+        framebuffer = create(width, height);
     }
 
-    public void disableWriting() {
-        glDisable(GL_DEPTH_TEST);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    public Framebuffer getFramebuffer() {
+        return framebuffer;
     }
 
+    /** Uid of the object at pixel (x, y), bottom-left origin, or -1 for none / out of bounds. */
     public int readPixel(int x, int y) {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, fboId);
+        if (x < 0 || y < 0 || x >= framebuffer.getWidth() || y >= framebuffer.getHeight()) return -1;
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer.getFboID());
         glReadBuffer(GL_COLOR_ATTACHMENT0);
 
-        float pixels[] = new float[3];
+        float[] pixels = new float[3];
         glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, pixels);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
-        return (int) (pixels[0]) - 1;
+        return (int) (pixels[0] + 0.5f) - 1;
+    }
+
+    public void destroy() {
+        framebuffer.destroy();
     }
 }

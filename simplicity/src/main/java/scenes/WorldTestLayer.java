@@ -29,7 +29,7 @@ public class WorldTestLayer implements Layer {
             throw new IllegalStateException("WorldTestLayer requires a World2DLayer to be pushed first");
         }
 
-        world.setScene(new NewLevelEditorSceneInitializer(levelPath));
+        world.setScene(new LevelEditorSceneInitializer(levelPath));
         world.initSceneResources();
         world.startScene();
 

@@ -17,6 +17,15 @@ import static org.lwjgl.opengl.GL33.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL33.GL_READ_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL33.glBindFramebuffer;
 import static org.lwjgl.opengl.GL33.glBlitFramebuffer;
+import static org.lwjgl.opengl.GL33.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL33.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL33.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL33.glActiveTexture;
+import static org.lwjgl.opengl.GL33.glBindTexture;
+import static org.lwjgl.opengl.GL33.glBindVertexArray;
+import static org.lwjgl.opengl.GL33.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL33.glDrawArrays;
+import static org.lwjgl.opengl.GL33.glGenVertexArrays;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,10 +52,11 @@ public class Renderer {
     private boolean isClearing = false;
     private Vector4f clearColor;
     private Camera camera;
-    private NewFramebuffer framebuffer;
+    private Framebuffer framebuffer;
     private final int MAX_BATCH_SIZE = 1000;
-    private final List<NewRenderBatch> batches = new ArrayList<>();
+    private final List<RenderBatch> batches = new ArrayList<>();
     private boolean beginStart = false;
+    private int fullscreenVao = 0;   // empty: the core profile needs a bound VAO even without vertex data
 
     public Renderer(Window window) {
         this.window = window;
@@ -55,13 +65,13 @@ public class Renderer {
     public void addSprite(SpriteRenderer spr) {
         int z = spr.gameObject.transform.zIndex;
         Texture tex = spr.getTexture();
-        for (NewRenderBatch b : batches) {
+        for (RenderBatch b : batches) {
             if (b.hasRoom() && b.getZIndex() == z && (tex == null || b.hasTexture(tex) || b.hasTextureRoom())) {
                 b.addSprite(spr);
                 return;
             }
         }
-        NewRenderBatch b = new NewRenderBatch(MAX_BATCH_SIZE, z);
+        RenderBatch b = new RenderBatch(MAX_BATCH_SIZE, z);
         b.start();
         b.addSprite(spr);
         batches.add(b);
@@ -69,7 +79,7 @@ public class Renderer {
     }
 
     public void removeSprite(SpriteRenderer spr) {
-        for (NewRenderBatch b : batches) if (b.remove(spr)) return;
+        for (RenderBatch b : batches) if (b.remove(spr)) return;
     }
 
     public void removeAllSprites() {
@@ -81,7 +91,7 @@ public class Renderer {
     public void drawSprites() {
         checkInPass("drawSprites()");
         List<SpriteRenderer> moved = new ArrayList<>();
-        for (NewRenderBatch b : batches) b.render(shader, moved);
+        for (RenderBatch b : batches) b.render(shader, moved);
         for (SpriteRenderer spr : moved) addSprite(spr);
 
         // free batches that lost all their sprites (removals or zIndex moves)
@@ -103,6 +113,7 @@ public class Renderer {
         shader = defaultShader;
         clearColor = new Vector4f(0, 0, 0, 1);
         camera = new Camera(new Vector2f(0, 0));
+        fullscreenVao = glGenVertexArrays();
     }
 
     public void onUpdate(float dt) {
@@ -111,6 +122,10 @@ public class Renderer {
 
     public void destroy() {
         removeAllSprites();
+        if (fullscreenVao != 0) {
+            glDeleteVertexArrays(fullscreenVao);
+            fullscreenVao = 0;
+        }
     }
     
     public void begin() {
@@ -140,7 +155,29 @@ public class Renderer {
         framebuffer.unbind();
     }
 
-    public void present(NewFramebuffer source) {
+    /**
+     * Draws one triangle covering the whole framebuffer with the current shader, which builds it from gl_VertexID.
+     * textureIds are bound to units 0, 1, ... (the caller uploads the matching sampler uniforms).
+     */
+    public void drawFullscreen(int... textureIds) {
+        checkInPass("drawFullscreen()");
+        for (int i = 0; i < textureIds.length; i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, textureIds[i]);
+        }
+
+        glBindVertexArray(fullscreenVao);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
+
+        for (int i = 0; i < textureIds.length; i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        glActiveTexture(GL_TEXTURE0);
+    }
+
+    public void present(Framebuffer source) {
         checkNotInPass("present()");
         glBindFramebuffer(GL_READ_FRAMEBUFFER, source.getFboID());
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -185,9 +222,30 @@ public class Renderer {
         this.camera = camera;
     }
 
-    public void setFramebuffer(NewFramebuffer framebuffer) {
+    public void setFramebuffer(Framebuffer framebuffer) {
         checkNotInPass("setFramebuffer()");
         this.framebuffer = framebuffer;
+    }
+
+    public Shader getShader() {
+        return shader;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public boolean isBlending() {
+        return isBlending;
+    }
+
+    public boolean isClearing() {
+        return isClearing;
+    }
+
+    /** A copy, so callers can restore it later with setClearColor(). */
+    public Vector4f getClearColor() {
+        return new Vector4f(clearColor);
     }
 
     private void checkNotInPass(String caller) {

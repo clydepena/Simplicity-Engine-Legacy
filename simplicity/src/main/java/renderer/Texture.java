@@ -20,17 +20,23 @@ public class Texture {
     }
 
     public Texture(int width, int height) {
+        this(width, height, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR);
+    }
+
+    /** Empty texture with the given storage (e.g. GL_RGB32F / GL_RGB / GL_FLOAT for an id buffer) and min/mag filter. */
+    public Texture(int width, int height, int internalFormat, int format, int type, int filter) {
         this.filepath = "Generated";
+        this.width = width;
+        this.height = height;
 
         // generate texture on GPU
         texID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texID);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-          
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
     }
 
     public void initFromRes(String filepath) {

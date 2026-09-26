@@ -46,7 +46,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import org.joml.*;
 
 
-public class OldWindow implements Observer {
+public class Window implements Observer {
     private int width, height;
     private int xPos, yPos;
     private String title;
@@ -56,7 +56,7 @@ public class OldWindow implements Observer {
     public static float SCALE = 0.5f;
     private Vector4f bgColor;
     private long audioContext, audioDevice;
-    private static OldWindow window;
+    private static Window window;
     private static Scene currentScene;
     private boolean runtimePlaying = false;
     public static long custom_cursor;
@@ -66,7 +66,7 @@ public class OldWindow implements Observer {
     private long handleWindow;
     private int handleType;
 
-    private OldWindow() {
+    private Window() {
         // this.width = SCREEN_WIDTH;
         // this.height = SCREEN_HEIGHT;
         this.title = "Legacy Simplicity @D.P.";
@@ -85,11 +85,11 @@ public class OldWindow implements Observer {
         currentScene.start();
     }
 
-    public static OldWindow get() {
-        if(OldWindow.window == null) {
-            OldWindow.window = new OldWindow();
+    public static Window get() {
+        if(Window.window == null) {
+            Window.window = new Window();
         }
-        return OldWindow.window;
+        return Window.window;
     }
 
     @SuppressWarnings("static-access")
@@ -101,7 +101,7 @@ public class OldWindow implements Observer {
         // System.out.println("LWJGL VERSION: " + Version.getVersion());
         initWindow();
         initImGui();
-        OldWindow.changeScene(new LevelEditorSceneInitializer());
+        Window.changeScene(new LevelEditorSceneInitializer());
         loop();
         destroy();
     }
@@ -396,14 +396,14 @@ public class OldWindow implements Observer {
             case GameEngineStartPlay:
                 this.runtimePlaying = true;
                 currentScene.save();
-                OldWindow.changeScene(new LevelEditorSceneInitializer());
+                Window.changeScene(new LevelEditorSceneInitializer());
                 break;
             case GameEngineStopPlay:
                 this.runtimePlaying = false;
-                OldWindow.changeScene(new LevelEditorSceneInitializer());
+                Window.changeScene(new LevelEditorSceneInitializer());
                 break;
             case LoadLevel:
-                OldWindow.changeScene(new LevelEditorSceneInitializer(util.IOHelper.openSingle(window,"json")));
+                Window.changeScene(new LevelEditorSceneInitializer(util.IOHelper.openSingle(window,"json")));
                 break;
             case SaveLevel:
                 currentScene.save();
@@ -411,7 +411,7 @@ public class OldWindow implements Observer {
             case SaveLevelAs:
                 String path = util.IOHelper.saveFile(window, "level", "json");
                 currentScene.saveAs(path);
-                OldWindow.changeScene(new LevelEditorSceneInitializer(path));
+                Window.changeScene(new LevelEditorSceneInitializer(path));
                 break;
             default:
                 break;

@@ -1,15 +1,18 @@
-package editor;
+package editor.panels;
 
 import imgui.extension.nodeditor.*;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.flag.*;
 import imgui.internal.ImGui;
 import imgui.type.ImLong;
-
+import observers.events.Event;
+import simplicity.Application.RenderContext;
 import editor.nodes.Graph;
 import editor.nodes.Graph.GraphTuple;
+import editor.SimplicityEditor.SimplicityEditorContext;
+import editor.SimplicityEditor.SimplicityPanel;
 
-public class NodeEditorWindow extends ImGuiInterface {
+public class NodeEditorPanel extends SimplicityPanel {
 
     /*  TODO:
      *  FIX THIS
@@ -26,34 +29,44 @@ public class NodeEditorWindow extends ImGuiInterface {
 
     private final Graph graph = new Graph();
 
+    public NodeEditorPanel(SimplicityEditorContext editorContext) {
+        super(editorContext);
+    }
+
     @Override
-    public void imgui(float dt) {
+    public void onUpdate(float dt) {
+
+    }
+    
+    
+    @Override
+    public void onRender(RenderContext renderContext) {
         // ImGui.setNextWindowSize(500, 400, ImGuiCond.Once);
         // ImGui.setNextWindowPos(ImGui.getMainViewport().getPosX() + 100, ImGui.getMainViewport().getPosY() + 200, ImGuiCond.Once);
         if (ImGui.begin("Node Editor", ImGuiWindowFlags.MenuBar)) {
             updateCalc();
             // ImGui.text("This a demo graph editor for imgui-node-editor");
-
+    
             // ImGui.alignTextToFramePadding();
             // ImGui.text("Repo:");
             // ImGui.sameLine();
             
             menuBar();
-
+    
             // if (ImGui.button("Center to content")) {
             //     NodeEditor.navigateToContent(1);
             // }
-
+    
             NodeEditor.setCurrentEditor(CONTEXT);
             NodeEditor.begin("Node Editor Viewport");
-
+    
             for (Graph.GraphNode node : graph.nodes.values()) {
                 NodeEditor.beginNode(node.nodeId);
                 ImGui.text(node.getName());
                 int max = Math.max(node.getInputPinId().length, node.getOutputPinId().length);
-
+    
                 for (int i = 0; i < max; i++) {
-
+    
                     if (i < node.getInputPinId().length) {
                         NodeEditor.beginPin(node.getInputPinId()[i], NodeEditorPinKind.Input);
                         ImGui.text("-> In");
@@ -63,7 +76,7 @@ public class NodeEditorWindow extends ImGuiInterface {
                     }
                     
                     ImGui.sameLine();
-
+    
                     if (i < node.getOutputPinId().length) {
                         NodeEditor.beginPin(node.getOutputPinId()[i], NodeEditorPinKind.Output);
                         ImGui.text("Out ->");
@@ -72,10 +85,10 @@ public class NodeEditorWindow extends ImGuiInterface {
                         ImGui.textColored(0, 0, 0, 0, "Out ->");
                     }
                 }
-
+    
                 NodeEditor.endNode();
             }
-
+    
             if (NodeEditor.beginCreate()) {
                 final ImLong a = new ImLong();
                 final ImLong b = new ImLong();
@@ -89,7 +102,7 @@ public class NodeEditorWindow extends ImGuiInterface {
                 }
             }
             NodeEditor.endCreate();
-
+    
             int uniqueLinkId = 1;
             for (Graph.GraphNode node : graph.nodes.values()) {
                 for (int a = 0; a < node.outputNodeId.length; a++) {
@@ -100,15 +113,15 @@ public class NodeEditorWindow extends ImGuiInterface {
                     }
                 }
             }
-
+    
             NodeEditor.suspend();
-
+    
             final long nodeWithContextMenu = NodeEditor.getNodeWithContextMenu();
             if (nodeWithContextMenu != -1) {
                 ImGui.openPopup("node_context");
                 ImGui.getStateStorage().setInt(ImGui.getID("delete_node_id"), (int) nodeWithContextMenu);
             }
-
+    
             if (ImGui.isPopupOpen("node_context")) {
                 final int targetNode = ImGui.getStateStorage().getInt(ImGui.getID("delete_node_id"));
                 if (ImGui.beginPopup("node_context")) {
@@ -119,11 +132,11 @@ public class NodeEditorWindow extends ImGuiInterface {
                     ImGui.endPopup();
                 }
             }
-
+    
             if (NodeEditor.showBackgroundContextMenu()) {
                 ImGui.openPopup("node_editor_context");
             }
-
+    
             if (ImGui.beginPopup("node_editor_context")) {
                 if (ImGui.button("Create New Node")) {
                     final Graph.GraphNode node = graph.createGraphNode();
@@ -134,7 +147,7 @@ public class NodeEditorWindow extends ImGuiInterface {
                 }
                 ImGui.endPopup();
             }
-
+    
             NodeEditor.resume();
             NodeEditor.end();
         }
@@ -151,6 +164,11 @@ public class NodeEditorWindow extends ImGuiInterface {
 
     @Override
     public void destroy() {
+        
+    }
+
+    @Override
+    public void onEvent(Event event) {
         
     }
 }

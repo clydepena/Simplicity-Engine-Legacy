@@ -29,7 +29,7 @@ import org.lwjgl.util.nfd.NFDPickFolderArgs;
 import org.lwjgl.util.nfd.NFDSaveDialogArgs;
 
 import simplicity.GameObject;
-import simplicity.OldWindow;
+import simplicity.Window;
 
 public class IOHelper {
     
@@ -84,7 +84,7 @@ public class IOHelper {
         }
     }
 
-    public static String openSingle(OldWindow window, String... fileExtensions)
+    public static String openSingle(Window window, String... fileExtensions)
     {
         int handleType = window.getHandleType();
         long handleWindow = window.getHandleWin();
@@ -110,7 +110,7 @@ public class IOHelper {
         }
     }
 
-    public static String saveFile(OldWindow window, String filename, String... fileExtensions) {
+    public static String saveFile(Window window, String filename, String... fileExtensions) {
         int handleType = window.getHandleType();
         long handleWindow = window.getHandleWin();
 
@@ -135,7 +135,7 @@ public class IOHelper {
         }
     }
 
-    public static String openFolder(OldWindow window) {
+    public static String openFolder(Window window) {
         int handleType = window.getHandleType();
         long handleWindow = window.getHandleWin();
 

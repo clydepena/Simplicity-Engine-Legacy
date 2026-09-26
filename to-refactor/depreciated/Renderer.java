@@ -11,14 +11,14 @@ import components.SpriteRenderer;
 import simplicity.GameObject;
 import simplicity.Window;
 
-public class RendererOld {
+public class Renderer {
     private final int MAX_BATCH_SIZE = 1000;
     private List<RenderBatch> batches;
     private static Shader currentShader;
     private Window target;
     private GLCapabilities capabilities;
 
-    public RendererOld() {
+    public Renderer() {
         this.batches = new ArrayList<>();
     }
     

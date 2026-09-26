@@ -9,7 +9,7 @@ import observers.events.Event;
 import renderer.*;
 import simplicity.Application.RenderContext;
 import simplicity.KeyListener.*;
-import simplicity.NewMouseListener.*;
+import simplicity.MouseListener.*;
 import simplicity.Window.FramebufferResizeEvent;
 import simplicity.Window.WindowCloseEvent;
 
@@ -43,16 +43,16 @@ public abstract class Application implements Observer {
 
     public static final class RenderContext {
         private final Renderer renderer;
-        private NewFramebuffer framebuffer;
+        private Framebuffer framebuffer;
 
-        public RenderContext(Renderer renderer, NewFramebuffer framebuffer) {
+        public RenderContext(Renderer renderer, Framebuffer framebuffer) {
             this.renderer = renderer;
             this.framebuffer = framebuffer;
         }
 
         public Renderer renderer() {return renderer;};
-        public NewFramebuffer framebuffer() {return framebuffer;};
-        public void setFramebuffer(NewFramebuffer framebuffer) {this.framebuffer = framebuffer;};
+        public Framebuffer framebuffer() {return framebuffer;};
+        public void setFramebuffer(Framebuffer framebuffer) {this.framebuffer = framebuffer;};
     }
 
     public static interface Layer {        
@@ -75,7 +75,7 @@ public abstract class Application implements Observer {
     protected Renderer renderer;
     protected boolean running = false;
     protected String title;
-    protected NewFramebuffer mainFramebuffer;
+    protected Framebuffer mainFramebuffer;
     protected final Queue<Runnable> layerCommands = new ArrayDeque<>();
 
     public Application(String title) {
@@ -90,7 +90,7 @@ public abstract class Application implements Observer {
         if (event instanceof FramebufferResizeEvent resize) {
             if (!window.isMinimized()) {
                 mainFramebuffer.destroy();
-                mainFramebuffer = new NewFramebuffer(resize.width, resize.height);
+                mainFramebuffer = new Framebuffer(resize.width, resize.height);
             }
         }
         if (event instanceof MouseDroppedPathEvent ||
@@ -159,10 +159,11 @@ public abstract class Application implements Observer {
         window.init();
         renderer.init();
 
-        mainFramebuffer = new NewFramebuffer(window.getFramebufferWidth(), window.getFramebufferHeight());
+        mainFramebuffer = new Framebuffer(window.getFramebufferWidth(), window.getFramebufferHeight());
 
         applyLayerCommands();
 
+        window.maximize();
         window.setVisible(true);
         float beginTime = getTime(), endTime, dt = 0f;
         while (!window.shouldClose()) {
@@ -178,7 +179,7 @@ public abstract class Application implements Observer {
                 mainFramebuffer.bind();
                 renderer.clear();
                 mainFramebuffer.unbind();
-                NewFramebuffer currFramebuffer = mainFramebuffer;
+                Framebuffer currFramebuffer = mainFramebuffer;
                 for (Layer layer : layerStack) {
                     if (layer.isHidden() || !layer.isActive()) continue;
                     renderer.setFramebuffer(currFramebuffer);

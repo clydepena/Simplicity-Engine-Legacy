@@ -8,7 +8,7 @@ import org.joml.Vector2f;
 import components.SpriteRenderer;
 import observers.events.Event;
 import physics2d.Physics2D;
-import renderer.NewFramebuffer;
+import renderer.Framebuffer;
 import renderer.Renderer;
 import simplicity.Application;
 import simplicity.Application.Layer;
@@ -24,7 +24,7 @@ public final class World2DLayer implements Layer {
     private boolean sceneRunning;
     private List<GameObject> gameObjects = new ArrayList<>();
     private Physics2D physics2d;
-    private NewSceneInitializer sceneInitializer;
+    private SceneInitializer sceneInitializer;
 
 
 
@@ -71,7 +71,7 @@ public final class World2DLayer implements Layer {
     public void onRender(RenderContext renderContext) {
         if (!sceneRunning) return;
         Renderer r = renderContext.renderer();
-        NewFramebuffer target = renderContext.framebuffer();
+        Framebuffer target = renderContext.framebuffer();
         camera.setAspectRatio((float) target.getWidth() / target.getHeight());
         r.setCamera(camera);
         r.begin();
@@ -137,7 +137,7 @@ public final class World2DLayer implements Layer {
         return isHidden;
     }
 
-    public void setScene(NewSceneInitializer sceneInitializer) {
+    public void setScene(SceneInitializer sceneInitializer) {
         this.sceneInitializer = sceneInitializer;
         // this.currentFile = sceneInitializer.getLevelPath() == null ?  currentFile : sceneInitializer.getLevelPath();
         // if (this.currentFile != null) {

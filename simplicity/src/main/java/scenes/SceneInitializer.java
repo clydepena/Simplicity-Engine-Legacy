@@ -1,8 +1,7 @@
 package scenes;
 
-public abstract class SceneInitializer {
-    public abstract void init(Scene scene);
-    public abstract void loadResources(Scene scene);
-    public abstract void imgui();
-    public abstract String getLevelPath();
+public interface SceneInitializer {
+    public abstract void init(World2DLayer world);
+    public abstract void loadResources(World2DLayer world);
+    // public abstract String getLevelPath();
 }

@@ -2,7 +2,7 @@ package physics2d.components;
 
 import org.joml.Vector2f;
 
-import renderer.DebugDraw;
+// import renderer.DebugDraw;   // TODO: restore when DebugDraw is ported (to-refactor/renderer/DebugDraw.java)
 
 public class Box2DCollider extends Collider {
     private Vector2f halfSize = new Vector2f(1.0f);
@@ -23,7 +23,7 @@ public class Box2DCollider extends Collider {
     @Override
     public void editorUpdate(float dt) {
         Vector2f center = new Vector2f(this.gameObject.transform.position).add(this.offset);
-        DebugDraw.addBox2D(center, this.halfSize, this.gameObject.transform.rotation);
+        // DebugDraw.addBox2D(center, this.halfSize, this.gameObject.transform.rotation);   // TODO: restore with DebugDraw
     }
 
 }

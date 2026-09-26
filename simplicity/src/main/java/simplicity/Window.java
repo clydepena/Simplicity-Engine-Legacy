@@ -22,13 +22,13 @@ import static org.lwjgl.openal.ALC10.alcGetString;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC10.alcOpenDevice;
 import static org.lwjgl.openal.ALC11.*;
-import static simplicity.NewMouseListener.MouseDroppedPathEvent;
+import static simplicity.MouseListener.MouseDroppedPathEvent;
 
 import observers.*;
 import observers.events.*;
 import static observers.events.EventType.*;
 import renderer.*;
-import simplicity.NewMouseListener.MouseDroppedPathEvent;
+import simplicity.MouseListener.MouseDroppedPathEvent;
 import util.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 
@@ -118,6 +118,8 @@ public class Window {
         height = SCREEN_HEIGHT;
         int tmpWidth = (int) (this.width * 0.75);
         int tmpHeight = (int) (this.height * 0.75);
+        width = tmpWidth;
+        height = tmpHeight;
 
         // create window
         glfwWindow = glfwCreateWindow(tmpWidth, tmpHeight, this.title, NULL, NULL);
@@ -221,10 +223,10 @@ public class Window {
 
     private void setListeners() {
         glfwSetCursorPosCallback(glfwWindow, (w, x, y) -> {
-            NewMouseListener.mousePosCallback(this, (int) x, (int) y);
+            MouseListener.mousePosCallback(this, (int) x, (int) y);
         });
-        glfwSetMouseButtonCallback(glfwWindow, NewMouseListener::mouseButtonCallback);
-        glfwSetScrollCallback(glfwWindow, NewMouseListener::mouseScrollCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
         glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
         glfwSetCharCallback(glfwWindow, KeyListener::charCallback);
 
@@ -247,7 +249,7 @@ public class Window {
             isMinimized = iconified;
         });
 
-        glfwSetDropCallback(glfwWindow, NewMouseListener::mouseDroppedPathCallback);
+        glfwSetDropCallback(glfwWindow, MouseListener::mouseDroppedPathCallback);
 
         glfwSetWindowCloseCallback(glfwWindow, (w) -> EventSystem.publish(new WindowCloseEvent(this)));
     }
@@ -335,6 +337,14 @@ public class Window {
 
     public void focusWindow() {
         glfwFocusWindow(glfwWindow);
+    }
+
+    public void maximize() {
+        glfwMaximizeWindow(glfwWindow);
+    }
+
+    public void restore() {
+        glfwRestoreWindow(glfwWindow);
     }
     
     // old code -> never call this

@@ -32,7 +32,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -95,7 +95,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -158,7 +158,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -221,7 +221,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -284,7 +284,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -347,7 +347,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -410,7 +410,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -473,7 +473,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -536,7 +536,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -599,7 +599,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -662,7 +662,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -725,7 +725,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "default_res/sprite sheets/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },

@@ -5,7 +5,7 @@
     -JS scripting
 */
 
-import simplicity.OldWindow;
+// import simplicity.OldWindow;
 import simplicity.TestApp;
 
 public class Main {
@@ -16,8 +16,8 @@ public class Main {
             TestApp app = new TestApp();
             app.run();
         } else {
-            OldWindow window = OldWindow.get();
-            window.run();
+            // OldWindow window = OldWindow.get();
+            // window.run();
         }
 
 

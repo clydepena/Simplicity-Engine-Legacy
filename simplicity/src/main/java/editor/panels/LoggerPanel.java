@@ -1,14 +1,19 @@
-package editor;
+package editor.panels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import editor.SimplicityEditor.SimplicityEditorContext;
+import editor.SimplicityEditor.SimplicityPanel;
 import imgui.*;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.*;
 import logger.Log;
+import observers.events.Event;
+import simplicity.Application.RenderContext;
 
 @SuppressWarnings("unused")
-public class LoggerWindow extends ImGuiInterface {
+public class LoggerPanel extends SimplicityPanel {
 
     private class Entry {
         private static int lineStatic = 1;
@@ -39,7 +44,8 @@ public class LoggerWindow extends ImGuiInterface {
     private boolean scrollBotton, autoScroll;
     private List<Entry> entries;
 
-    public LoggerWindow() {
+    public LoggerPanel(SimplicityEditorContext editorContext) {
+        super(editorContext);
         textInput = new ImString("", 256);
         scrollBotton = false;
         autoScroll = false;
@@ -55,16 +61,21 @@ public class LoggerWindow extends ImGuiInterface {
     }
     
     @Override
-    public void imgui(float dt) {
+    public void onUpdate(float dt) {
+        
+    }
+    
+    @Override
+    public void onRender(RenderContext renderContext) {
         ImGui.begin("Terminal");
         updateCalc();
-
+    
         // ImGui.button("CLICK", 100, 20);
-
+    
         logArea();
-
+    
         ImGui.separator();
-
+    
         inputArea();
         ImGui.end();
     }
@@ -131,6 +142,11 @@ public class LoggerWindow extends ImGuiInterface {
                 break;
         }
         scrollBotton = true;
+    }
+
+    @Override
+    public void onEvent(Event event) {
+        
     }
     
 }

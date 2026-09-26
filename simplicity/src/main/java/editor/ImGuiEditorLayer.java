@@ -1,23 +1,22 @@
-package scenes;
+package editor;
 
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFW;
+
+import editor.panels.*;
+
 import static simplicity.Window.*;
-import static simplicity.NewMouseListener.*;
+import static simplicity.MouseListener.*;
 import static simplicity.KeyListener.*;
 import static util.Inputs.*;
-import static observers.events.EventType.*;
 
-// import editor.FileExplorerWIndow;
-// import editor.GameViewWindow;
-// import editor.LoggerWindow;
-// import editor.MenuBar;
-// import editor.NodeEditorWindow;
-// import editor.ProjectExplorerWindow;
-// import editor.PropertiesWindow;
-// import editor.SceneHierarchyWindow;
-// import editor.SpriteSelectorWindow;
-// import editor.TextEditorWindow;
+import java.util.List;
+
+import static observers.events.EventType.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -30,9 +29,9 @@ import logger.Logger;
 import observers.EventSystem;
 import observers.Observer;
 import observers.events.Event;
-import renderer.NewFramebuffer;
+import renderer.Framebuffer;
 import renderer.PickingTexture;
-import scenes.Scene;
+import scenes.World2DLayer;
 import simplicity.Application;
 import simplicity.Application.Layer;
 import simplicity.GameObject;
@@ -40,93 +39,98 @@ import simplicity.KeyListener;
 import simplicity.KeyListener.CharEvent;
 import simplicity.KeyListener.KeyEvent;
 import simplicity.MouseListener;
-import simplicity.NewMouseListener.MouseButtonEvent;
-import simplicity.NewMouseListener.MouseDroppedPathEvent;
-import simplicity.NewMouseListener.MouseScrollEvent;
+import simplicity.MouseListener.MouseButtonEvent;
+import simplicity.MouseListener.MouseDroppedPathEvent;
+import simplicity.MouseListener.MouseScrollEvent;
 import simplicity.Window;
 import util.IOHelper;
 import util.Resources;
 import util.Settings;
-import observers.EventSystem;
-import observers.Observer;
-import observers.events.Event;
 import static logger.Log.LogLevel.*;
-
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
-// import static org.lwjgl.opengl.GL46.*;
-
-import observers.events.Event;
-import simplicity.Application;
-import simplicity.Application.Layer;
 import simplicity.Application.RenderContext;
 
-public class NewImGuiLayer implements Layer {
+public abstract class ImGuiEditorLayer implements Layer {
 
-    private Application context;
-    private boolean isFrozen = false;
-    private boolean isActive = true;
-    private boolean isHidden = false;
-    private boolean darkAdobe = true;
+    protected Application context;
+    protected boolean isFrozen = false;
+    protected boolean isActive = true;
+    protected boolean isHidden = false;
+    protected boolean darkAdobe = true;
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private ImGuiIO io;
-    private ImGuiStyle style;
+    protected ImGuiStyle style;
     private boolean initialized = false;
-    private World2DLayer world;
 
     private static final String PAYLOAD_FILES = "FILES";
     private static final int EXTERNAL_DROP_MAX_FRAMES = 10;
     private String[] externalDrop = null;
     private int externalDropFrames = 0;
-    private float deltaTime = 0f;
 
-    // private GameObject editorObject;
-    // private GameViewWindow gameViewWindow;
-    // private PropertiesWindow propertiesWindow;
-    // private LoggerWindow loggerWindow;
-    // private MenuBar menuBar;
-    // private SceneHierarchyWindow sceneHierarchyWindow;
-    // private TextEditorWindow textEditorWindow;
-    // private SpriteSelectorWindow spriteSelectorWindow;
-    // private NodeEditorWindow nodeEditorWindow;
-    // private FileExplorerWIndow tempWindow;
-    // private ProjectExplorerWindow projectExplorerWindow;
-    // private boolean tmpOnce = true;
-    // private PickingTexture pickingTexture;
+    protected abstract void onRenderMenuBar();
+    protected abstract void onRenderEditor(RenderContext renderContext);
+    protected abstract void onUpdateEditor(float dt);
+    protected abstract void onInitEditor();
+    protected abstract void onDestroyEditor();
+    protected abstract void onNotifyEditor(Event event);
 
+    /**
+     * True when the editor shows the world's frame as an ImGui image (e.g. a viewport panel in framebuffer mode).
+     * ImGui then renders into its own frame instead of over the world's, since it can't sample the texture it draws into,
+     * and the dockspace stays opaque. False: ImGui draws over the world and the dockspace's central node is see-through.
+     */
+    protected boolean rendersWorldAsImage() { return false; }
+
+    /** True while the mouse is over the part of the editor showing the world, so mouse input still reaches the world. */
+    protected boolean isMouseOverWorld() { return false; }
+
+    // ImGui's own render target, only used while rendersWorldAsImage()
+    private Framebuffer uiFrame;
 
     @Override
-    public void onUpdate(float dt) {
+    public final void onUpdate(float dt) {
         if (!initialized) return;
-        this.deltaTime = dt;
+        onUpdateEditor(dt);
     }
 
     @Override
-    public void onRender(RenderContext renderContext) {
+    public final void onRender(RenderContext renderContext) {
         if (!initialized) return;
+
+        // decided once per frame, so the dockspace style and the render target always agree
+        final boolean worldAsImage = rendersWorldAsImage();
+        final Framebuffer worldFrame = renderContext.framebuffer();
 
         imGuiGlfw.newFrame();            // mouse position, display size, dt (Option A)
         ImGui.newFrame();
 
         submitExternalDrop();            // before any panel, so targets can accept it this frame
 
-        // ... dockspace + panels ...
-        renderDockspace();
-        ImGui.showDemoWindow();
-        // renderDropTestWindow();
-        
+        beginDockspace(!worldAsImage);
+        if (ImGui.beginMenuBar()) {
+            onRenderMenuBar();
+            ImGui.endMenuBar();
+        }
+        endDockspace();
+        onRenderEditor(renderContext);   // panels read the world's frame from renderContext.framebuffer()
 
         ImGui.render();
-        NewFramebuffer target = renderContext.framebuffer();   // overlay mode: draw over the chain's frame
-        target.bind();
+        Framebuffer target;
+        if (worldAsImage) {
+            // ImGui samples worldFrame as a texture, so it must draw somewhere else
+            target = getUiFrame(worldFrame.getWidth(), worldFrame.getHeight());
+            target.bind();
+            glClearColor(0, 0, 0, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
+        } else {
+            // overlay mode: draw over the chain's frame
+            target = worldFrame;
+            target.bind();
+        }
         imGuiGl3.renderDrawData(ImGui.getDrawData());
         target.unbind();
+        if (worldAsImage) renderContext.setFramebuffer(target);   // the next layer / present() gets the editor image
 
         if (io.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             long backup = glfwGetCurrentContext();
@@ -136,35 +140,75 @@ public class NewImGuiLayer implements Layer {
         }
     }
 
-    private void renderDockspace() {
-        int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
-        Window window = context.window();
-
-        ImGuiViewport mainViewport = ImGui.getMainViewport();
-        ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
-        // ImGui.setNextWindowSize(mainViewport.getWorkSizeX(), mainViewport.getWorkSizeY());
-        ImGui.setNextWindowViewport(mainViewport.getID());
-
-        ImGui.setNextWindowPos(window.getXPos(), window.getYPos());
-        ImGui.setNextWindowSize(window.getWidth(), window.getHeight());
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-        windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize 
-            | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus 
-            | ImGuiWindowFlags.NoNavFocus;
-
-        ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
-        ImGui.popStyleVar(2);
-
-        // dockspace
-        ImGui.dockSpace(ImGui.getID("Dockspace"));
-        // menuBar.imgui(deltaTime);
-        ImGui.end();
+    /** Creates or resizes ImGui's own render target to match the world's frame. */
+    private Framebuffer getUiFrame(int width, int height) {
+        if (uiFrame == null || uiFrame.getWidth() != width || uiFrame.getHeight() != height) {
+            if (uiFrame != null) uiFrame.destroy();
+            uiFrame = new Framebuffer(width, height);
+        }
+        return uiFrame;
     }
 
+    private void beginDockspace(boolean dockTransparent) {
+        if (!dockTransparent) {
+            int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
+            Window window = context.window();
+            
+            ImGuiViewport mainViewport = ImGui.getMainViewport();
+            ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
+            // ImGui.setNextWindowSize(mainViewport.getWorkSizeX(), mainViewport.getWorkSizeY());
+            ImGui.setNextWindowViewport(mainViewport.getID());
+            
+            ImGui.setNextWindowPos(window.getXPos(), window.getYPos());
+            ImGui.setNextWindowSize(window.getWidth(), window.getHeight());
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize 
+            | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus 
+            | ImGuiWindowFlags.NoNavFocus;
+            
+            ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
+            ImGui.popStyleVar(2);
+            
+            // dockspace
+            ImGui.dockSpace(ImGui.getID("Dockspace"));
+            // menuBar.imgui(deltaTime);
+            // renderMenuBar(renderContext);
+        } else {
+            ImGuiViewport vp = ImGui.getMainViewport();
+            ImGui.setNextWindowPos(vp.getWorkPosX(), vp.getWorkPosY());
+            ImGui.setNextWindowSize(vp.getWorkSizeX(), vp.getWorkSizeY());
+            ImGui.setNextWindowViewport(vp.getID());
+
+            int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking
+                | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize
+                | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus
+                | ImGuiWindowFlags.NoBackground;                      // host window draws nothing
+
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);   // no gap around the dockspace
+            ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
+            ImGui.popStyleVar(3);
+
+            ImGui.dockSpace(ImGui.getID("Dockspace"), 0, 0, ImGuiDockNodeFlags.PassthruCentralNode);
+            // menuBar.imgui(deltaTime);
+            // renderMenuBar(renderContext);
+        }
+    }
+
+    private void endDockspace() {
+        ImGui.end();
+    }
+    
     @Override
-    public void destroy() {
+    public final void destroy() {
         if (!initialized) return;
+        onDestroyEditor();
+        if (uiFrame != null) {
+            uiFrame.destroy();
+            uiFrame = null;
+        }
         imGuiGl3.dispose();
         imGuiGlfw.dispose();
         ImGui.destroyContext();
@@ -172,10 +216,7 @@ public class NewImGuiLayer implements Layer {
     }
 
     @Override
-    public void onAttach(Application context) {
-        World2DLayer world = context.getLayer(World2DLayer.class);
-        if (world == null) throw new IllegalStateException(this.getClass().getSimpleName() + " requires a World2DLayer to be pushed first");
-        this.world = world;
+    public final void onAttach(Application context) {
         this.context = context;
         if (!initialized) {
             initImGui();
@@ -183,9 +224,8 @@ public class NewImGuiLayer implements Layer {
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         this.context = null;
-        this.world = null;
         if (initialized) {
             io.clearInputKeys();
             io.clearInputCharacters();
@@ -193,7 +233,7 @@ public class NewImGuiLayer implements Layer {
     }
 
     @Override
-    public void onNotify(Event event) {
+    public final void onNotify(Event event) {
         if (!initialized) return;
 
         if (event.type == KeyInput) {
@@ -223,7 +263,7 @@ public class NewImGuiLayer implements Layer {
                 io.setMouseDown(mouseBtn.button, mouseBtn.action != INPUT_RELEASE);
             }
 
-            if (io.getWantCaptureMouse()) event.stopPropagate();
+            if (io.getWantCaptureMouse() && !isMouseOverWorld()) event.stopPropagate();
         }
 
         if (event.type == MouseScroll) {
@@ -231,7 +271,7 @@ public class NewImGuiLayer implements Layer {
             io.setMouseWheel(io.getMouseWheel() + (float) mouseScrl.scrollY);
             io.setMouseWheelH(io.getMouseWheelH() + (float) mouseScrl.scrollX);
 
-            if (io.getWantCaptureMouse()) event.stopPropagate();
+            if (io.getWantCaptureMouse() && !isMouseOverWorld()) event.stopPropagate();
         }
 
         if (event.type == MouseDroppedPath) {
@@ -240,6 +280,7 @@ public class NewImGuiLayer implements Layer {
             externalDropFrames = 0;
             context.window().focusWindow();
         }
+        onNotifyEditor(event);
     }
 
     private void submitExternalDrop() {
@@ -254,7 +295,7 @@ public class NewImGuiLayer implements Layer {
         }
     }
 
-    private String[] acceptFileDrop() {
+    public String[] acceptFileDrop() {
         String[] files = null;
         if (ImGui.beginDragDropTarget()) {
             files = ImGui.acceptDragDropPayload(PAYLOAD_FILES);
@@ -262,18 +303,6 @@ public class NewImGuiLayer implements Layer {
         }
         if (files != null) externalDrop = null;
         return files;
-    }
-
-    private String lastDropped = "Drop files here";
-
-    private void renderDropTestWindow() {
-        ImGui.begin("Drop Test");
-        ImGui.textWrapped(lastDropped);
-        ImVec2 avail = ImGui.getContentRegionAvail();
-        ImGui.invisibleButton("##dropzone", Math.max(avail.x, 1f), Math.max(avail.y, 1f));
-        String[] files = acceptFileDrop();
-        if (files != null) lastDropped = "Dropped:\n" + String.join("\n", files);
-        ImGui.end();
     }
 
     @Override
@@ -306,7 +335,7 @@ public class NewImGuiLayer implements Layer {
         return isHidden;
     }
 
-    public void initImGui() {
+    private void initImGui() {
         // initialize ImGui
         ImGui.createContext();
         io = ImGui.getIO();
@@ -314,7 +343,7 @@ public class NewImGuiLayer implements Layer {
         // =======================================================
         // ImGui settings
         // =======================================================
-        ImGui.loadIniSettingsFromMemory(util.IOHelper.ResToString(util.Resources.IMGUI_INI));
+        ImGui.loadIniSettingsFromMemory(util.IOHelper.ResToString(util.Resources.Editor.IMGUI_INI));
         io.setIniFilename(null); // saves window config
 
         // io.setIniFilename("imgui.ini"); // saves window config
@@ -410,6 +439,7 @@ public class NewImGuiLayer implements Layer {
         imGuiGl3.init("#version 460 core");
         // initComponents();
 
+        onInitEditor();
         initialized = true;
     }
 
@@ -428,4 +458,34 @@ public class NewImGuiLayer implements Layer {
     private void setUIColor(int id, ImVec4 color) {
         this.style.setColor(id, color.x, color.y, color.z, color.w);
     }
+
+    private String lastDropped = "Drop files here";
+
+    private void renderDropTestWindow() {
+        ImGui.begin("Drop Test");
+        ImGui.textWrapped(lastDropped);
+        ImVec2 avail = ImGui.getContentRegionAvail();
+        ImGui.invisibleButton("##dropzone", Math.max(avail.x, 1f), Math.max(avail.y, 1f));
+        String[] files = acceptFileDrop();
+        if (files != null) lastDropped = "Dropped:\n" + String.join("\n", files);
+        ImGui.end();
+    }
 }
+
+/* 
+    // renderDockspace(): host + dockspace
+    int hostFlags =  your existing flags  | ImGuiWindowFlags.NoBackground;
+    ImGui.begin("Dockspace", new ImBoolean(true), hostFlags);
+    ImGui.dockSpace(ImGui.getID("Dockspace"), 0, 0, ImGuiDockNodeFlags.PassthruCentralNode);
+    ImGui.end();
+
+    // the see-through panel
+    private boolean viewportHovered = false;
+
+    private void renderViewportWindow() {
+        ImGui.begin("Viewport", ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoScrollbar);
+        viewportHovered = ImGui.isWindowHovered();
+        ImGui.end();
+    }
+    
+*/
