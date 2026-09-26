@@ -84,6 +84,11 @@ public class Camera {
         return new Vector2f(position.x + u * projectionSize.x * zoom, position.y + v * projectionSize.y * zoom);
     }
 
+    /** Inverse of viewportToWorld: where a world position lands on the target, 0..1 with a bottom-left origin. */
+    public Vector2f worldToViewport(float x, float y) {
+        return new Vector2f((x - position.x) / (projectionSize.x * zoom), (y - position.y) / (projectionSize.y * zoom));
+    }
+
     public void setZoom(float zoom) {
         this.zoom = zoom;
     }

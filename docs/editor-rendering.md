@@ -29,6 +29,32 @@ Input, in `ViewportPanel.handleCameraInput`, only while editing:
 
 Camera input runs last in `onRender`, after the outline. The world and the outline are both drawn through the camera as it was at the start of the frame, and changes show from the next frame, so the outline never lags the sprites.
 
+## Gizmos
+
+`editor/Gizmo.java` is the transform gizmo, a plain editor class owned by `ViewportPanel`. It draws with the viewport window's ImGui draw list and hit-tests in screen pixels, both from the same size constants, so what is drawn is exactly what can be grabbed. It adds no world objects, sprites or GPU passes, and nothing of it is saved. It is shown on the last selected live object, and hidden while playing.
+
+| Tool (key) | Handles | Drag writes |
+|---|---|---|
+| Translate (W) | X arrow, Y arrow (world axes), centre square | `transform.position`: along X, along Y, or freely |
+| Rotate (E) | ring around the object, with an orientation line from the centre to a dot on the ring at the object's rotation (0° = right, counter-clockwise) | `transform.rotation`: the angle swept around the centre; Ctrl snaps to 15° steps. While dragging, a translucent wedge shows the sweep since the press (snapped too; past a full turn it starts over, showing only the part of the current turn), a faint line marks the start angle, and a label under the ring shows this drag's change and the total, e.g. `+30.0° (120.0°)`. |
+| Scale (R) | X and Y handles with square ends, along the object's rotated axes; centre square | `transform.scale`: X, Y, or both. Dragging one axis length (80 px) further doubles it. Minimum 0.001. |
+
+- **Colors:** X red, Y green, centre light grey, ring blue. A handle is brighter when hovered and darker while dragged; while one handle is dragged, the others fade.
+- **Hit priority:** the centre square, then the X and Y handles; the rotate tool only has the ring.
+- **Size:** constant in screen pixels at any zoom, clipped to the image.
+
+**Which input owns a press:** a left press on a hovered handle starts a gizmo drag, which owns the press until release (`handleGizmoPress` runs before `handleSelectionInput`, and selection only starts when no gizmo drag did). So dragging a gizmo never selects anything. W, E and R switch tools while the viewport is hovered or focused and nothing is being dragged.
+
+**Drag math, anchored at the press:** `begin()` stores every selected object's transform, plus the mouse's world point (translate), screen point (scale) and angle around the centre (rotate). Each frame computes the total change since the press and applies it to every target's start values, so there is no drift. Several selected objects get the same offset, angle or scale factor; each rotates and scales around its own centre.
+- Rotate: the angle is counter-clockwise on screen, matching `Transform.rotation` in the y-up world. It is unwrapped across ±180°, so full turns keep counting.
+- Escape cancels a drag and restores the start values. It is checked before the release: with keyboard navigation on, Escape also makes ImGui release the active item in the same frame.
+
+**Frame order:** the gizmo is drawn with this frame's transforms, and the drag is applied last in `onRender`, like camera input. The world, the outline and the gizmo all show the change from the next frame. There, `world.onEditorUpdate` runs `SpriteRenderer.editorUpdate`, which sees the transform change and marks the sprite dirty. That relies on `Transform.copy` copying every field `equals` compares, including rotation and zIndex.
+
+**World ↔ screen:** `ViewportPanel.gizmoView` maps through `world.renderCamera()` (`viewportToWorld` / `worldToViewport`) and the part of the frame the image shows (`uvMin`/`uvMax`).
+
+Gizmo edits change the scene's own transforms immediately. There's no undo yet, and physics bodies aren't moved (see the Play/Stop scene restore work).
+
 ## Selection: picking and outlines
 
 Selecting objects in the viewport and outlining them is handled by `editor/SelectionRenderer.java`, which `ViewportPanel` owns. It is **not** a second renderer: like `World2DLayer`, it is a client of the default `Renderer`. It has no batches, sprite list or draw loop of its own. It only owns its offscreen buffers and shaders, and drives the existing `Renderer` API with different settings. The world knows nothing about selection.

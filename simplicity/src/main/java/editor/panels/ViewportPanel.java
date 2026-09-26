@@ -1,13 +1,19 @@
 package editor.panels;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_KP_DECIMAL;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.joml.Vector2f;
+
 import components.NonPickable;
 import editor.EditorCamera;
+import editor.Gizmo;
 import editor.SelectionRenderer;
 import editor.SimplicityEditor.EditorSelection;
 import editor.SimplicityEditor.SimplicityEditorContext;
@@ -57,6 +63,27 @@ public class ViewportPanel extends SimplicityPanel {
     private final EditorCamera editorCamera = new EditorCamera();
     private Camera lastGameCamera = null;   // a new one means a new scene: start the editor camera from it
     private boolean panning = false;
+
+    // transform gizmo on the last selected object
+    private final Gizmo gizmo = new Gizmo();
+
+    // world <-> screen through the camera the world is drawn with and the part of the frame the image shows
+    private final Gizmo.View gizmoView = new Gizmo.View() {
+        @Override
+        public Vector2f worldToScreen(float x, float y) {
+            Vector2f uv = editorContext.world.renderCamera().worldToViewport(x, y);
+            float vTop = 1 - uv.y;   // the camera's v points up, the image's down
+            return new Vector2f(imagePos.x + (uv.x - uvMin.x) / (uvMax.x - uvMin.x) * imageSize.x,
+                                imagePos.y + (vTop - uvMin.y) / (uvMax.y - uvMin.y) * imageSize.y);
+        }
+
+        @Override
+        public Vector2f screenToWorld(float x, float y) {
+            float u = uvMin.x + (x - imagePos.x) / imageSize.x * (uvMax.x - uvMin.x);
+            float v = uvMin.y + (y - imagePos.y) / imageSize.y * (uvMax.y - uvMin.y);
+            return editorContext.world.renderCamera().viewportToWorld(u, 1 - v);
+        }
+    };
 
     public ViewportPanel(SimplicityEditorContext editorContext) {
         super(editorContext);
@@ -115,6 +142,9 @@ public class ViewportPanel extends SimplicityPanel {
             deactivated = ImGui.isItemDeactivated();
         }
 
+        // a left press is owned by exactly one of: a gizmo handle (tested first) or selection, until its release
+        GameObject gizmoTarget = gizmoTarget();
+        handleGizmoPress(gizmoTarget, hasImage, activated);
         handleSelectionInput(renderContext, hasImage, activated, deactivated);
 
         // drawn into the world's frame now; ImGui samples it later, at render time. Not while playing: the viewport is
@@ -126,8 +156,11 @@ public class ViewportPanel extends SimplicityPanel {
         }
 
         drawSelectionRect();
+        drawGizmo(gizmoTarget);
 
-        // last: the world and the outline were drawn through the camera as it was this frame; changes show next frame
+        // last: the world, the outline and the gizmo were drawn with this frame's camera and transforms;
+        // gizmo and camera changes show from the next frame, so everything stays in step
+        handleGizmoDrag(deactivated);
         handleCameraInput(hasImage, activated, deactivated);
 
         ImGui.end();
@@ -181,7 +214,7 @@ public class ViewportPanel extends SimplicityPanel {
             return;
         }
 
-        if (activated && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
+        if (activated && ImGui.isMouseClicked(ImGuiMouseButton.Left) && !gizmo.isDragging()) {
             ImVec2 mouse = ImGui.getMousePos();
             pressPos.set(mouse.x, mouse.y);
             pressActive = true;
@@ -208,6 +241,70 @@ public class ViewportPanel extends SimplicityPanel {
             pressActive = false;
             dragging = false;
         }
+    }
+
+
+    /** The object the gizmo sits on: the last live selected object; none while playing. */
+    private GameObject gizmoTarget() {
+        if (isPlaying) return null;
+        List<GameObject> selected = editorContext.gameObjectSelection.selectedGameObjects;
+        if (selected == null) return null;
+        for (int i = selected.size() - 1; i >= 0; i--) {
+            GameObject go = selected.get(i);
+            if (go != null && !go.isDead()) return go;
+        }
+        return null;
+    }
+
+    /**
+     * Gizmo hover, tool keys (W translate, E rotate, R scale) and the press: a left press on a hovered handle starts
+     * a gizmo drag, which then owns the press, so selection never sees it.
+     */
+    private void handleGizmoPress(GameObject target, boolean hasImage, boolean activated) {
+        if (isPlaying || !hasImage) {
+            if (gizmo.isDragging()) gizmo.end();
+            gizmo.updateHover(null, gizmoView, 0, 0, false);
+            return;
+        }
+
+        ImVec2 mouse = ImGui.getMousePos();
+        if (!gizmo.isDragging() && !pressActive && !panning) {
+            gizmo.updateHover(target, gizmoView, mouse.x, mouse.y, hovered);
+
+            if ((hovered || ImGui.isWindowFocused())) {
+                if (ImGui.isKeyPressed(GLFW_KEY_W, false)) gizmo.setTool(Gizmo.Tool.TRANSLATE);
+                if (ImGui.isKeyPressed(GLFW_KEY_E, false)) gizmo.setTool(Gizmo.Tool.ROTATE);
+                if (ImGui.isKeyPressed(GLFW_KEY_R, false)) gizmo.setTool(Gizmo.Tool.SCALE);
+            }
+        }
+
+        if (activated && ImGui.isMouseClicked(ImGuiMouseButton.Left) && gizmo.getHovered() != Gizmo.Handle.NONE) {
+            gizmo.begin(target, editorContext.gameObjectSelection.selectedGameObjects, gizmoView, mouse.x, mouse.y);
+        }
+    }
+
+    /** Applies a gizmo drag; the release keeps it, Escape puts the transforms back. Ctrl snaps rotation. */
+    private void handleGizmoDrag(boolean deactivated) {
+        if (!gizmo.isDragging()) return;
+
+        // Escape first: with keyboard navigation on, Escape also makes ImGui release the active item, so the same
+        // frame reports the button as deactivated, which would otherwise end (keep) the drag
+        if (ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Escape))) {
+            gizmo.cancel();
+        } else if (deactivated || !ImGui.isMouseDown(ImGuiMouseButton.Left)) {
+            gizmo.end();
+        } else {
+            ImVec2 mouse = ImGui.getMousePos();
+            gizmo.drag(gizmoView, mouse.x, mouse.y, ImGui.getIO().getKeyCtrl());
+        }
+    }
+
+    private void drawGizmo(GameObject target) {
+        if (target == null || imageSize.x <= 0 || imageSize.y <= 0) return;
+        ImDrawList drawList = ImGui.getWindowDrawList();
+        drawList.pushClipRect(imagePos.x, imagePos.y, imagePos.x + imageSize.x, imagePos.y + imageSize.y, true);
+        gizmo.draw(drawList, target, gizmoView);
+        drawList.popClipRect();
     }
 
     /** Ctrl: toggle, Alt: subtract, Shift: add, none: replace (checked in that order). */

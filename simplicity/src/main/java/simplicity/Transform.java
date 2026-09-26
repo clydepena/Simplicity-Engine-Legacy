@@ -31,7 +31,10 @@ public class Transform extends Component {
     }
 
     public Transform copy() {
-        return new Transform(new Vector2f(this.position), new Vector2f(this.scale));
+        Transform t = new Transform(new Vector2f(this.position), new Vector2f(this.scale));
+        t.rotation = this.rotation;
+        t.zIndex = this.zIndex;
+        return t;
     }
 
     @Override
@@ -43,9 +46,12 @@ public class Transform extends Component {
         this.zIndex = SImGui.dragInt("Z-Index", this.zIndex);
     }
 
+    // copies every field equals() compares, so a copy compares equal (SpriteRenderer relies on it to detect changes)
     public void copy(Transform to) {
         to.position.set(this.position);
         to.scale.set(this.scale);
+        to.rotation = this.rotation;
+        to.zIndex = this.zIndex;
     }
 
     @Override
