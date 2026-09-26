@@ -117,9 +117,10 @@ public class ViewportPanel extends SimplicityPanel {
 
         handleSelectionInput(renderContext, hasImage, activated, deactivated);
 
-        // drawn into the world's frame now; ImGui samples it later, at render time
+        // drawn into the world's frame now; ImGui samples it later, at render time. Not while playing: the viewport is
+        // then the game view and shows the frame exactly as the game draws it (the selection itself is kept)
         Camera camera = editorContext.world.renderCamera();
-        if (camera != null && renderContext.framebuffer() != null) {
+        if (!isPlaying && camera != null && renderContext.framebuffer() != null) {
             selectionRenderer.drawOutline(renderContext.renderer(), renderContext.framebuffer(), camera,
                 editorContext.world.sprites(), selectedUids());
         }
@@ -170,10 +171,11 @@ public class ViewportPanel extends SimplicityPanel {
     /**
      * Click and drag-select. A left press on the image starts it; the release selects: a click picks the object under
      * the press, a drag past ImGui's drag threshold picks the rectangle. Escape cancels. The selection mode comes from
-     * the modifiers at release (see selectionMode()).
+     * the modifiers at release (see selectionMode()). Only while editing: while playing, clicks belong to the game
+     * (they still reach the world through isMouseOverWorld()), and a press or drag in progress is dropped.
      */
     private void handleSelectionInput(RenderContext renderContext, boolean hasImage, boolean activated, boolean deactivated) {
-        if (!hasImage) {
+        if (isPlaying || !hasImage) {
             pressActive = false;
             dragging = false;
             return;

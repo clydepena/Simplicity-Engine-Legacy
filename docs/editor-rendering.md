@@ -88,7 +88,7 @@ The only raw GL outside `Renderer` is in the `renderer` package classes built fo
 
 ### Selecting in the viewport: click and drag-select
 
-`ViewportPanel.handleSelectionInput` turns mouse input into picks:
+`ViewportPanel.handleSelectionInput` turns mouse input into picks. This only happens while editing. While playing, the viewport is the game view: clicks and drags don't select (they still reach the world), no outline is drawn, and the selection is kept for when you stop.
 
 1. An `ImGui.invisibleButton` covers the image, so the viewport owns the mouse while a press is held, even if the mouse leaves the panel.
 2. A press on the image records the press position.
