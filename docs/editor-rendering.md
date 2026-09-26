@@ -53,7 +53,7 @@ Camera input runs last in `onRender`, after the outline. The world and the outli
 
 **World ↔ screen:** `ViewportPanel.gizmoView` maps through `world.renderCamera()` (`viewportToWorld` / `worldToViewport`) and the part of the frame the image shows (`uvMin`/`uvMax`).
 
-Gizmo edits change the scene's own transforms immediately. There's no undo yet, and physics bodies aren't moved (see the Play/Stop scene restore work).
+Gizmo edits change the scene's own transforms immediately, and there's no undo yet. Physics bodies don't follow edits while editing (physics doesn't step); instead, pressing Play calls `World2DLayer.rebuildPhysics()`, which recreates every body in a fresh physics world from the current transforms and components. So moves, rotations and collider or rigidbody changes made in the editor are what Play starts from. Stop doesn't restore the scene yet (see the Play/Stop scene restore work).
 
 ## Selection: picking and outlines
 

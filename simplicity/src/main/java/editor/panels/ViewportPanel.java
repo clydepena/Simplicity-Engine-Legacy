@@ -408,12 +408,18 @@ public class ViewportPanel extends SimplicityPanel {
         return new int[] {px, py};
     }
 
+    private void play() {
+        isPlaying = true;
+        // bodies were built when the scene started; edits since then only changed transforms and components
+        editorContext.world.rebuildPhysics();
+    }
+
     private void renderMenuBar() {
         if (!ImGui.beginMenuBar()) return;
 
         // TODO: route through editor commands once they exist (was EventSystem.notify(GameEngineStartPlay/StopPlay))
         if (ImGui.menuItem("Play", "", isPlaying, !isPlaying)) {
-            isPlaying = true;
+            play();
         }
         if (ImGui.menuItem("Stop", "", !isPlaying, isPlaying)) {
             isPlaying = false;

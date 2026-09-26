@@ -180,6 +180,18 @@ public final class World2DLayer implements Layer {
         this.sceneInitializer.init(this);
     }
 
+    /**
+     * Recreates every physics body from the objects' current transforms and components, in a fresh physics world.
+     * Bodies are otherwise only built when an object joins the scene, so call this after editing (e.g. when Play
+     * starts), or edits made while physics wasn't stepping (moves, rotations, collider or rigidbody changes) are lost.
+     */
+    public void rebuildPhysics() {
+        if (!sceneRunning) return;
+        for (GameObject go : gameObjects) physics2d.destroyGameObject(go);
+        this.physics2d = new Physics2D();
+        for (GameObject go : gameObjects) physics2d.add(go);
+    }
+
     public void startScene() {
         checkSceneSet("startScene()");
         if (sceneRunning) throw new IllegalStateException("startScene() called twice; call setScene() first");

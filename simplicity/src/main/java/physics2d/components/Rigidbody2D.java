@@ -20,7 +20,15 @@ public class Rigidbody2D extends Component {
 
     @Override public void update(float dt) {
         if(rawBody != null) {
-            this.gameObject.transform.position.set(rawBody.getPosition().x, rawBody.getPosition().y);
+            // Physics2D.add places the body at position + the box collider's offset; take it back off, or the
+            // object shifts by the offset once physics runs
+            float offsetX = 0, offsetY = 0;
+            Box2DCollider box = this.gameObject.getComponent(Box2DCollider.class);
+            if (box != null) {
+                offsetX = box.getOffset().x;
+                offsetY = box.getOffset().y;
+            }
+            this.gameObject.transform.position.set(rawBody.getPosition().x - offsetX, rawBody.getPosition().y - offsetY);
             this.gameObject.transform.rotation = (float) Math.toDegrees(rawBody.getAngle());
         }
     }
