@@ -1,10 +1,13 @@
 package editor.panels;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_KP_DECIMAL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import components.NonPickable;
+import editor.EditorCamera;
 import editor.SelectionRenderer;
 import editor.SimplicityEditor.EditorSelection;
 import editor.SimplicityEditor.SimplicityEditorContext;
@@ -50,6 +53,11 @@ public class ViewportPanel extends SimplicityPanel {
 
     private final List<Integer> outlineUids = new ArrayList<>();   // reused each frame by selectedUids()
 
+    // the editor's own view of the world, drawn through while editing (the game camera is left alone)
+    private final EditorCamera editorCamera = new EditorCamera();
+    private Camera lastGameCamera = null;   // a new one means a new scene: start the editor camera from it
+    private boolean panning = false;
+
     public ViewportPanel(SimplicityEditorContext editorContext) {
         super(editorContext);
         this.selectionRenderer = new SelectionRenderer();
@@ -57,11 +65,20 @@ public class ViewportPanel extends SimplicityPanel {
 
     @Override
     public void onUpdate(float dt) {
+        Camera gameCamera = editorContext.world.camera();
+        if (gameCamera != lastGameCamera) {
+            if (gameCamera != null) editorCamera.copyFrom(gameCamera);
+            lastGameCamera = gameCamera;
+        }
+
         if (!isPlaying) {
             editorContext.world.setFrozen(true);
+            editorContext.world.setViewCamera(editorCamera.camera());
+            editorCamera.update(dt);
             editorContext.world.onEditorUpdate(dt);
         } else {
             editorContext.world.setFrozen(false);
+            editorContext.world.setViewCamera(null);
         }
     }
 
@@ -84,10 +101,24 @@ public class ViewportPanel extends SimplicityPanel {
         hovered = ImGui.isWindowHovered() && ImGui.isMouseHoveringRect(imagePos.x, imagePos.y, imagePos.x + imageSize.x, imagePos.y + imageSize.y);
         // if (hovered) System.out.println((ctr++) + "hovered");
 
-        handleSelectionInput(renderContext);
+        // owns the mouse over the image (left: select, middle: pan), so a drag keeps coming here even when it
+        // leaves the panel; its state is read once, since later code adds no items but the handlers need it
+        boolean hasImage = imageSize.x > 0 && imageSize.y > 0;
+        boolean activated = false, deactivated = false;
+        if (hasImage) {
+            ImGui.setCursorScreenPos(imagePos.x, imagePos.y);
+            // built from the button index like Dear ImGui's own definition (ImGuiButtonFlags_MouseButtonX = 1 << X):
+            // imgui-java 1.86's ImGuiButtonFlags.MouseButtonLeft is 0, which would leave the left button out
+            ImGui.invisibleButton("##viewportInput", imageSize.x, imageSize.y,
+                (1 << ImGuiMouseButton.Left) | (1 << ImGuiMouseButton.Middle));
+            activated = ImGui.isItemActivated();
+            deactivated = ImGui.isItemDeactivated();
+        }
+
+        handleSelectionInput(renderContext, hasImage, activated, deactivated);
 
         // drawn into the world's frame now; ImGui samples it later, at render time
-        Camera camera = editorContext.world.camera();
+        Camera camera = editorContext.world.renderCamera();
         if (camera != null && renderContext.framebuffer() != null) {
             selectionRenderer.drawOutline(renderContext.renderer(), renderContext.framebuffer(), camera,
                 editorContext.world.sprites(), selectedUids());
@@ -95,26 +126,60 @@ public class ViewportPanel extends SimplicityPanel {
 
         drawSelectionRect();
 
+        // last: the world and the outline were drawn through the camera as it was this frame; changes show next frame
+        handleCameraInput(hasImage, activated, deactivated);
+
         ImGui.end();
     }
 
     /**
-     * Click and drag-select. A press on the image starts it; the release selects: a click picks the object under the
-     * press, a drag past ImGui's drag threshold picks the rectangle. Escape cancels. The selection mode comes from
+     * Editor camera: middle-drag pans (the grabbed point stays under the mouse), the scroll wheel zooms toward the
+     * mouse, numpad '.' eases the view back to the origin. Only while editing, not playing.
+     */
+    private void handleCameraInput(boolean hasImage, boolean activated, boolean deactivated) {
+        if (isPlaying || !hasImage) {
+            panning = false;
+            return;
+        }
+
+        if (activated && ImGui.isMouseClicked(ImGuiMouseButton.Middle)) panning = true;
+        if (panning && (deactivated || !ImGui.isMouseDown(ImGuiMouseButton.Middle))) panning = false;
+
+        Camera camera = editorCamera.camera();
+        if (panning) {
+            // screen pixels -> world units, through the part of the frame the image shows
+            ImVec2 delta = ImGui.getIO().getMouseDelta();
+            float worldPerPixelX = (uvMax.x - uvMin.x) / imageSize.x * camera.getProjectionSize().x * camera.getZoom();
+            float worldPerPixelY = (uvMax.y - uvMin.y) / imageSize.y * camera.getProjectionSize().y * camera.getZoom();
+            editorCamera.pan(-delta.x * worldPerPixelX, delta.y * worldPerPixelY);   // screen y points down
+        }
+
+        float wheel = ImGui.getIO().getMouseWheel();
+        if (hovered && wheel != 0) {
+            ImVec2 mouse = ImGui.getMousePos();
+            float u = uvMin.x + (mouse.x - imagePos.x) / imageSize.x * (uvMax.x - uvMin.x);
+            float v = uvMin.y + (mouse.y - imagePos.y) / imageSize.y * (uvMax.y - uvMin.y);
+            editorCamera.zoomAt(u, 1 - v, wheel);   // the camera's v points up
+        }
+
+        if ((hovered || ImGui.isWindowFocused()) && ImGui.isKeyPressed(GLFW_KEY_KP_DECIMAL, false)) {
+            editorCamera.resetView();
+        }
+    }
+
+    /**
+     * Click and drag-select. A left press on the image starts it; the release selects: a click picks the object under
+     * the press, a drag past ImGui's drag threshold picks the rectangle. Escape cancels. The selection mode comes from
      * the modifiers at release (see selectionMode()).
      */
-    private void handleSelectionInput(RenderContext renderContext) {
-        if (imageSize.x <= 0 || imageSize.y <= 0) {
+    private void handleSelectionInput(RenderContext renderContext, boolean hasImage, boolean activated, boolean deactivated) {
+        if (!hasImage) {
             pressActive = false;
             dragging = false;
             return;
         }
 
-        // owns the mouse over the image, so a drag keeps coming here even when it leaves the panel
-        ImGui.setCursorScreenPos(imagePos.x, imagePos.y);
-        ImGui.invisibleButton("##viewportInput", imageSize.x, imageSize.y);
-
-        if (ImGui.isItemActivated()) {
+        if (activated && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
             ImVec2 mouse = ImGui.getMousePos();
             pressPos.set(mouse.x, mouse.y);
             pressActive = true;
@@ -133,7 +198,7 @@ public class ViewportPanel extends SimplicityPanel {
             return;
         }
 
-        if (ImGui.isItemDeactivated()) {
+        if (deactivated) {
             List<GameObject> picked = dragging
                 ? pickInScreenRect(renderContext, pressPos, dragEnd)
                 : pickAtScreenPoint(renderContext, pressPos);
@@ -184,7 +249,7 @@ public class ViewportPanel extends SimplicityPanel {
     private List<GameObject> pickAtScreenPoint(RenderContext renderContext, ImVec2 screen) {
         List<GameObject> picked = new ArrayList<>();
         Framebuffer frame = renderContext.framebuffer();
-        Camera camera = editorContext.world.camera();
+        Camera camera = editorContext.world.renderCamera();
         if (frame == null || camera == null) return picked;   // no scene set yet
 
         int[] p = toFramePixel(screen, frame);
@@ -202,7 +267,7 @@ public class ViewportPanel extends SimplicityPanel {
     private List<GameObject> pickInScreenRect(RenderContext renderContext, ImVec2 a, ImVec2 b) {
         List<GameObject> found = new ArrayList<>();
         Framebuffer frame = renderContext.framebuffer();
-        Camera camera = editorContext.world.camera();
+        Camera camera = editorContext.world.renderCamera();
         if (frame == null || camera == null || imageSize.x <= 0 || imageSize.y <= 0) return found;
 
         List<GameObject> objects = editorContext.world.getGameObjectList();
@@ -220,6 +285,7 @@ public class ViewportPanel extends SimplicityPanel {
         }
         return found;
     }
+
 
 
 

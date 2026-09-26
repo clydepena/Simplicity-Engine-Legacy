@@ -11,6 +11,24 @@
 - `draw()` only draws, after uploading sprites that changed, so any number of extra passes over the same batcher (like the selection passes below) can't restructure it.
 - `Drawable` doesn't check that the shader matches the vertex layout. Code that depends on the sprite layout (entity id in attribute 4) takes a `SpriteBatcher`, not any `Drawable`.
 
+## Editor camera
+
+The viewport owns an `EditorCamera` (`editor/EditorCamera.java`), a plain editor class wrapping its own `Camera`, so editing never moves the game's camera.
+
+- **Which camera draws:** `World2DLayer.setViewCamera(camera)` makes the world draw through another camera; `null` goes back to the game camera. `renderCamera()` returns whichever is in use, and the viewport picks and outlines through it. While editing, `ViewportPanel.onUpdate` sets the editor camera; while playing, it clears it.
+- **Start:** when the world's game camera changes (a new scene), the editor camera copies its position and zoom.
+- **Mouse to world:** `Camera.viewportToWorld(u, v)` turns a 0..1 point on the target (bottom-left origin) into a world position. The camera's origin is the view's bottom-left corner; the view spans `position .. position + projectionSize * zoom`, and a larger zoom shows more.
+
+Input, in `ViewportPanel.handleCameraInput`, only while editing:
+
+| Input | Effect |
+|---|---|
+| Middle-drag | Pans; the grabbed point stays under the mouse. Screen pixels become world units through the part of the frame the image shows. The invisible button over the image also responds to the middle button, so a pan keeps the mouse when it leaves the panel. Its flags are built as `(1 << ImGuiMouseButton.Left) | (1 << ImGuiMouseButton.Middle)`: imgui-java 1.86's `ImGuiButtonFlags.MouseButtonLeft` is `0` (Dear ImGui's is `1 << 0`), so using it leaves the left button out. |
+| Scroll wheel (over the image) | Zooms toward the mouse: each notch multiplies the zoom by 1.1 (in) or divides by it (out), clamped to 0.05..20, then moves the camera so the world point under the mouse stays put. |
+| Numpad `.` (viewport hovered or focused) | `resetView()`: eases the position back to (0, 0) with the legacy editor camera's growing lerp, finishing within about a third of a second. The zoom is kept. |
+
+Camera input runs last in `onRender`, after the outline. The world and the outline are both drawn through the camera as it was at the start of the frame, and changes show from the next frame, so the outline never lags the sprites.
+
 ## Selection: picking and outlines
 
 Selecting objects in the viewport and outlining them is handled by `editor/SelectionRenderer.java`, which `ViewportPanel` owns. It is **not** a second renderer: like `World2DLayer`, it is a client of the default `Renderer`. It has no batches, sprite list or draw loop of its own. It only owns its offscreen buffers and shaders, and drives the existing `Renderer` API with different settings. The world knows nothing about selection.

@@ -22,6 +22,7 @@ public final class World2DLayer implements Layer {
     
     // private String currentFile, levelName;
     private Camera camera;
+    private Camera viewCamera = null;   // when set (e.g. by the editor), drawn through instead of camera
     private boolean sceneRunning;
     private List<GameObject> gameObjects = new ArrayList<>();
     private Physics2D physics2d;
@@ -89,9 +90,10 @@ public final class World2DLayer implements Layer {
         if (!sceneRunning) return;
         Renderer r = renderContext.renderer();
         Framebuffer target = renderContext.framebuffer();
-        camera.setAspectRatio((float) target.getWidth() / target.getHeight());
+        Camera view = renderCamera();
+        view.setAspectRatio((float) target.getWidth() / target.getHeight());
         sprites.sync();   // here rather than in an update, so it also runs while the world is frozen
-        r.setCamera(camera);
+        r.setCamera(view);
         r.begin();
         r.draw(sprites);
         r.end();
@@ -226,6 +228,17 @@ public final class World2DLayer implements Layer {
         return this.sprites;
     }
 
+    /** Draws through this camera instead of the game camera; null goes back to the game camera. */
+    public void setViewCamera(Camera viewCamera) {
+        this.viewCamera = viewCamera;
+    }
+
+    /** The camera the world is drawn through this frame: the view camera if set, else the game camera. */
+    public Camera renderCamera() {
+        return viewCamera != null ? viewCamera : camera;
+    }
+
+    /** The game camera (the scene's own). */
     public Camera camera() {
         return this.camera;
     }

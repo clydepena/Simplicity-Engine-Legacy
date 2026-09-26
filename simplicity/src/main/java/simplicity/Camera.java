@@ -76,6 +76,14 @@ public class Camera {
         return this.position;
     }
 
+    /**
+     * World position of a point on the render target, given as 0..1 with a bottom-left origin (u right, v up).
+     * The view spans position .. position + projectionSize * zoom (see adjustProjection).
+     */
+    public Vector2f viewportToWorld(float u, float v) {
+        return new Vector2f(position.x + u * projectionSize.x * zoom, position.y + v * projectionSize.y * zoom);
+    }
+
     public void setZoom(float zoom) {
         this.zoom = zoom;
     }
