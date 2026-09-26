@@ -32,7 +32,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -129,7 +129,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -226,7 +226,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -323,7 +323,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -420,7 +420,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -517,7 +517,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -614,7 +614,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -711,7 +711,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -808,7 +808,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -905,7 +905,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -1002,7 +1002,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -1099,7 +1099,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -1196,7 +1196,7 @@
             "width": 40.0,
             "height": 30.0,
             "texture": {
-              "filepath": "app/assets/images/ObjectsSpritesheet.png",
+              "filepath": "images/ObjectsSpritesheet.png",
               "width": 320,
               "height": 60
             },
@@ -1293,7 +1293,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -1390,7 +1390,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
@@ -1487,7 +1487,7 @@
             "width": 32.0,
             "height": 32.0,
             "texture": {
-              "filepath": "app/assets/images/TilesSpritesheet.png",
+              "filepath": "images/TilesSpritesheet.png",
               "width": 384,
               "height": 128
             },
