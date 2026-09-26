@@ -30,7 +30,6 @@ import observers.EventSystem;
 import observers.Observer;
 import observers.events.Event;
 import renderer.Framebuffer;
-import renderer.PickingTexture;
 import scenes.World2DLayer;
 import simplicity.Application;
 import simplicity.Application.Layer;
@@ -259,9 +258,10 @@ public abstract class ImGuiEditorLayer implements Layer {
 
         if (event.type == MouseButton) {
             MouseButtonEvent mouseBtn = (MouseButtonEvent) event;
-            if (mouseBtn.button < 5) {
-                io.setMouseDown(mouseBtn.button, mouseBtn.action != INPUT_RELEASE);
-            }
+            // imGuiGlfw.newFrame() sets MouseDown from its own "just pressed" latch or the live GLFW state, so
+            // io.setMouseDown here would be overwritten; its callback sets the latch, which also keeps a press and
+            // release that arrive before the same frame from being lost
+            imGuiGlfw.mouseButtonCallback(context.window().ptr(), mouseBtn.button, mouseBtn.action, mouseBtn.mods);
 
             if (io.getWantCaptureMouse() && !isMouseOverWorld()) event.stopPropagate();
         }

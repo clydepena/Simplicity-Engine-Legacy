@@ -8,9 +8,12 @@ import editor.SelectionRenderer;
 import editor.SimplicityEditor.EditorSelection;
 import editor.SimplicityEditor.SimplicityEditorContext;
 import editor.SimplicityEditor.SimplicityPanel;
+import imgui.ImDrawList;
 import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
 import imgui.ImVec2;
+import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import observers.events.Event;
@@ -33,6 +36,16 @@ public class ViewportPanel extends SimplicityPanel {
 
     private final SelectionRenderer selectionRenderer;
 
+    // rectangle selection modes (defaults: visible objects only, partial overlap)
+    private boolean rectIncludeHidden = false;   // true: also objects fully covered by others
+    private boolean rectFullyInside = false;     // true: the whole object must be inside the rectangle
+
+    // click / drag-select state: a press on the image starts it, the release selects
+    private boolean pressActive = false;
+    private boolean dragging = false;
+    private final ImVec2 pressPos = new ImVec2();   // screen space
+    private final ImVec2 dragEnd = new ImVec2();    // screen space, clamped to the image
+
     public ViewportPanel(SimplicityEditorContext editorContext) {
         super(editorContext);
         this.selectionRenderer = new SelectionRenderer();
@@ -40,8 +53,11 @@ public class ViewportPanel extends SimplicityPanel {
 
     @Override
     public void onUpdate(float dt) {
-        if (isPlaying) {
-            // editorContext.world.setFrozen(false);
+        if (!isPlaying) {
+            editorContext.world.setFrozen(true);
+            editorContext.world.onEditorUpdate(dt);
+        } else {
+            editorContext.world.setFrozen(false);
         }
     }
 
@@ -64,44 +80,136 @@ public class ViewportPanel extends SimplicityPanel {
         hovered = ImGui.isWindowHovered() && ImGui.isMouseHoveringRect(imagePos.x, imagePos.y, imagePos.x + imageSize.x, imagePos.y + imageSize.y);
         // if (hovered) System.out.println((ctr++) + "hovered");
 
-        if (hovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
-            pickAtMouse(renderContext);
-        }
+        handleSelectionInput(renderContext);
 
         // drawn into the world's frame now; ImGui samples it later, at render time
         List<GameObject> selected = editorContext.gameObjectSelection.selectedGameObjects;
         selectionRenderer.drawOutline(renderContext, editorContext.world, selected);
 
+        drawSelectionRect();
+
         ImGui.end();
     }
 
-    /** Click: select the object under the mouse (Ctrl: toggle it). Empty space clears; NonPickable objects are ignored. */
-    private void pickAtMouse(RenderContext renderContext) {
-        Framebuffer frame = renderContext.framebuffer();
-        if (frame == null || imageSize.x <= 0 || imageSize.y <= 0) return;
+    /**
+     * Click and drag-select. A press on the image starts it; the release selects: a click picks the object under the
+     * press, a drag past ImGui's drag threshold picks the rectangle. Escape cancels. The selection mode comes from
+     * the modifiers at release (see selectionMode()).
+     */
+    private void handleSelectionInput(RenderContext renderContext) {
+        if (imageSize.x <= 0 || imageSize.y <= 0) {
+            pressActive = false;
+            dragging = false;
+            return;
+        }
+
+        // owns the mouse over the image, so a drag keeps coming here even when it leaves the panel
+        ImGui.setCursorScreenPos(imagePos.x, imagePos.y);
+        ImGui.invisibleButton("##viewportInput", imageSize.x, imageSize.y);
+
+        if (ImGui.isItemActivated()) {
+            ImVec2 mouse = ImGui.getMousePos();
+            pressPos.set(mouse.x, mouse.y);
+            pressActive = true;
+            dragging = false;
+        }
+        if (!pressActive) return;
 
         ImVec2 mouse = ImGui.getMousePos();
-        float u = uvMin.x + (mouse.x - imagePos.x) / imageSize.x * (uvMax.x - uvMin.x);
-        float v = uvMin.y + (mouse.y - imagePos.y) / imageSize.y * (uvMax.y - uvMin.y);
+        dragEnd.set(clamp(mouse.x, imagePos.x, imagePos.x + imageSize.x - 1),
+                    clamp(mouse.y, imagePos.y, imagePos.y + imageSize.y - 1));
+        if (!dragging && ImGui.isMouseDragging(ImGuiMouseButton.Left)) dragging = true;
+
+        if (ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Escape))) {
+            pressActive = false;
+            dragging = false;
+            return;
+        }
+
+        if (ImGui.isItemDeactivated()) {
+            List<GameObject> picked = dragging
+                ? pickInScreenRect(renderContext, pressPos, dragEnd)
+                : pickAtScreenPoint(renderContext, pressPos);
+            if (picked != null) editorContext.gameObjectSelection.apply(selectionMode(), picked);
+            pressActive = false;
+            dragging = false;
+        }
+    }
+
+    /** Ctrl: toggle, Alt: subtract, Shift: add, none: replace (checked in that order). */
+    private EditorSelection.Mode selectionMode() {
+        ImGuiIO io = ImGui.getIO();
+        if (io.getKeyCtrl()) return EditorSelection.Mode.TOGGLE;
+        if (io.getKeyAlt()) return EditorSelection.Mode.SUBTRACT;
+        if (io.getKeyShift()) return EditorSelection.Mode.ADD;
+        return EditorSelection.Mode.REPLACE;
+    }
+
+    /** The drag rectangle, drawn by ImGui over the image (the world's frame is untouched), colored by mode. */
+    private void drawSelectionRect() {
+        if (!dragging) return;
+
+        float x0 = Math.min(pressPos.x, dragEnd.x), y0 = Math.min(pressPos.y, dragEnd.y);
+        float x1 = Math.max(pressPos.x, dragEnd.x), y1 = Math.max(pressPos.y, dragEnd.y);
+
+        float r = 1.0f, g = 0.55f, b = 0.1f;   // replace / add: orange accent
+        switch (selectionMode()) {
+            case TOGGLE -> { r = 1.0f; g = 0.85f; b = 0.2f; }
+            case SUBTRACT -> { r = 0.9f; g = 0.25f; b = 0.2f; }
+            default -> {}
+        }
+
+        ImDrawList drawList = ImGui.getWindowDrawList();
+        drawList.pushClipRect(imagePos.x, imagePos.y, imagePos.x + imageSize.x, imagePos.y + imageSize.y, true);
+        drawList.addRectFilled(x0, y0, x1, y1, ImGui.getColorU32(r, g, b, 0.15f));
+        drawList.addRect(x0, y0, x1, y1, ImGui.getColorU32(r, g, b, 0.9f), 0, 0, 1.0f);
+        drawList.popClipRect();
+    }
+
+    private static float clamp(float v, float min, float max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    /**
+     * The object under a screen point as a pick: empty for empty space, null (leave the selection alone)
+     * for a NonPickable object.
+     */
+    private List<GameObject> pickAtScreenPoint(RenderContext renderContext, ImVec2 screen) {
+        List<GameObject> picked = new ArrayList<>();
+        Framebuffer frame = renderContext.framebuffer();
+        if (frame == null) return picked;
+
+        int[] p = toFramePixel(screen, frame);
+        GameObject hit = selectionRenderer.pick(renderContext, editorContext.world, p[0], p[1]);
+        if (hit != null && hit.getComponent(NonPickable.class) != null) return null;
+        if (hit != null) picked.add(hit);
+        return picked;
+    }
+
+
+    /**
+     * Objects in the screen-space rectangle between a and b, using the rectangle selection modes; NonPickable
+     * objects are left out.
+     */
+    private List<GameObject> pickInScreenRect(RenderContext renderContext, ImVec2 a, ImVec2 b) {
+        Framebuffer frame = renderContext.framebuffer();
+        if (frame == null || imageSize.x <= 0 || imageSize.y <= 0) return new ArrayList<>();
+
+        int[] p0 = toFramePixel(a, frame);
+        int[] p1 = toFramePixel(b, frame);
+        List<GameObject> found = selectionRenderer.pickRect(renderContext, editorContext.world,
+            p0[0], p0[1], p1[0], p1[1], rectIncludeHidden, rectFullyInside);
+        found.removeIf(go -> go.getComponent(NonPickable.class) != null);
+        return found;
+    }
+
+    /** Screen point (over the image) to a frame pixel, bottom-left origin, through the shown region uvMin..uvMax. */
+    private int[] toFramePixel(ImVec2 screen, Framebuffer frame) {
+        float u = uvMin.x + (screen.x - imagePos.x) / imageSize.x * (uvMax.x - uvMin.x);
+        float v = uvMin.y + (screen.y - imagePos.y) / imageSize.y * (uvMax.y - uvMin.y);
         int px = (int) (u * frame.getWidth());
         int py = (int) ((1 - v) * frame.getHeight());   // frame pixels start at the bottom-left
-
-        GameObject hit = selectionRenderer.pick(renderContext, editorContext.world, px, py);
-        if (hit != null && hit.getComponent(NonPickable.class) != null) return;
-
-        EditorSelection selection = editorContext.gameObjectSelection;
-        if (selection.selectedGameObjects == null) selection.selectedGameObjects = new ArrayList<>();
-        List<GameObject> selected = selection.selectedGameObjects;
-        boolean toggle = ImGui.getIO().getKeyCtrl();
-
-        if (hit == null) {
-            if (!toggle) selected.clear();
-        } else if (toggle) {
-            if (!selected.remove(hit)) selected.add(hit);
-        } else {
-            selected.clear();
-            selected.add(hit);
-        }
+        return new int[] {px, py};
     }
 
     private void renderMenuBar() {

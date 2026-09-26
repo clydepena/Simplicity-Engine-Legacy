@@ -26,17 +26,13 @@ void main() {
 #type fragment
 #version 460 core
 
-// must match SelectionRenderer.MAX_IDS_PER_PASS
-#define MAX_SELECTED 32
-
 in vec4 fColor;
 in vec2 fTexCoords;
 in float fTexId;
 in float fEntityId;
 
 uniform sampler2D uTextures[8];
-uniform int uSelectedIds[MAX_SELECTED];   // entity ids (uid + 1) of the selected objects
-uniform int uSelectedCount;
+uniform sampler2D uSelected;   // IdSetTexture: texel (id % width, id / width) is 1 if entity id is selected
 
 out vec4 color;
 
@@ -53,11 +49,10 @@ void main() {
     }
 
     int entity = int(fEntityId + 0.5);
-    for (int i = 0; i < uSelectedCount; i++) {
-        if (uSelectedIds[i] == entity) {
-            color = vec4(1, 1, 1, 1);
-            return;
-        }
+    ivec2 size = textureSize(uSelected, 0);
+    ivec2 cell = ivec2(entity % size.x, entity / size.x);
+    if (cell.y >= size.y || texelFetch(uSelected, cell, 0).r < 0.5) {
+        discard;
     }
-    discard;
+    color = vec4(1, 1, 1, 1);
 }

@@ -27,8 +27,6 @@ public final class World2DLayer implements Layer {
     private SceneInitializer sceneInitializer;
 
 
-
-
     private Application context;
     private boolean isFrozen = false;
     private boolean isACtive = true;
@@ -57,6 +55,23 @@ public final class World2DLayer implements Layer {
         for(int i = 0; i < gameObjects.size(); i++) {
             GameObject go = gameObjects.get(i);
             go.update(dt);
+
+            if(go.isDead()) {
+                gameObjects.remove(i);
+                removeFromRenderer(go);
+                this.physics2d.destroyGameObject(go);
+                i--;
+            }
+        }
+    }
+
+    public void onEditorUpdate(float dt) {
+        if (!sceneRunning) return;
+        this.camera.adjustProjection();
+
+        for(int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
+            go.editorUpdate(dt);
 
             if(go.isDead()) {
                 gameObjects.remove(i);

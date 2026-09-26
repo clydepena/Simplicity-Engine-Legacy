@@ -114,8 +114,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
             }
         }
 
-        // add properties to local vertices array
-        loadVertexProperties(index);
+        // mark dirty so render() loads its vertices and uploads them; loading here alone never reached the GPU
+        // for a clean sprite (e.g. one moved in from another batch by a zIndex change)
+        spr.setDirty(true);
 
         if (numSprites >= this.maxBatchSize) {
             this.hasRoom = false;

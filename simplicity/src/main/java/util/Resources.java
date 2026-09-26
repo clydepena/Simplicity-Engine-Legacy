@@ -35,6 +35,7 @@ public class Resources {
         public static final String SHADER_PICKING=  "shaders/editor/pickingShader.glsl";
         public static final String SHADER_SELECTION_MASK=       "shaders/editor/selectionMask.glsl";
         public static final String SHADER_SELECTION_OUTLINE=    "shaders/editor/selectionOutline.glsl";
+        public static final String SHADER_SELECTION_FLAGS=      "shaders/editor/selectionFlags.glsl";
 
         public static final String SPRITE_FOLDER=       "images/editor/folder_icon.png";
         public static final String SPRITE_FOLDER_OPEN=  "images/editor/folder_icon_opened.png";

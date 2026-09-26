@@ -44,6 +44,9 @@ import components.SpriteRenderer;
 
 public class Renderer {
 
+    /** First texture unit free for drawSprites' extra textures; the batches use units 0..7 (uTextures[8]). */
+    public static final int FIRST_EXTRA_TEXTURE_UNIT = 8;
+
     private Shader defaultShader;
     private GLCapabilities capabilities;
     private Window window;
@@ -88,11 +91,28 @@ public class Renderer {
         }
     }
 
-    public void drawSprites() {
+    /**
+     * Draws all sprites with the current shader. extraTextureIds are bound to units
+     * FIRST_EXTRA_TEXTURE_UNIT, +1, ... for the whole draw (the caller uploads the matching sampler uniforms);
+     * units below that belong to the batches' sprite textures.
+     */
+    public void drawSprites(int... extraTextureIds) {
         checkInPass("drawSprites()");
+        for (int i = 0; i < extraTextureIds.length; i++) {
+            glActiveTexture(GL_TEXTURE0 + FIRST_EXTRA_TEXTURE_UNIT + i);
+            glBindTexture(GL_TEXTURE_2D, extraTextureIds[i]);
+        }
+        glActiveTexture(GL_TEXTURE0);
+
         List<SpriteRenderer> moved = new ArrayList<>();
         for (RenderBatch b : batches) b.render(shader, moved);
         for (SpriteRenderer spr : moved) addSprite(spr);
+
+        for (int i = 0; i < extraTextureIds.length; i++) {
+            glActiveTexture(GL_TEXTURE0 + FIRST_EXTRA_TEXTURE_UNIT + i);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        glActiveTexture(GL_TEXTURE0);
 
         // free batches that lost all their sprites (removals or zIndex moves)
         batches.removeIf(b -> {
