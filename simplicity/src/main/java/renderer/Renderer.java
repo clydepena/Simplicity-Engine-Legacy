@@ -27,9 +27,6 @@ import static org.lwjgl.opengl.GL33.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL33.glDrawArrays;
 import static org.lwjgl.opengl.GL33.glGenVertexArrays;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -39,12 +36,11 @@ import simplicity.Camera;
 import simplicity.Window;
 import util.AssetPool;
 import util.Resources;
-import components.SpriteRenderer;
 
 
 public class Renderer {
 
-    /** First texture unit free for drawSprites' extra textures; the batches use units 0..7 (uTextures[8]). */
+    /** First texture unit free for draw()'s extra textures; sprite batches use units 0..7 (uTextures[8]). */
     public static final int FIRST_EXTRA_TEXTURE_UNIT = 8;
 
     private Shader defaultShader;
@@ -56,8 +52,6 @@ public class Renderer {
     private Vector4f clearColor;
     private Camera camera;
     private Framebuffer framebuffer;
-    private final int MAX_BATCH_SIZE = 1000;
-    private final List<RenderBatch> batches = new ArrayList<>();
     private boolean beginStart = false;
     private int fullscreenVao = 0;   // empty: the core profile needs a bound VAO even without vertex data
 
@@ -65,61 +59,26 @@ public class Renderer {
         this.window = window;
     }
 
-    public void addSprite(SpriteRenderer spr) {
-        int z = spr.gameObject.transform.zIndex;
-        Texture tex = spr.getTexture();
-        for (RenderBatch b : batches) {
-            if (b.hasRoom() && b.getZIndex() == z && (tex == null || b.hasTexture(tex) || b.hasTextureRoom())) {
-                b.addSprite(spr);
-                return;
-            }
-        }
-        RenderBatch b = new RenderBatch(MAX_BATCH_SIZE, z);
-        b.start();
-        b.addSprite(spr);
-        batches.add(b);
-        Collections.sort(batches);
-    }
-
-    public void removeSprite(SpriteRenderer spr) {
-        for (RenderBatch b : batches) if (b.remove(spr)) return;
-    }
-
-    public void removeAllSprites() {
-        while (!batches.isEmpty()) {
-            batches.removeLast().destroy();
-        }
-    }
-
     /**
-     * Draws all sprites with the current shader. extraTextureIds are bound to units
+     * Draws the drawable with the current shader, into the current pass. extraTextureIds are bound to units
      * FIRST_EXTRA_TEXTURE_UNIT, +1, ... for the whole draw (the caller uploads the matching sampler uniforms);
-     * units below that belong to the batches' sprite textures.
+     * units below that belong to the drawable (sprite batches use 0..7).
      */
-    public void drawSprites(int... extraTextureIds) {
-        checkInPass("drawSprites()");
+    public void draw(Drawable drawable, int... extraTextureIds) {
+        checkInPass("draw()");
         for (int i = 0; i < extraTextureIds.length; i++) {
             glActiveTexture(GL_TEXTURE0 + FIRST_EXTRA_TEXTURE_UNIT + i);
             glBindTexture(GL_TEXTURE_2D, extraTextureIds[i]);
         }
         glActiveTexture(GL_TEXTURE0);
 
-        List<SpriteRenderer> moved = new ArrayList<>();
-        for (RenderBatch b : batches) b.render(shader, moved);
-        for (SpriteRenderer spr : moved) addSprite(spr);
+        drawable.draw(shader);
 
         for (int i = 0; i < extraTextureIds.length; i++) {
             glActiveTexture(GL_TEXTURE0 + FIRST_EXTRA_TEXTURE_UNIT + i);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
         glActiveTexture(GL_TEXTURE0);
-
-        // free batches that lost all their sprites (removals or zIndex moves)
-        batches.removeIf(b -> {
-            if (!b.isEmpty()) return false;
-            b.destroy();
-            return true;
-        });
     }
 
     public void init() {
@@ -141,7 +100,6 @@ public class Renderer {
     }
 
     public void destroy() {
-        removeAllSprites();
         if (fullscreenVao != 0) {
             glDeleteVertexArrays(fullscreenVao);
             fullscreenVao = 0;
@@ -253,6 +211,10 @@ public class Renderer {
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public Framebuffer getFramebuffer() {
+        return framebuffer;
     }
 
     public boolean isBlending() {

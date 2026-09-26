@@ -124,22 +124,28 @@ public class RenderBatch implements Comparable<RenderBatch> {
     }
 
     /**
-     * Draws this batch with the shader already in use (bound and given its camera uniforms by Renderer.begin()).
-     * Sprites whose zIndex no longer matches this batch are removed and added to movedOut;
-     * the caller re-adds them after all batches have been drawn.
+     * Removes the sprites whose zIndex no longer matches this batch and adds them to movedOut,
+     * for the owner to add again (SpriteBatcher.sync()).
      */
-    public void render(Shader shader, List<SpriteRenderer> movedOut) {
-        boolean rebufferData = false;
+    public void takeMoved(List<SpriteRenderer> movedOut) {
         for (int i = 0; i < numSprites; i++) {
             SpriteRenderer spr = sprites[i];
-
             if (spr.gameObject.transform.zIndex != this.zIndex) {
                 movedOut.add(spr);
                 removeAt(i);
                 i--;
-                continue;
             }
+        }
+    }
 
+    /**
+     * Draws this batch with the shader already in use (bound and given its camera uniforms by Renderer.begin()).
+     * Uploads the vertices of sprites that changed first; never adds or removes sprites.
+     */
+    public void render(Shader shader) {
+        boolean rebufferData = false;
+        for (int i = 0; i < numSprites; i++) {
+            SpriteRenderer spr = sprites[i];
             if (spr.isDirty()) {
                 loadVertexProperties(i);
                 spr.setClean();

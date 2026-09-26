@@ -2,6 +2,7 @@ package editor.panels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import components.NonPickable;
 import editor.SelectionRenderer;
@@ -19,6 +20,7 @@ import imgui.flag.ImGuiWindowFlags;
 import observers.events.Event;
 import renderer.Framebuffer;
 import simplicity.Application.RenderContext;
+import simplicity.Camera;
 import simplicity.GameObject;
 
 public class ViewportPanel extends SimplicityPanel {
@@ -45,6 +47,8 @@ public class ViewportPanel extends SimplicityPanel {
     private boolean dragging = false;
     private final ImVec2 pressPos = new ImVec2();   // screen space
     private final ImVec2 dragEnd = new ImVec2();    // screen space, clamped to the image
+
+    private final List<Integer> outlineUids = new ArrayList<>();   // reused each frame by selectedUids()
 
     public ViewportPanel(SimplicityEditorContext editorContext) {
         super(editorContext);
@@ -83,8 +87,11 @@ public class ViewportPanel extends SimplicityPanel {
         handleSelectionInput(renderContext);
 
         // drawn into the world's frame now; ImGui samples it later, at render time
-        List<GameObject> selected = editorContext.gameObjectSelection.selectedGameObjects;
-        selectionRenderer.drawOutline(renderContext, editorContext.world, selected);
+        Camera camera = editorContext.world.camera();
+        if (camera != null && renderContext.framebuffer() != null) {
+            selectionRenderer.drawOutline(renderContext.renderer(), renderContext.framebuffer(), camera,
+                editorContext.world.sprites(), selectedUids());
+        }
 
         drawSelectionRect();
 
@@ -177,30 +184,54 @@ public class ViewportPanel extends SimplicityPanel {
     private List<GameObject> pickAtScreenPoint(RenderContext renderContext, ImVec2 screen) {
         List<GameObject> picked = new ArrayList<>();
         Framebuffer frame = renderContext.framebuffer();
-        if (frame == null) return picked;
+        Camera camera = editorContext.world.camera();
+        if (frame == null || camera == null) return picked;   // no scene set yet
 
         int[] p = toFramePixel(screen, frame);
-        GameObject hit = selectionRenderer.pick(renderContext, editorContext.world, p[0], p[1]);
+        int uid = selectionRenderer.pick(renderContext.renderer(), frame, camera, editorContext.world.sprites(), p[0], p[1]);
+        GameObject hit = uid < 0 ? null : editorContext.world.getGameObject(uid);
         if (hit != null && hit.getComponent(NonPickable.class) != null) return null;
         if (hit != null) picked.add(hit);
         return picked;
     }
-
 
     /**
      * Objects in the screen-space rectangle between a and b, using the rectangle selection modes; NonPickable
      * objects are left out.
      */
     private List<GameObject> pickInScreenRect(RenderContext renderContext, ImVec2 a, ImVec2 b) {
+        List<GameObject> found = new ArrayList<>();
         Framebuffer frame = renderContext.framebuffer();
-        if (frame == null || imageSize.x <= 0 || imageSize.y <= 0) return new ArrayList<>();
+        Camera camera = editorContext.world.camera();
+        if (frame == null || camera == null || imageSize.x <= 0 || imageSize.y <= 0) return found;
+
+        List<GameObject> objects = editorContext.world.getGameObjectList();
+        int maxUid = -1;
+        for (GameObject go : objects) maxUid = Math.max(maxUid, go.getUid());
 
         int[] p0 = toFramePixel(a, frame);
         int[] p1 = toFramePixel(b, frame);
-        List<GameObject> found = selectionRenderer.pickRect(renderContext, editorContext.world,
-            p0[0], p0[1], p1[0], p1[1], rectIncludeHidden, rectFullyInside);
-        found.removeIf(go -> go.getComponent(NonPickable.class) != null);
+        Set<Integer> uids = selectionRenderer.pickRect(renderContext.renderer(), frame, camera, editorContext.world.sprites(),
+            p0[0], p0[1], p1[0], p1[1], rectIncludeHidden, rectFullyInside, maxUid);
+
+        // one pass over the world instead of a lookup per uid
+        for (GameObject go : objects) {
+            if (uids.contains(go.getUid()) && go.getComponent(NonPickable.class) == null) found.add(go);
+        }
         return found;
+    }
+
+
+
+    /** Uids of the live selected objects, for the outline. */
+    private List<Integer> selectedUids() {
+        outlineUids.clear();
+        List<GameObject> selected = editorContext.gameObjectSelection.selectedGameObjects;
+        if (selected == null) return outlineUids;
+        for (GameObject go : selected) {
+            if (go != null && !go.isDead()) outlineUids.add(go.getUid());
+        }
+        return outlineUids;
     }
 
     /** Screen point (over the image) to a frame pixel, bottom-left origin, through the shown region uvMin..uvMax. */

@@ -10,6 +10,7 @@ import observers.events.Event;
 import physics2d.Physics2D;
 import renderer.Framebuffer;
 import renderer.Renderer;
+import renderer.SpriteBatcher;
 import simplicity.Application;
 import simplicity.Application.Layer;
 import simplicity.Application.RenderContext;
@@ -25,6 +26,7 @@ public final class World2DLayer implements Layer {
     private List<GameObject> gameObjects = new ArrayList<>();
     private Physics2D physics2d;
     private SceneInitializer sceneInitializer;
+    private final SpriteBatcher sprites = new SpriteBatcher();   // this world's sprites, drawn in onRender
 
 
     private Application context;
@@ -36,14 +38,14 @@ public final class World2DLayer implements Layer {
         
     }
 
-    private void addToRenderer(GameObject go) {
+    private void addSprite(GameObject go) {
          SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-        if (spr != null && context != null) context.renderer().addSprite(spr);
+        if (spr != null) sprites.add(spr);
     }
 
-    private void removeFromRenderer(GameObject go) {
+    private void removeSprite(GameObject go) {
          SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-        if (spr != null && context != null) context.renderer().removeSprite(spr);
+        if (spr != null) sprites.remove(spr);
     }
 
     @Override
@@ -58,7 +60,7 @@ public final class World2DLayer implements Layer {
 
             if(go.isDead()) {
                 gameObjects.remove(i);
-                removeFromRenderer(go);
+                removeSprite(go);
                 this.physics2d.destroyGameObject(go);
                 i--;
             }
@@ -75,7 +77,7 @@ public final class World2DLayer implements Layer {
 
             if(go.isDead()) {
                 gameObjects.remove(i);
-                removeFromRenderer(go);
+                removeSprite(go);
                 this.physics2d.destroyGameObject(go);
                 i--;
             }
@@ -88,9 +90,10 @@ public final class World2DLayer implements Layer {
         Renderer r = renderContext.renderer();
         Framebuffer target = renderContext.framebuffer();
         camera.setAspectRatio((float) target.getWidth() / target.getHeight());
+        sprites.sync();   // here rather than in an update, so it also runs while the world is frozen
         r.setCamera(camera);
         r.begin();
-        r.drawSprites();
+        r.draw(sprites);
         r.end();
     }
 
@@ -99,21 +102,17 @@ public final class World2DLayer implements Layer {
         for (GameObject go : gameObjects) {
             go.destroy();
         }
+        sprites.destroy();
     }
 
     @Override
     public void onAttach(Application context) {
         this.context = context;
-        if (sceneRunning) {
-            for (GameObject go : gameObjects) {
-                addToRenderer(go);
-            }
-        }
     }
 
     @Override
     public void onDetach() {
-        this.context.renderer().removeAllSprites();
+        // the sprites stay in this world's batcher; a detached world just isn't drawn
         this.context = null;
     }
 
@@ -167,7 +166,7 @@ public final class World2DLayer implements Layer {
         
         this.physics2d = new Physics2D();
         this.camera = new Camera(new Vector2f(0, 0));
-        if (this.context != null) this.context.renderer().removeAllSprites();
+        sprites.clear();
         if (!gameObjects.isEmpty()) for (GameObject go : gameObjects) go.destroy();
         this.gameObjects = new ArrayList<>();
         this.sceneRunning = false;
@@ -185,7 +184,7 @@ public final class World2DLayer implements Layer {
         for(int i = 0; i < gameObjects.size(); i++) {
             GameObject go = gameObjects.get(i);
             go.start();
-            addToRenderer(go);
+            addSprite(go);
             this.physics2d.add(go);
         }
         sceneRunning = true;
@@ -201,7 +200,7 @@ public final class World2DLayer implements Layer {
         } else {
             gameObjects.add(go);
             go.start();
-            addToRenderer(go);
+            addSprite(go);
             this.physics2d.add(go);
         }
     }
@@ -220,6 +219,11 @@ public final class World2DLayer implements Layer {
     
     public List<GameObject> getGameObjectList() {
         return this.gameObjects;
+    }
+
+    /** This world's sprites, for passes that draw or pick them (e.g. the editor's selection). */
+    public SpriteBatcher sprites() {
+        return this.sprites;
     }
 
     public Camera camera() {

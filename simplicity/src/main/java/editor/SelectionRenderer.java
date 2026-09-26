@@ -5,8 +5,8 @@ import static org.lwjgl.opengl.GL33.GL_RGB;
 import static org.lwjgl.opengl.GL33.GL_RGB8;
 import static org.lwjgl.opengl.GL33.GL_UNSIGNED_BYTE;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.joml.Vector4f;
@@ -17,17 +17,18 @@ import renderer.IdFramebuffer;
 import renderer.IdSetTexture;
 import renderer.Renderer;
 import renderer.Shader;
-import scenes.World2DLayer;
-import simplicity.Application.RenderContext;
+import renderer.SpriteBatcher;
 import simplicity.Camera;
-import simplicity.GameObject;
 import util.AssetPool;
 import util.Resources;
 
 /**
- * Editor-side selection rendering: picks objects under a pixel or inside a rectangle, and outlines the selected ones.
- * All of it works through the shared Renderer on the world's sprites (entity id = uid + 1 in every vertex),
- * so the world knows nothing about selection. Every pass restores the renderer state it changed.
+ * Picks sprites under a pixel or inside a rectangle, and outlines some of them, by uid.
+ * Works on a given SpriteBatcher (every vertex carries entity id = uid + 1), seen through a given
+ * camera into a given target, so any view of those sprites can use it. It knows nothing about GameObjects or worlds:
+ * callers map uids to objects. Every pass restores the renderer state it changed.
+ * <p>
+ * Pixel coordinates are in the target's pixels, bottom-left origin. Buffers are kept at the target's size.
  */
 public class SelectionRenderer {
 
@@ -46,12 +47,12 @@ public class SelectionRenderer {
     private final IdFlagBuffer flagBuffer = new IdFlagBuffer();
     private final Vector4f rect = new Vector4f();
 
-    // created lazily at the world frame's size
+    // created lazily at the target's size
     private IdFramebuffer idBuffer;
     private Framebuffer mask;
 
-    // selected entity ids, for the mask shader; re-uploaded only when the selection changes
-    private final IdSetTexture selectedIds = new IdSetTexture();
+    // entity ids to outline, for the mask shader; re-uploaded only when they change
+    private final IdSetTexture outlinedIds = new IdSetTexture();
     private int[] ids = new int[64];
 
     private final Vector4f outlineColor = new Vector4f(1.0f, 0.55f, 0.1f, 1.0f);   // orange accent
@@ -65,178 +66,147 @@ public class SelectionRenderer {
     }
 
     /**
-     * The topmost object at frame pixel (x, y) (bottom-left origin), or null.
-     * Renders the id buffer only when called, so call it on clicks rather than every frame.
+     * Uid of the topmost sprite at pixel (x, y) of target, seen through camera, or -1 for none.
+     * Renders the id buffer when called, so call it on clicks rather than every frame.
      */
-    public GameObject pick(RenderContext renderContext, World2DLayer world, int x, int y) {
-        if (!renderIds(renderContext, world)) return null;
-        int uid = idBuffer.readPixel(x, y);
-        return uid < 0 ? null : world.getGameObject(uid);
+    public int pick(Renderer renderer, Framebuffer target, Camera camera, SpriteBatcher sprites, int x, int y) {
+        renderIds(renderer, target, camera, sprites);
+        return idBuffer.readPixel(x, y);
     }
 
     /**
-     * Objects in the rectangle between frame pixels (x0, y0) and (x1, y1), inclusive, bottom-left origin, corners in any order.
+     * Uids of the sprites in the rectangle between pixels (x0, y0) and (x1, y1) of target, inclusive, corners in any order.
      * <ul>
-     * <li>includeHidden: false = only objects with a visible pixel inside; true = also objects fully covered by others.</li>
-     * <li>fullyInside: false = any pixel inside is enough (partial); true = the object's whole shape, covered parts
-     *     included, must be inside (and on the frame).</li>
+     * <li>includeHidden: false = only sprites with a visible pixel inside; true = also sprites fully covered by others.</li>
+     * <li>fullyInside: false = any pixel inside is enough (partial); true = the sprite's whole shape, covered parts
+     *     included, must be inside (and on the target).</li>
      * </ul>
-     * Only sprite pixels that pass the alpha cutout count. Renders when called, so call it once (e.g. when a drag ends),
-     * not every frame. The default (false, false) only needs the id buffer; the other modes add one flag pass.
+     * maxUid is the largest uid that can appear (sizes the flag buffer for the non-default modes).
+     * Only sprite pixels that pass the alpha cutout count. Renders when called, so call it once (e.g. when a drag
+     * ends), not every frame. The default (false, false) only needs the id buffer; the other modes add one flag pass.
      */
-    public List<GameObject> pickRect(RenderContext renderContext, World2DLayer world, int x0, int y0, int x1, int y1,
-                                     boolean includeHidden, boolean fullyInside) {
-        List<GameObject> found = new ArrayList<>();
-
+    public Set<Integer> pickRect(Renderer renderer, Framebuffer target, Camera camera, SpriteBatcher sprites,
+                                 int x0, int y0, int x1, int y1,
+                                 boolean includeHidden, boolean fullyInside, int maxUid) {
         Set<Integer> visible = null;
         if (!includeHidden) {
-            if (!renderIds(renderContext, world)) return found;
+            renderIds(renderer, target, camera, sprites);
             visible = idBuffer.readRect(x0, y0, x1, y1);
-            if (!fullyInside) {
-                for (int uid : visible) {
-                    GameObject go = world.getGameObject(uid);
-                    if (go != null) found.add(go);
-                }
-                return found;
-            }
+            if (!fullyInside) return visible;
         }
 
-        int[] flags = renderFlags(renderContext, world, x0, y0, x1, y1);
-        if (flags == null) return found;
+        int[] flags = renderFlags(renderer, target, camera, sprites, x0, y0, x1, y1, maxUid);
 
-        for (GameObject go : world.getGameObjectList()) {
-            int entity = go.getUid() + 1;
-            if (entity >= flags.length) continue;
+        Set<Integer> found = new LinkedHashSet<>();
+        for (int entity = 1; entity < flags.length; entity++) {
             int f = flags[entity];
-            boolean inside = (f & FLAG_INSIDE) != 0;
-            boolean outside = (f & FLAG_OUTSIDE) != 0;
+            if ((f & FLAG_INSIDE) == 0) continue;
+            if (fullyInside && (f & FLAG_OUTSIDE) != 0) continue;
 
-            if (!inside) continue;
-            if (fullyInside && outside) continue;
-            if (visible != null && !visible.contains(go.getUid())) continue;
-            found.add(go);
+            int uid = entity - 1;
+            if (visible != null && !visible.contains(uid)) continue;
+            found.add(uid);
         }
         return found;
     }
 
-    /**
-     * Flag pass: draws every sprite, covered or not, and returns per-entity-id flags (FLAG_INSIDE / FLAG_OUTSIDE)
-     * for the given rectangle. Null if the world has no scene yet.
-     */
-    private int[] renderFlags(RenderContext renderContext, World2DLayer world, int x0, int y0, int x1, int y1) {
-        Camera camera = world.camera();
-        if (camera == null) return null;
+    /** Draws an outline around the sprites with the given uids onto target, seen through camera. Negative uids are ignored. */
+    public void drawOutline(Renderer renderer, Framebuffer target, Camera camera, SpriteBatcher sprites,
+                            Collection<Integer> uids) {
+        if (uids == null || uids.isEmpty()) return;
 
-        int maxUid = -1;
-        for (GameObject go : world.getGameObjectList()) maxUid = Math.max(maxUid, go.getUid());
-        flagBuffer.clear(maxUid + 2);   // entity ids go up to maxUid + 1
-
-        // the pass only writes flags; its color output goes to the mask, which drawOutline clears before use
-        Framebuffer frame = renderContext.framebuffer();
-        ensureMask(frame);
-
-        Renderer r = renderContext.renderer();
-        SavedState saved = new SavedState(r);
-
-        rect.set(Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1) + 1, Math.max(y0, y1) + 1);
-
-        r.setFramebuffer(mask);
-        r.setShader(flagsShader);
-        r.setCamera(camera);
-        r.setBlending(false);
-        r.setClearing(false);
-        flagBuffer.bind(0);
-        r.begin();
-        flagsShader.uploadVec4f("uRect", rect);
-        r.drawSprites();
-        r.end();
-        flagBuffer.unbind();
-
-        saved.restore(r, frame);
-        return flagBuffer.read();
-    }
-
-    private void ensureMask(Framebuffer frame) {
-        if (mask == null || mask.getWidth() != frame.getWidth() || mask.getHeight() != frame.getHeight()) {
-            if (mask != null) mask.destroy();
-            mask = new Framebuffer(frame.getWidth(), frame.getHeight(), GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, GL_NEAREST);
-        }
-    }
-
-    /** Fills the id buffer with the world's sprites at the frame's size. False if the world has no scene yet. */
-    private boolean renderIds(RenderContext renderContext, World2DLayer world) {
-        Camera camera = world.camera();
-        if (camera == null) return false;
-
-        Framebuffer frame = renderContext.framebuffer();
-        if (idBuffer == null || idBuffer.getWidth() != frame.getWidth() || idBuffer.getHeight() != frame.getHeight()) {
-            if (idBuffer != null) idBuffer.destroy();
-            idBuffer = new IdFramebuffer(frame.getWidth(), frame.getHeight());
-        }
-
-        Renderer r = renderContext.renderer();
-        SavedState saved = new SavedState(r);
-
-        r.setFramebuffer(idBuffer);
-        r.setShader(pickingShader);
-        r.setCamera(camera);
-        r.setBlending(false);   // ids must not mix
-        r.setClearing(true);
-        r.setClearColor(CLEAR_ZERO);   // 0 = no object
-        r.begin();
-        r.drawSprites();
-        r.end();
-
-        saved.restore(r, frame);
-        return true;
-    }
-
-    /** Draws an outline around every selected object onto the frame in renderContext. */
-    public void drawOutline(RenderContext renderContext, World2DLayer world, List<GameObject> selected) {
-        if (selected == null || selected.isEmpty()) return;
-        Camera camera = world.camera();
-        if (camera == null) return;
-
+        if (ids.length < uids.size()) ids = new int[Math.max(uids.size(), ids.length * 2)];
         int count = 0;
-        if (ids.length < selected.size()) ids = new int[Math.max(selected.size(), ids.length * 2)];
-        for (GameObject go : selected) {
-            if (go == null || go.isDead()) continue;
-            ids[count++] = go.getUid() + 1;
+        for (Integer uid : uids) {
+            if (uid != null && uid >= 0) ids[count++] = uid + 1;
         }
         if (count == 0) return;
-        selectedIds.set(ids, count);
+        outlinedIds.set(ids, count);
 
-        Framebuffer frame = renderContext.framebuffer();
-        ensureMask(frame);
+        ensureMask(target);
+        SavedState saved = new SavedState(renderer);
 
-        Renderer r = renderContext.renderer();
-        SavedState saved = new SavedState(r);
-
-        // 1. mask: 1 where a selected sprite is (one pass, however many are selected)
-        r.setFramebuffer(mask);
-        r.setShader(maskShader);
-        r.setCamera(camera);
-        r.setBlending(false);
-        r.setClearing(true);
-        r.setClearColor(CLEAR_ZERO);
-        r.begin();
+        // 1. mask: 1 where an outlined sprite is (one pass, however many there are)
+        renderer.setFramebuffer(mask);
+        renderer.setShader(maskShader);
+        renderer.setCamera(camera);
+        renderer.setBlending(false);
+        renderer.setClearing(true);
+        renderer.setClearColor(CLEAR_ZERO);
+        renderer.begin();
         maskShader.uploadTexture("uSelected", Renderer.FIRST_EXTRA_TEXTURE_UNIT);
-        r.drawSprites(selectedIds.getTexId());
-        r.end();
+        renderer.draw(sprites, outlinedIds.getTexId());
+        renderer.end();
 
-        // 2. edges of the mask, blended over the frame
-        r.setFramebuffer(frame);
-        r.setShader(outlineShader);
-        r.setBlending(true);
-        r.setClearing(false);
-        r.begin();
+        // 2. edges of the mask, blended over the target
+        renderer.setFramebuffer(target);
+        renderer.setShader(outlineShader);
+        renderer.setBlending(true);
+        renderer.setClearing(false);
+        renderer.begin();
         outlineShader.uploadTexture("uMask", 0);
         outlineShader.uploadVec4f("uColor", outlineColor);
         outlineShader.uploadInt("uThickness", outlineThickness);
-        r.drawFullscreen(mask.getTexId());
-        r.end();
+        renderer.drawFullscreen(mask.getTexId());
+        renderer.end();
 
-        saved.restore(r, frame);
+        saved.restore(renderer);
+    }
+
+    /** Fills the id buffer with every sprite, at target's size, seen through camera. */
+    private void renderIds(Renderer renderer, Framebuffer target, Camera camera, SpriteBatcher sprites) {
+        if (idBuffer == null || idBuffer.getWidth() != target.getWidth() || idBuffer.getHeight() != target.getHeight()) {
+            if (idBuffer != null) idBuffer.destroy();
+            idBuffer = new IdFramebuffer(target.getWidth(), target.getHeight());
+        }
+
+        SavedState saved = new SavedState(renderer);
+
+        renderer.setFramebuffer(idBuffer);
+        renderer.setShader(pickingShader);
+        renderer.setCamera(camera);
+        renderer.setBlending(false);   // ids must not mix
+        renderer.setClearing(true);
+        renderer.setClearColor(CLEAR_ZERO);   // 0 = no sprite
+        renderer.begin();
+        renderer.draw(sprites);
+        renderer.end();
+
+        saved.restore(renderer);
+    }
+
+    /** Flag pass: draws every sprite, covered or not, and returns per-entity-id flags (FLAG_INSIDE / FLAG_OUTSIDE). */
+    private int[] renderFlags(Renderer renderer, Framebuffer target, Camera camera, SpriteBatcher sprites,
+                              int x0, int y0, int x1, int y1, int maxUid) {
+        flagBuffer.clear(Math.max(0, maxUid) + 2);   // entity ids go up to maxUid + 1
+
+        // the pass only writes flags; its color output goes to the mask, which drawOutline clears before use
+        ensureMask(target);
+        SavedState saved = new SavedState(renderer);
+
+        rect.set(Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1) + 1, Math.max(y0, y1) + 1);
+
+        renderer.setFramebuffer(mask);
+        renderer.setShader(flagsShader);
+        renderer.setCamera(camera);
+        renderer.setBlending(false);
+        renderer.setClearing(false);
+        flagBuffer.bind(0);
+        renderer.begin();
+        flagsShader.uploadVec4f("uRect", rect);
+        renderer.draw(sprites);
+        renderer.end();
+        flagBuffer.unbind();
+
+        saved.restore(renderer);
+        return flagBuffer.read();
+    }
+
+    private void ensureMask(Framebuffer target) {
+        if (mask == null || mask.getWidth() != target.getWidth() || mask.getHeight() != target.getHeight()) {
+            if (mask != null) mask.destroy();
+            mask = new Framebuffer(target.getWidth(), target.getHeight(), GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, GL_NEAREST);
+        }
     }
 
     public void setOutlineColor(Vector4f rgba) {
@@ -256,12 +226,13 @@ public class SelectionRenderer {
             mask.destroy();
             mask = null;
         }
-        selectedIds.destroy();
+        outlinedIds.destroy();
         flagBuffer.destroy();
     }
 
     /** Renderer state the passes change; restored so later layers see the renderer as they left it. */
     private static final class SavedState {
+        private final Framebuffer framebuffer;
         private final Shader shader;
         private final Camera camera;
         private final boolean blending;
@@ -269,6 +240,7 @@ public class SelectionRenderer {
         private final Vector4f clearColor;
 
         SavedState(Renderer r) {
+            framebuffer = r.getFramebuffer();
             shader = r.getShader();
             camera = r.getCamera();
             blending = r.isBlending();
@@ -276,8 +248,8 @@ public class SelectionRenderer {
             clearColor = r.getClearColor();
         }
 
-        void restore(Renderer r, Framebuffer frame) {
-            r.setFramebuffer(frame);
+        void restore(Renderer r) {
+            r.setFramebuffer(framebuffer);
             r.setShader(shader);
             r.setCamera(camera);
             r.setBlending(blending);

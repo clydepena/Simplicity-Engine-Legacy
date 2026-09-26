@@ -1,8 +1,30 @@
 # Editor rendering
 
+## Sprites: `Drawable` and `SpriteBatcher`
+
+`Renderer` holds GPU state and passes only: target framebuffer, shader, camera, blending, clearing, `begin()`/`end()`, `drawFullscreen` and `present`. It holds no content. What gets drawn is a `Drawable`, passed to `renderer.draw(drawable, extraTextureIds...)` inside a pass; the drawable issues its own draw calls with the pass's shader.
+
+`SpriteBatcher` is the sprite `Drawable`. It owns a set of `RenderBatch`es: sprites with the same zIndex share batches (up to 1,000 sprites and 7 textures each), drawn in zIndex order, one draw call per batch.
+
+- Whoever owns the content owns its batcher. `World2DLayer` owns its sprites (`world.sprites()`), adding and removing them as objects join and leave; attaching or detaching the layer doesn't touch them.
+- `sync()` runs once per frame before drawing (the world calls it at the start of `onRender`, so it also runs while frozen). It moves sprites whose zIndex changed and frees empty batches.
+- `draw()` only draws, after uploading sprites that changed, so any number of extra passes over the same batcher (like the selection passes below) can't restructure it.
+- `Drawable` doesn't check that the shader matches the vertex layout. Code that depends on the sprite layout (entity id in attribute 4) takes a `SpriteBatcher`, not any `Drawable`.
+
 ## Selection: picking and outlines
 
-Selecting objects in the viewport and outlining them is handled by `editor/SelectionRenderer.java`, which `ViewportPanel` owns. It is **not** a second renderer: like `World2DLayer`, it is a client of the default `Renderer`. It has no batches, sprite list or draw loop of its own. It only owns two offscreen framebuffers and three shaders, and drives the existing `Renderer` API with different settings. The world knows nothing about selection.
+Selecting objects in the viewport and outlining them is handled by `editor/SelectionRenderer.java`, which `ViewportPanel` owns. It is **not** a second renderer: like `World2DLayer`, it is a client of the default `Renderer`. It has no batches, sprite list or draw loop of its own. It only owns its offscreen buffers and shaders, and drives the existing `Renderer` API with different settings. The world knows nothing about selection.
+
+`SelectionRenderer` works purely in uids, and every call takes the renderer, the target framebuffer and the camera:
+
+```java
+int          pick(renderer, target, camera, x, y)                        // uid, or -1
+Set<Integer> pickRect(renderer, target, camera, x0, y0, x1, y1,
+                      includeHidden, fullyInside, maxUid)
+void         drawOutline(renderer, target, camera, Collection<Integer> uids)
+```
+
+Pixel coordinates are in the target's pixels, bottom-left origin, and its buffers follow the target's size. It never sees a `GameObject` or a world: the caller maps uids to objects and does the `NonPickable` and `isDead` checks. Every call also takes the `SpriteBatcher` to work on (the viewport passes `world.sprites()`), so it works for any view of any sprite set: a second viewport with its own camera and target, or another world's sprites. Only sprites can be picked, since the id comes from each sprite's vertices.
 
 ### The vertex data already carries entity ids
 
@@ -27,12 +49,12 @@ All three drop nearly transparent pixels the same way: the picking and mask shad
 Almost everything is existing API:
 
 - `setFramebuffer`, `setShader`, `setCamera`, `setBlending`, `setClearing`, `setClearColor`
-- `begin()`, `drawSprites()`, `end()`
+- `begin()`, `draw(drawable)`, `end()`, where the drawable is the world's `SpriteBatcher`
 
 Additions made for it:
 
 - `Renderer.drawFullscreen(int... textureIds)`: draws one triangle covering the target, built from `gl_VertexID`, with an empty VAO. Used by the outline pass.
-- `Renderer.drawSprites(int... extraTextureIds)`: optional extra textures, bound to units `Renderer.FIRST_EXTRA_TEXTURE_UNIT` (8) and up for the whole draw. Units 0..7 belong to the batches' sprite textures. Plain `drawSprites()` works as before.
+- `Renderer.draw(drawable, int... extraTextureIds)`: optional extra textures, bound to units `Renderer.FIRST_EXTRA_TEXTURE_UNIT` (8) and up for the whole draw. Units 0..7 belong to the sprite batches' textures.
 - `Renderer` getters (`getShader`, `getCamera`, `isBlending`, `isClearing`, `getClearColor`), so passes can save and restore the renderer's state.
 - A `Framebuffer`/`Texture` constructor that takes a format and filter. `IdFramebuffer` is a `Framebuffer` subclass that uses it for float storage (`GL_RGB32F`, nearest) and adds `readPixel` and `readRect`.
 - `IdSetTexture`: a set of entity ids stored as a lookup texture (see the outline section).
@@ -43,8 +65,8 @@ The only raw GL outside `Renderer` is in the `renderer` package classes built fo
 ### Picking (only on a click)
 
 1. `ViewportPanel` converts the mouse position to a frame pixel using `uvMin`/`uvMax`, then flips Y, because OpenGL's origin is bottom-left.
-2. `SelectionRenderer.pick()` renders every sprite with the picking shader into an `IdFramebuffer` the size of the world frame (created on first use, replaced when the size changes). It clears to 0 and turns blending off, so ids are never averaged together. Batches are drawn in zIndex order, so the topmost sprite writes last and wins.
-3. `IdFramebuffer.readPixel(x, y)` reads that one pixel. The value minus 1 is the uid, which `world.getGameObject(uid)` turns into the object.
+2. `SelectionRenderer.pick()` renders every sprite with the picking shader, through the given camera, into an `IdFramebuffer` the size of the target (created on first use, replaced when the size changes). It clears to 0 and turns blending off, so ids are never averaged together. Batches are drawn in zIndex order, so the topmost sprite writes last and wins.
+3. `IdFramebuffer.readPixel(x, y)` reads that one pixel. The value minus 1 is the uid that `pick()` returns; the viewport turns it into the object with `world.getGameObject(uid)`.
 
 ### Selecting in the viewport: click and drag-select
 
@@ -71,7 +93,7 @@ Selection happens on release, which relies on ImGui seeing quick clicks. imgui-j
 
 ### Rectangle picking
 
-`SelectionRenderer.pickRect(renderContext, world, x0, y0, x1, y1, includeHidden, fullyInside)` returns the objects in the rectangle between two frame pixels (inclusive, bottom-left origin, corners in any order). Two flags choose the rule:
+`SelectionRenderer.pickRect(renderer, target, camera, x0, y0, x1, y1, includeHidden, fullyInside, maxUid)` returns the uids in the rectangle between two target pixels (inclusive, bottom-left origin, corners in any order). Two flags choose the rule:
 
 - `includeHidden`: false = only objects with a visible pixel in the rectangle; true = also objects fully covered by others.
 - `fullyInside`: false = any pixel inside is enough (partial, the default); true = the object's whole shape must be inside. The whole shape includes covered parts, so a sprite whose hidden half sticks out doesn't count.
@@ -94,15 +116,15 @@ For every mode, only pixels that pass the alpha cutout count, so the transparent
 
 The second part of bit 2 is in the vertex shader. The GPU never rasterizes pixels off the frame, so without it a sprite sticking out of the frame's edge could look fully inside a rectangle touching that edge. It uses the quad's corners, so it is slightly conservative.
 
-The buffer is sized to the largest uid in the world and cleared before each pick. `read()` issues `glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT)` before reading, since shader writes aren't otherwise visible to buffer reads. The pass writes no useful color; it targets the outline's mask framebuffer, which `drawOutline` clears before using.
+The buffer is sized from the `maxUid` the caller passes (the viewport uses the largest uid in the world) and cleared before each pick. `read()` issues `glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT)` before reading, since shader writes aren't otherwise visible to buffer reads. The pass writes no useful color; it targets the outline's mask framebuffer, which `drawOutline` clears before using.
 
-In the viewport, `rectIncludeHidden` and `rectFullyInside` (both false) hold the modes, and `pickInScreenRect(renderContext, a, b)` converts two screen points to frame pixels, calls `pickRect` with them, and removes `NonPickable` objects. Drag-select calls it on release.
+In the viewport, `rectIncludeHidden` and `rectFullyInside` (both false) hold the modes, and `pickInScreenRect(renderContext, a, b)` converts two screen points to frame pixels, calls `pickRect` with them, and turns the uids back into objects in one pass over the world, leaving out `NonPickable` ones. Drag-select calls it on release. For the outline, `selectedUids()` collects the uids of the live selected objects each frame.
 
 ### Outline (every frame while something is selected)
 
 1. **Mask pass:** every sprite is drawn with the mask shader, which checks its entity id against the selection. Only selected sprites write 1. Because this pass ignores what's on top, the whole silhouette is kept even when another sprite covers it. It is always one pass, however many objects are selected.
 
-   The selection reaches the shader as an `IdSetTexture`, a lookup texture where texel `id` is 1 if that entity id is selected. `drawSprites(selectedIds.getTexId())` binds it to unit 8 as `uSelected`. Details:
+   The selection reaches the shader as an `IdSetTexture`, a lookup texture where texel `id` is 1 if that entity id is selected. `renderer.draw(sprites, outlinedIds.getTexId())` binds it to unit 8 as `uSelected`. Details:
 
    - Ids are laid out in rows of `IdSetTexture.ROW_WIDTH` (1024), so id `n` lives at `(n % 1024, n / 1024)`. The shader reads the width from `textureSize`, and ids past the last row count as not selected.
    - The texture grows (doubling its rows) to fit the largest selected id.
@@ -113,11 +135,11 @@ The color and thickness can be changed with `setOutlineColor` and `setOutlineThi
 
 ### Why it doesn't conflict with the world's rendering
 
-1. **Order:** layers render bottom to top. The world finishes its whole `begin`/`drawSprites`/`end` before the editor layer's `onRender` starts, and the viewport's GL work happens inside that. ImGui only samples the world frame later, in `renderDrawData`, so it already sees the outline.
+1. **Order:** layers render bottom to top. The world finishes its whole `begin`/`draw`/`end` before the editor layer's `onRender` starts, and the viewport's GL work happens inside that. ImGui only samples the world frame later, in `renderDrawData`, so it already sees the outline.
 2. **Separate targets:** the picking and mask passes draw into the editor's own framebuffers; only the edge pass touches the world frame. `begin()` binds the target and sets `glViewport` to its size, and the buffers are kept at the world frame's size, so pixel coordinates line up.
-3. **State is restored:** `SavedState` records the shader, camera, blending, clearing and clear color before the passes, and restores them plus the framebuffer after. The next layer and the next frame see the renderer as the world left it. This matters because `Application` uses the renderer's clear color on the main frame each frame.
+3. **State is restored:** `SavedState` records the framebuffer, shader, camera, blending, clearing and clear color before each pass and restores them after. The next layer and the next frame see the renderer as the world left it. This matters because `Application` uses the renderer's clear color on the main frame each frame.
 4. **Pass guards still apply:** each pass is its own `begin()`/`end()`. `checkNotInPass`/`checkInPass` make accidental nesting or mid-pass state changes throw instead of corrupting a draw.
-5. **Drawing the sprites again is safe:** the world's pass has already rebuilt and uploaded changed sprites and cleared their dirty flags, so the extra `drawSprites()` calls just draw. A sprite whose zIndex changed is moved to the right batch the same way in any pass.
+5. **Drawing the sprites again is safe:** the world calls `sprites.sync()` once per frame before its pass (moving zIndex changes, dropping empty batches), and its pass uploads changed sprites and clears their dirty flags. The extra `draw(sprites)` calls only draw; `SpriteBatcher.draw` never adds or removes sprites.
 
 ### Costs
 
