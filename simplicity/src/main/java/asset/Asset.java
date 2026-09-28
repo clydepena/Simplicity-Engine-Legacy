@@ -9,11 +9,13 @@ public final class Asset<T> {
     private T rawAsset;
     private final T fallbackAsset;
     private State state = State.NOT_LOADED;
+    private final AssetPool assetPool;
 
-    Asset(String path, Class<T> type, T fallbackAsset) {
+    Asset(String path, Class<T> type, T fallbackAsset, AssetPool assetPool) {
         this.path = path;
         this.type = type;
         this.fallbackAsset = fallbackAsset;
+        this.assetPool = assetPool;
     }
 
     public T get() {
@@ -22,6 +24,15 @@ public final class Asset<T> {
 
     public String getPath() {
         return path;
+    }
+    
+    /** The path as saved in files: "engine:images/x.png" for a prefixed pool, plain for the project pool. */
+    public String getPrefixedPath() {
+        return assetPool.prefixPath(path);
+    }
+
+    public AssetPool getPool() {
+        return assetPool;
     }
 
     public Class<T> getType() {

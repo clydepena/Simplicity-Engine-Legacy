@@ -4,9 +4,8 @@ import java.util.List;
 
 public interface AssetLoader<T> {
 
-    public T load(byte[] bytes, AssetPool assetPool);
+    public T load(byte[] bytes, AssetPoolHandler handler);
 
-    /** Extensions without the dot, e.g. "png"; matched case-insensitively. */
     public List<String> supportedExtensions();
 
 }
