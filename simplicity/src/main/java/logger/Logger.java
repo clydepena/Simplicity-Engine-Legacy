@@ -1,12 +1,18 @@
 package logger;
 
-import java.io.*;
 import java.util.*;
 
 import observers.EventSystem;
 import observers.events.*;
 
 public class Logger {
+
+    // public interface LogSink { 
+    //     void onLog(Log log); 
+    // }
+
+    // private static final List<LogSink> sinks = new CopyOnWriteArrayList<>(List.of(Logger::toConsole));
+
     private static List<Log> logs = new ArrayList<>();
 
     public static class LogLevel {
@@ -60,8 +66,10 @@ public class Logger {
                 level = Log.LogLevel.INFO;
                 break;
         }
-        logs.add(new Log(message, level, object));
-        notifyEventLogged(logs.getLast());
+        Log entry = new Log(message, level, object);
+        // logs.add(entry);
+        // for (LogSink sink : sinks) sink.onLog(entry);
+        notifyEventLogged(entry);
     }
 
     public static final String toStringAllLogs() {
@@ -76,4 +84,9 @@ public class Logger {
     private static void notifyEventLogged(Log log) {
         EventSystem.notify(new Event(EventType.EventLogged, log));
     }
+
+    // private static void toConsole(Log log) {
+    //     boolean bad = log.getLogLevel() == Log.LogLevel.ERROR || log.getLogLevel() == Log.LogLevel.FATAL;
+    //     (bad ? System.err : System.out).println(log);
+    // }
 }

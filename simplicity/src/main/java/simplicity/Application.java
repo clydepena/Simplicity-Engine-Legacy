@@ -6,6 +6,7 @@ import org.lwjgl.glfw.*;
 import observers.EventSystem;
 import observers.Observer;
 import observers.events.Event;
+import observers.events.EventType;
 import renderer.*;
 import simplicity.Application.RenderContext;
 import simplicity.KeyListener.*;
@@ -99,8 +100,9 @@ public abstract class Application implements Observer {
             event instanceof KeyEvent ||
             event instanceof CharEvent ||
             event instanceof MouseButtonEvent ||
-            event instanceof MouseMovedEvent || 
-            event instanceof MouseScrollEvent
+            event instanceof MouseMovedEvent ||
+            event instanceof MouseScrollEvent ||
+            event.type == EventType.EventLogged
         ) {
             int i = layerStack.size() - 1;
             while (i >= 0) {
@@ -111,8 +113,11 @@ public abstract class Application implements Observer {
             }
             event.stopPropagate();
         }
+        // if (event.type != EventType.EventLogged) {
+        //     System.out.println(event);
+        // }
     }
-
+    
     public void pushLayer(Layer layer) {
         layerCommands.add(() -> { layerStack.add(layer); layer.onAttach(this); });
     }
@@ -134,7 +139,6 @@ public abstract class Application implements Observer {
     public void swapLayer(Layer layer1, Layer layer2) {
         layerCommands.add(() -> { 
            if (layerStack.contains(layer1) && layerStack.contains(layer2)) {
-                // take both indices before writing: after the first set, indexOf(layer2) would find the new copy
                 int i = layerStack.indexOf(layer1);
                 int j = layerStack.indexOf(layer2);
                 layerStack.set(i, layer2);
@@ -166,6 +170,9 @@ public abstract class Application implements Observer {
         window.maximize();
         window.setVisible(true);
         float beginTime = getTime(), endTime, dt = 0f;
+
+        int frames = 0;
+        float ctr = 0;
         while (!window.shouldClose()) {
             window.pollEvents();
             EventSystem.processEvents();
@@ -194,6 +201,13 @@ public abstract class Application implements Observer {
             }
 
             applyLayerCommands();
+            if (ctr >= 1) {
+                // System.out.println(frames);
+                frames = 0;
+                ctr = 0;
+            }
+            ctr += dt;
+            frames++;
             endTime = getTime();
             dt = Math.min(endTime - beginTime, 0.1f);
             beginTime = endTime;

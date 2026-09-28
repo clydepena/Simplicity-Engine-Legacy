@@ -16,6 +16,7 @@ import observers.events.Event;
 import scenes.World2DLayer;
 import simplicity.GameObject;
 import simplicity.Application.RenderContext;
+import util.IOHelper;
 
 public class SimplicityEditor extends ImGuiEditorLayer {
 
@@ -176,9 +177,11 @@ public class SimplicityEditor extends ImGuiEditorLayer {
             //     EventSystem.notify(new Event(EventType.SaveLevelAs));
             // }
 
-            // if(ImGui.menuItem("Load")) {
-            //     EventSystem.notify(new Event(EventType.LoadLevel));
-            // }
+            if(ImGui.menuItem("Load")) {
+                String result = IOHelper.openSingle(context.window(), "png");
+                System.out.println(result);
+                System.out.println(result.replace("\\", "/"));
+            }
 
             ImGui.endMenu();
         }
@@ -189,25 +192,29 @@ public class SimplicityEditor extends ImGuiEditorLayer {
 
                 if(ImGui.beginMenu("Theme")) {
 
-                    // if (ImGui.menuItem("Default")) {
-                    //     OldWindow.getImGuiLayer().setUIColors(0);
-                    // }
+                    if (ImGui.menuItem("Default")) {
+                        setUIColors(5);
+                    }
 
-                    // if (ImGui.menuItem("Dark blue")) {
-                    //     OldWindow.getImGuiLayer().setUIColors(1);
-                    // }
+                    if (ImGui.menuItem("Classic")) {
+                        setUIColors(0);
+                    }
 
-                    // if (ImGui.menuItem("Dark purple")) {
-                    //     OldWindow.getImGuiLayer().setUIColors(2);
-                    // }
+                    if (ImGui.menuItem("Dark blue")) {
+                        setUIColors(1);
+                    }
 
-                    // if (ImGui.menuItem("Light")) {
-                    //     OldWindow.getImGuiLayer().setUIColors(3);
-                    // }
+                    if (ImGui.menuItem("Dark purple")) {
+                        setUIColors(2);
+                    }
 
-                    // if (ImGui.menuItem("Gray")) {
-                    //     OldWindow.getImGuiLayer().setUIColors(4);
-                    // }
+                    if (ImGui.menuItem("Light")) {
+                        setUIColors(3);
+                    }
+
+                    if (ImGui.menuItem("Gray")) {
+                        setUIColors(4);
+                    }
 
                     ImGui.endMenu();
                 }

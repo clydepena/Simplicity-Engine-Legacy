@@ -6,18 +6,14 @@ import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.nio.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.util.nfd.NativeFileDialog.NFD_CANCEL;
-import static org.lwjgl.util.nfd.NativeFileDialog.NFD_FreePath;
-import static org.lwjgl.util.nfd.NativeFileDialog.NFD_GetError;
-import static org.lwjgl.util.nfd.NativeFileDialog.NFD_OKAY;
-import static org.lwjgl.util.nfd.NativeFileDialog.NFD_OpenDialog_With;
-import static org.lwjgl.util.nfd.NativeFileDialog.NFD_SaveDialog_With;
 import static org.lwjgl.util.nfd.NativeFileDialog.*;
 
 import org.lwjgl.BufferUtils;
@@ -223,29 +219,71 @@ public class IOHelper {
         return IOHelper.class.getResource("/" + filepath).getPath();
     }
 
-    public static boolean WriteToFile(String filepath, String text) {
-        try {
-            if (filepath == null) {
-                return false;
+    public static byte[] readAsBytes(String filepath) throws IOException {
+        if (filepath == null) return  null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (InputStream in = Files.newInputStream(Path.of(filepath))) {
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
             }
-            FileWriter writer = new FileWriter(filepath);
-            writer.write(text == null ? "" : text);
-            writer.close();
-            return true;
-        } catch(IOException e) {
-            e.printStackTrace();
-            return false;
+        }
+        return baos.toByteArray();
+    }
+
+    public static String[] readAsLines(String filepath) throws IOException {
+        if (filepath == null) return  null;
+        try (Stream<String> lines = Files.lines(Path.of(filepath))) {
+            return lines.toArray(String[]::new);
         }
     }
 
-    public static String ReadFromFile(String filepath) {
-        try {
-            return filepath == null ? filepath : new String(Files.readAllBytes(Paths.get(filepath)));
-        } catch(IOException e) {
-            e.printStackTrace();
-            return null;
+    public static String readAsString(String filepath) throws IOException {
+        if (filepath == null) return  null;
+        return Files.readString(Path.of(filepath));
+    }
+
+    public static Path[] readDirectory(String dir) throws IOException {
+        if (dir == null) return null;
+        try (Stream<Path> stream = Files.list(Path.of(dir))) {
+            return stream.toArray(Path[]::new);
         }
     }
+
+    public static void writeFile(String filepath, byte[] data) throws IOException {
+        if (filepath == null || data == null) return;
+        Files.write(Path.of(filepath), data);
+    }
+
+    public static void writeFile(String filepath, String data) throws IOException { 
+        if (filepath == null || data == null) return; 
+        Files.writeString(Path.of(filepath), data); 
+    }
+
+    // public static boolean WriteToFile(String filepath, String text) {
+    //     try {
+    //         if (filepath == null) {
+    //             return false;
+    //         }
+    //         FileWriter writer = new FileWriter(filepath);
+    //         writer.write(text == null ? "" : text);
+    //         writer.close();
+    //         return true;
+    //     } catch(IOException e) {
+    //         e.printStackTrace();
+    //         return false;
+    //     }
+    // }
+
+    // public static String ReadFromFile(String filepath) {
+    //     try {
+    //         return filepath == null ? filepath : new String(Files.readAllBytes(Paths.get(filepath)));
+    //     } catch(IOException e) {
+    //         e.printStackTrace();
+    //         return null;
+    //     }
+    // }
 
     public static boolean CopyToClipboard(String text) {
         StringSelection selection = new StringSelection(text);

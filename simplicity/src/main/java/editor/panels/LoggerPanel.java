@@ -10,6 +10,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.*;
 import logger.Log;
 import observers.events.Event;
+import observers.events.EventType;
 import simplicity.Application.RenderContext;
 
 @SuppressWarnings("unused")
@@ -146,7 +147,6 @@ public class LoggerPanel extends SimplicityPanel {
 
     @Override
     public void onEvent(Event event) {
-        
+        if (event.type == EventType.EventLogged && event.getObject() instanceof Log log) log(log);
     }
-    
 }

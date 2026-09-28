@@ -50,12 +50,9 @@ public class Physics2D {
                 Vector2f halfSize = new Vector2f(boxCollider.getHalfSize()).mul(0.5f);
                 Vector2f offset = boxCollider.getOffset();
                 Vector2f origin = new Vector2f(boxCollider.getOrigin());
-                shape.setAsBox(halfSize.x, halfSize.y, new Vec2(origin.x, origin.y), 0);
-
-                Vec2 pos = bodyDef.position;
-                float xPos = pos.x + offset.x;
-                float yPos = pos.y + offset.y;
-                bodyDef.position.set(xPos, yPos);
+                // the offset places the box inside the body (body-local), so it turns with the body; the body itself
+                // stays at the object's position, which keeps body position == transform position
+                shape.setAsBox(halfSize.x, halfSize.y, new Vec2(origin.x + offset.x, origin.y + offset.y), 0);
             }
 
             Body body = this.world.createBody(bodyDef);

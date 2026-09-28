@@ -8,11 +8,11 @@ public class TestApp extends Application{
 
     public TestApp() {
         super("Test");
-
-        pushLayer(new World2DLayer());
-        pushLayer(new WorldTestLayer("saves/level.json"));
-        pushLayer(new SimplicityEditor());
+        
         // pushLayer(new TestLayerTriangle());
+        pushLayer(new World2DLayer());
+        // pushLayer(new WorldTestLayer("saves/level.json"));
+        pushLayer(new SimplicityEditor());
     }
 
     @Override

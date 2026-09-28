@@ -6,11 +6,16 @@
 */
 
 // import simplicity.OldWindow;
+import logger.ConsoleCapture;
+import logger.Logger;
 import simplicity.TestApp;
 
 public class Main {
     
     public static void main(String[] args) {
+        // first, so everything printed from here on also becomes a log entry
+        ConsoleCapture.install(Logger::info, Logger::error);
+
         boolean test = true;
         if (test) {
             TestApp app = new TestApp();
