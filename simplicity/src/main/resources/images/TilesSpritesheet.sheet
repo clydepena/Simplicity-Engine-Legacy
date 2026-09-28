@@ -1,0 +1,7 @@
+{
+  "texture": "engine:images/TilesSpritesheet.png",
+  "spriteWidth": 32,
+  "spriteHeight": 32,
+  "numSprites": 48,
+  "spacing": 0
+}

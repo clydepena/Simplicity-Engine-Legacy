@@ -1,0 +1,7 @@
+{
+  "texture": "engine:images/editor/gizmos.png",
+  "spriteWidth": 24,
+  "spriteHeight": 48,
+  "numSprites": 3,
+  "spacing": 0
+}

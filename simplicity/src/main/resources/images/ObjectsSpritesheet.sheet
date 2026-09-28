@@ -1,0 +1,7 @@
+{
+  "texture": "engine:images/ObjectsSpritesheet.png",
+  "spriteWidth": 40,
+  "spriteHeight": 30,
+  "numSprites": 16,
+  "spacing": 0
+}

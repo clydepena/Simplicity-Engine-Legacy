@@ -8,12 +8,15 @@
 // import simplicity.OldWindow;
 import logger.ConsoleCapture;
 import logger.Logger;
+import simplicity.Tasks;
 import simplicity.TestApp;
 
 public class Main {
     
     public static void main(String[] args) {
-        // first, so everything printed from here on also becomes a log entry
+        // first: this thread is the main thread (Logger needs to know, for prints from workers)
+        Tasks.init();
+        // so everything printed from here on also becomes a log entry
         ConsoleCapture.install(Logger::info, Logger::error);
 
         boolean test = true;

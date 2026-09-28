@@ -11,10 +11,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import asset.AssetPoolHandler;
 import imgui.ImGui;
+import logger.Log;
+import logger.Logger;
 import observers.events.Event;
 import scenes.World2DLayer;
 import simplicity.GameObject;
+import simplicity.Tasks;
 import simplicity.Application.RenderContext;
 import util.IOHelper;
 
@@ -119,7 +123,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         this.world = world;
         
         this.gameObjectsSelection = new EditorSelection();
-        
+    
         editorContext = new SimplicityEditorContext(this, world, gameObjectsSelection);
         viewport = new ViewportPanel(editorContext);
         panels.add(viewport);
@@ -163,6 +167,10 @@ public class SimplicityEditor extends ImGuiEditorLayer {
     @Override
     protected boolean isMouseOverWorld() {
         return viewport != null && viewport.isHovered();
+    }
+
+    protected void resetAssetPools() {
+        
     }
 
     @Override

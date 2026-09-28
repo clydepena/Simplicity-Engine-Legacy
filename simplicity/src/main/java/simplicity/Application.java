@@ -176,6 +176,8 @@ public abstract class Application implements Observer {
         while (!window.shouldClose()) {
             window.pollEvents();
             EventSystem.processEvents();
+            Tasks.runMainThreadJobs();
+            Tasks.runMainThreadJobs();
 
             for (Layer layer : layerStack) {
                 if (!layer.isFrozen() && layer.isActive()) layer.onUpdate(dt);
@@ -219,6 +221,7 @@ public abstract class Application implements Observer {
             layer.destroy();
         }
 
+        Tasks.shutdown();   // before GL goes away: no finished work arrives after this
         mainFramebuffer.destroy();
         renderer.destroy();
         window.destroy();

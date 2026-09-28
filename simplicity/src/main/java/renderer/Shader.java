@@ -4,6 +4,7 @@ import org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import util.IOHelper;
+import asset.Disposable;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public class Shader {
+public class Shader implements Disposable {
 
     private int shaderProgramID;
     private boolean beingUsed = false;
@@ -28,62 +29,73 @@ public class Shader {
         initFromExternal(externFilepath);
     }
 
+    /** Old loading path (util.AssetPool): errors are printed, not thrown. */
     public void initFromExternal(String filepath) {
         this.filepath = filepath;
         try {
             parseShaderSource(new String(Files.readAllBytes(Paths.get(filepath))));
-        } catch (IOException e) {
-            assert false : "Error: Could not open file for shader: '" + filepath + "'";
-        };
-        
-    }
-    
-    public void initFromRes(String filepath) {
-        this.filepath = filepath;
-        parseShaderSource(IOHelper.ResToString(filepath));
-    }
-
-    private void parseShaderSource(String sourceCode) {
-        try {
-            String source = sourceCode;
-            String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
-
-            // Find the first pattern after #type 'pattern'
-            int index = source.indexOf("#type") + 6;
-            int eol = source.indexOf("\r\n", index);
-            String firstPattern = source.substring(index, eol).trim();
-
-            // Find the second pattern after #type 'pattern'
-            index = source.indexOf("#type", eol) + 6;
-            eol = source.indexOf("\r\n", index);
-            String secondPattern = source.substring(index, eol).trim();
-
-            // System.out.println("FRIST PATTERN: " + secondPattern);
-
-            if (firstPattern.equals("vertex")) {
-                vertexSource = splitString[1];
-            } else if (firstPattern.equals("fragment")) {
-                fragmentSource = splitString[1];
-            } else {
-                throw new IOException("Unexpected token '" + firstPattern + "'");
-            }
-
-            // System.out.println("SECOND PATTERN: " + secondPattern);
-
-            if (secondPattern.equals("vertex")) {
-                vertexSource = splitString[2];
-            } else if (secondPattern.equals("fragment")) {
-                fragmentSource = splitString[2];
-            } else {
-                throw new IOException("Unexpected token '" + secondPattern + "'");
-            }
-        } catch(IOException e) {
-            e.printStackTrace();
-            assert false : "Error: Could not open file for shader: '" + filepath + "'";
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println("Error: (Shader) '" + filepath + "': " + e.getMessage());
         }
     }
 
-    public void compile() {
+    /** Old loading path (util.AssetPool): errors are printed, not thrown. */
+    public void initFromRes(String filepath) {
+        this.filepath = filepath;
+        String source = IOHelper.ResToString(filepath);
+        if (source == null) {
+            System.err.println("Error: (Shader) could not read '" + filepath + "'");
+            return;
+        }
+        try {
+            parseShaderSource(source);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: (Shader) '" + filepath + "': " + e.getMessage());
+        }
+    }
+
+    /**
+     * Splits a file with "#type vertex" and "#type fragment" sections into the two sources.
+     * Works with LF and CRLF line endings. Pure string work: safe on any thread.
+     * @throws IllegalArgumentException when a section is unknown, repeated or missing
+     */
+    public void parseShaderSource(String sourceCode) {
+        vertexSource = null;
+        fragmentSource = null;
+        String source = sourceCode.replace("\r\n", "\n");
+
+        // sections start with "#type <stage>" at the start of a line; text before the first one is ignored
+        String[] sections = source.split("(?m)^#type[ \\t]+");
+        for (int i = 1; i < sections.length; i++) {
+            int eol = sections[i].indexOf('\n');
+            String stage = (eol == -1 ? sections[i] : sections[i].substring(0, eol)).trim();
+            String body = eol == -1 ? "" : sections[i].substring(eol + 1);
+            switch (stage) {
+                case "vertex" -> {
+                    if (vertexSource != null) throw new IllegalArgumentException("two '#type vertex' sections");
+                    vertexSource = body;
+                }
+                case "fragment" -> {
+                    if (fragmentSource != null) throw new IllegalArgumentException("two '#type fragment' sections");
+                    fragmentSource = body;
+                }
+                default -> throw new IllegalArgumentException("unknown shader stage '#type " + stage + "'");
+            }
+        }
+        if (vertexSource == null) throw new IllegalArgumentException("no '#type vertex' section");
+        if (fragmentSource == null) throw new IllegalArgumentException("no '#type fragment' section");
+    }
+
+    /**
+     * Compiles and links on the GPU (main thread). Errors are printed with the GL info log.
+     * @return false if compiling or linking failed; the program is then unusable and should be disposed
+     */
+    public boolean compile() {
+        if (vertexSource == null || fragmentSource == null) {
+            System.out.println("ERROR: '" + filepath + "'\n\tNothing to compile: the source wasn't parsed.");
+            return false;
+        }
+        boolean ok = true;
         // ============================================================
         // Compile and link shaders
         // ============================================================
@@ -101,7 +113,7 @@ public class Shader {
             int len = glGetShaderi(vertexID, GL_INFO_LOG_LENGTH);
             System.out.println("ERROR: '" + filepath + "'\n\tVertex shader compilation failed.");
             System.out.println(glGetShaderInfoLog(vertexID, len));
-            assert false : "";
+            ok = false;
         }
 
         // First load and compile the vertex shader
@@ -116,7 +128,7 @@ public class Shader {
             int len = glGetShaderi(fragmentID, GL_INFO_LOG_LENGTH);
             System.out.println("ERROR: '" + filepath + "'\n\tFragment shader compilation failed.");
             System.out.println(glGetShaderInfoLog(fragmentID, len));
-            assert false : "";
+            ok = false;
         }
 
         // Link shaders and check for errors
@@ -131,8 +143,15 @@ public class Shader {
             int len = glGetProgrami(shaderProgramID, GL_INFO_LOG_LENGTH);
             System.out.println("ERROR: '" + filepath + "'\n\tLinking of shaders failed.");
             System.out.println(glGetProgramInfoLog(shaderProgramID, len));
-            assert false : "";
+            ok = false;
         }
+
+        // the linked program keeps what it needs: the separate stage objects would otherwise stay on the GPU
+        glDetachShader(shaderProgramID, vertexID);
+        glDetachShader(shaderProgramID, fragmentID);
+        glDeleteShader(vertexID);
+        glDeleteShader(fragmentID);
+        return ok;
     }
 
     public void use() {
@@ -146,6 +165,15 @@ public class Shader {
     public void detach() {
         glUseProgram(0);
         beingUsed = false;
+    }
+
+    /** Frees the GL program; safe to call twice. */
+    @Override
+    public void dispose() {
+        if (shaderProgramID == 0) return;
+        if (beingUsed) detach();
+        glDeleteProgram(shaderProgramID);
+        shaderProgramID = 0;
     }
 
     public void uploadMat4f(String varName, Matrix4f mat4) {

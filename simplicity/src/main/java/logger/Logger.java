@@ -4,6 +4,7 @@ import java.util.*;
 
 import observers.EventSystem;
 import observers.events.*;
+import simplicity.Tasks;
 
 public class Logger {
 
@@ -47,6 +48,11 @@ public class Logger {
     }
 
     public static void log(String message, int logLevel, Object object) {
+        if (Tasks.isInitialized() && !Tasks.isMainThread()) {
+            Tasks.onMainThread(() -> log(message, logLevel, object));
+            return;
+        }
+        
         Log.LogLevel level;
         switch (logLevel) {
             case 0:

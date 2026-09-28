@@ -7,8 +7,9 @@ import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.BufferUtils;
 import util.IOHelper;
+import asset.Disposable;
 
-public class Texture {
+public class Texture implements Disposable {
     private String filepath;
     private transient int texID;
     private int width, height;
@@ -39,83 +40,76 @@ public class Texture {
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
     }
 
+    /** A texture from RGBA pixels (4 bytes per pixel, bottom row first). The pixels are copied to the GPU, so the caller keeps ownership of the buffer. */
+    public Texture(int width, int height, ByteBuffer rgba) {
+        this.filepath = "Generated";
+        upload(width, height, rgba);
+    }
+
+    /** Old loading path (util.AssetPool): an image inside the jar. */
     public void initFromRes(String filepath) {
         this.filepath = filepath;
-
-        // IntBuffer channels = null;
-        // IntBuffer width = null;
-        // IntBuffer height = null;
-        // ByteBuffer image = null;
-
-        // try (MemoryStack stack = MemoryStack.stackPush()) {
-        //     channels = stack.mallocInt(1);
-        //     width = stack.mallocInt(1);
-        //     height = stack.mallocInt(1);
-
-        //     stbi_set_flip_vertically_on_load(true);
-        //     image = stbi_load_from_memory(AssetUtil.ResToByteBuffer(filepath), width, height, channels, 4);
-        //     if (image == null) {
-        //         System.out.println("Could not load " + filepath);
-        //     }
-        // } catch (Exception e) {
-
-        // }
-
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        IntBuffer channels = BufferUtils.createIntBuffer(1);
-        stbi_set_flip_vertically_on_load(true);
-        ByteBuffer image = stbi_load_from_memory(IOHelper.ResToByteBuffer(filepath), width, height, channels, 4);
-
-        genTexture(image, width, height, channels);
+        loadWithStb(IOHelper.ResToByteBuffer(filepath));
     }
-    
+
+    /** Old loading path (util.AssetPool): an image file on disk. */
     public void initFromExternal(String filepath) {
         this.filepath = filepath;
-
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
-        stbi_set_flip_vertically_on_load(true);
-        ByteBuffer image = stbi_load(filepath, width, height, channels, 0);
-        
-        genTexture(image, width, height, channels);
+        stbi_set_flip_vertically_on_load_thread(1);
+        ByteBuffer image = stbi_load(filepath, width, height, channels, 4);
+        uploadFromStb(image, width.get(0), height.get(0));
     }
 
-    private void genTexture(ByteBuffer image, IntBuffer width, IntBuffer height, IntBuffer channels) {
+    private void loadWithStb(ByteBuffer encoded) {
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer channels = BufferUtils.createIntBuffer(1);
+        stbi_set_flip_vertically_on_load_thread(1);
+        if (encoded == null) {   // the file wasn't found: stb's failure reason would be left over from an older call
+            System.err.println("Error: (Texture) Could not read image '" + filepath + "'");
+            upload(0, 0, null);
+            return;
+        }
+        ByteBuffer image = stbi_load_from_memory(encoded, width, height, channels, 4);
+        uploadFromStb(image, width.get(0), height.get(0));
+    }
+
+    private void uploadFromStb(ByteBuffer image, int width, int height) {
+        if (image == null) {
+            System.err.println("Error: (Texture) Could not load image '" + filepath + "': " + stbi_failure_reason());
+            upload(0, 0, null);   // keeps the old behaviour: a valid, empty texture
+            return;
+        }
+        upload(width, height, image);
+        stbi_image_free(image);
+    }
+
+    /**
+     * The one GPU upload every image path uses. Always RGBA: stb is asked for 4 channels,
+     * so it returns RGBA whatever the file had (its reported channel count is the file's, not the data's).
+     */
+    private void upload(int width, int height, ByteBuffer rgba) {
+        this.width = width;
+        this.height = height;
 
         // generate texture on GPU
         texID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texID);
 
-        // set texture parameters
-        
         // repeat image in both directions
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        
-        // pixelate when stretching image
+
+        // pixelate when stretching and shrinking the image
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        
-        // pixelate when shrinking image
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        if(image != null) {
-            this.width = width.get(0);
-            this.height = height.get(0);
-
-            if(channels.get(0) == 3) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width.get(0), height.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-            } else if(channels.get(0) == 4) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-            } else {
-                assert false : "Error (Texture) Unknown number of channels '" + channels.get(0) + "'";
-            }
-        } else {
-            assert false : "Error: (Texture) Could not load image '" + filepath + "'";
+        if (rgba != null) {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba);
         }
-        
-        stbi_image_free(image);
     }
 
     public void bind() {
@@ -124,6 +118,13 @@ public class Texture {
 
     public void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0 );
+    }
+
+    @Override
+    public void dispose() {
+        if (texID <= 0) return;
+        glDeleteTextures(texID);
+        texID = -1;
     }
 
     public int getWidth() {
@@ -147,7 +148,7 @@ public class Texture {
         if(o == null) return false;
         if(!(o instanceof Texture)) return false;
         Texture oTex = (Texture) o;
-        return oTex.getWidth() == this.width && oTex.getHeight() == this.height && oTex.getId() == this.texID && oTex.getFilepath().equals(this.filepath);
+        return oTex.getWidth() == this.width && oTex.getHeight() == this.height && oTex.getId() == this.texID && java.util.Objects.equals(oTex.getFilepath(), this.filepath);   // null-safe
     }
 
 }
