@@ -1,6 +1,10 @@
 package asset;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
+
+import codecs.*;
 
 public class AssetHelpers {
     private AssetHelpers() {}
@@ -60,5 +64,25 @@ public class AssetHelpers {
         String normalized = newKey.toString();
         if (normalized.isEmpty()) throw new IllegalArgumentException("empty asset path: '" + key + "'");
         return normalized;
+    }
+
+    public static void setCodecs(AssetPoolHandler handler) {
+
+        List<AssetLoader<?, ?>> loaders = new ArrayList<>();
+        loaders.add(new AudioClipCodec());
+        loaders.add(new ShaderCodec());
+        loaders.add(new SpriteSheetCodec());
+        loaders.add(new TextureCodec());
+
+        for (AssetLoader<?,?> assetLoader : loaders) {
+            handler.addAssetLoader(assetLoader);
+        }
+
+        List<AssetSaver<?>> savers = new ArrayList<>();
+        savers.add(new SpriteSheetCodec());
+
+        for (AssetSaver<?> assetSaver : savers) {
+            handler.addAssetSaver(assetSaver);
+        }
     }
 }

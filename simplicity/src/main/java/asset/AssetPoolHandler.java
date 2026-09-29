@@ -33,7 +33,9 @@ public final class AssetPoolHandler implements AssetPoolInterface {
     private final Map<Class<?>, Object> placeholders = new HashMap<>();
     private static AssetPoolHandler instance;
 
-    private AssetPoolHandler() {}
+    private AssetPoolHandler() {
+        AssetHelpers.setCodecs(this);
+    }
 
     public static AssetPoolHandler GetInstance() {
         if (instance == null) {
@@ -208,5 +210,12 @@ public final class AssetPoolHandler implements AssetPoolInterface {
                 : "no asset pool for prefix '" + prefix + "' in '" + path + "'");
         }
         return pool;
+    }
+
+    public AssetPool getAssetPool(String keyPrefix) {
+        if (!assetPools.containsKey(keyPrefix)) {
+            return null;
+        }
+        return assetPools.get(keyPrefix);
     }
 }

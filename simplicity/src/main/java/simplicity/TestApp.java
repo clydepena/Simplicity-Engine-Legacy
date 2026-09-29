@@ -11,7 +11,7 @@ public class TestApp extends Application{
         
         // pushLayer(new TestLayerTriangle());
         pushLayer(new World2DLayer());
-        // pushLayer(new WorldTestLayer("saves/level.json"));
+        pushLayer(new WorldTestLayer("saves/level.json"));
         pushLayer(new SimplicityEditor());
     }
 

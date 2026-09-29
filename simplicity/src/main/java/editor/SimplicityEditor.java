@@ -11,11 +11,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import asset.Asset;
+import asset.AssetPool;
 import asset.AssetPoolHandler;
 import imgui.ImGui;
 import logger.Log;
 import logger.Logger;
 import observers.events.Event;
+import renderer.Texture;
 import scenes.World2DLayer;
 import simplicity.GameObject;
 import simplicity.Tasks;
@@ -27,11 +30,14 @@ public class SimplicityEditor extends ImGuiEditorLayer {
     public static class SimplicityEditorContext extends editor.EditorContext<SimplicityEditor> {
         public final World2DLayer world;
         public final EditorSelection gameObjectSelection;
+        public final AssetPoolHandler assetPoolHandler;
+        public AssetPool projectAssets, engineResources;
 
-        public SimplicityEditorContext(SimplicityEditor editorLayer, World2DLayer world, EditorSelection gameObjectSelection) {
+        public SimplicityEditorContext(SimplicityEditor editorLayer, World2DLayer world, EditorSelection gameObjectSelection, AssetPoolHandler assetPoolHandler) {
             super(editorLayer);
             this.world = world;
             this.gameObjectSelection = gameObjectSelection;
+            this.assetPoolHandler = assetPoolHandler;
         }
     }
 
@@ -114,6 +120,8 @@ public class SimplicityEditor extends ImGuiEditorLayer {
     private SimplicityEditorContext editorContext = null;
     private ViewportPanel viewport  = null;
     private final List<SimplicityPanel> panels = new ArrayList<>();
+    private AssetPool projectAssets, engineResources;
+    private AssetPoolHandler assetPoolHandler = AssetPoolHandler.GetInstance();
 
     @Override
     protected void onInitEditor() {
@@ -121,13 +129,17 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         if (world == null) throw new IllegalStateException(this.getClass().getSimpleName() + " requires a World2DLayer to be pushed first");
         world.setFrozen(true);
         this.world = world;
-        
         this.gameObjectsSelection = new EditorSelection();
-    
-        editorContext = new SimplicityEditorContext(this, world, gameObjectsSelection);
+        
+        engineResources = assetPoolHandler.createAssetPool("engine", null, AssetPoolHandler.FileReadingCallback.CLASSPATH);
+        projectAssets = assetPoolHandler.createAssetPool("res", "C:/", AssetPoolHandler.FileReadingCallback.FILE_SYSTEM);
+        editorContext = new SimplicityEditorContext(this, world, gameObjectsSelection, assetPoolHandler);
+        
+        editorContext.engineResources = engineResources;
+        editorContext.projectAssets = projectAssets;
+
         viewport = new ViewportPanel(editorContext);
         panels.add(viewport);
-        
         panels.add(new LoggerPanel(editorContext));
         // panels.add(new NodeEditorPanel(editorContext));
     }
@@ -186,9 +198,9 @@ public class SimplicityEditor extends ImGuiEditorLayer {
             // }
 
             if(ImGui.menuItem("Load")) {
-                String result = IOHelper.openSingle(context.window(), "png");
-                System.out.println(result);
-                System.out.println(result.replace("\\", "/"));
+                // String result = IOHelper.openSingle(context.window(), "png");
+                // Asset<Texture> texture = projectAssets.get(result, Texture.class);
+                // projectAssets.acquireAsync(texture);
             }
 
             ImGui.endMenu();

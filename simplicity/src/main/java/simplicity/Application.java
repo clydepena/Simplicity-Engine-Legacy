@@ -3,6 +3,7 @@ package simplicity;
 import java.util.*;
 import org.lwjgl.glfw.*;
 
+import asset.*;
 import observers.EventSystem;
 import observers.Observer;
 import observers.events.Event;
@@ -77,6 +78,7 @@ public abstract class Application implements Observer {
     protected boolean running = false;
     protected String title;
     protected Framebuffer mainFramebuffer;
+    protected AssetPool appAssets, engineResources;
     protected final Queue<Runnable> layerCommands = new ArrayDeque<>();
 
     public Application(String title) {
@@ -204,7 +206,7 @@ public abstract class Application implements Observer {
 
             applyLayerCommands();
             if (ctr >= 1) {
-                // System.out.println(frames);
+                System.out.println(frames);
                 frames = 0;
                 ctr = 0;
             }

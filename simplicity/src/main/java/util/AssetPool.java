@@ -40,16 +40,16 @@ public class AssetPool {
         return null;
     }
 
-    public static AudioClip addSound(String soundFile, boolean loops) {
-        File file = new File(soundFile);
-        if (sounds.containsKey(file.getAbsolutePath())) {
-            return sounds.get(file.getAbsolutePath());
-        } else {
-            AudioClip sound = new AudioClip(file.getAbsolutePath(), loops);
-            AssetPool.sounds.put(file.getAbsolutePath(), sound);
-            return sound;
-        }
-    }
+    // public static AudioClip addSound(String soundFile, boolean loops) {
+    //     File file = new File(soundFile);
+    //     if (sounds.containsKey(file.getAbsolutePath())) {
+    //         return sounds.get(file.getAbsolutePath());
+    //     } else {
+    //         AudioClip sound = new AudioClip(file.getAbsolutePath(), loops);
+    //         AssetPool.sounds.put(file.getAbsolutePath(), sound);
+    //         return sound;
+    //     }
+    // }
     
     // SHADERS
     public static Shader getShader(String resourceName) {
