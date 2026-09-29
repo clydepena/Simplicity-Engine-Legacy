@@ -2,7 +2,7 @@ package util;
 
 import renderer.Shader;
 import renderer.Texture;
-import simplicity.Sound;
+import sound.AudioClip;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,15 +22,15 @@ public class AssetPool {
     private static Map<String, Spritesheet> spritesheets = new HashMap<>();
     private static Map<String, Spritesheet> spritesheetsRes = new HashMap<>();
 
-    private static Map<String, Sound> sounds = new HashMap<>();
+    private static Map<String, AudioClip> sounds = new HashMap<>();
     // private static Map<String, Sound> soundsRes = new HashMap<>();
 
     // SOUNDS
-    public static Collection<Sound> getAllSounds() {
+    public static Collection<AudioClip> getAllSounds() {
         return sounds.values();
     }
 
-    public static Sound getSound(String soundFile) {
+    public static AudioClip getSound(String soundFile) {
         File file = new File(soundFile);
         if (sounds.containsKey(file.getAbsolutePath())) {
             return sounds.get(file.getAbsolutePath());
@@ -40,12 +40,12 @@ public class AssetPool {
         return null;
     }
 
-    public static Sound addSound(String soundFile, boolean loops) {
+    public static AudioClip addSound(String soundFile, boolean loops) {
         File file = new File(soundFile);
         if (sounds.containsKey(file.getAbsolutePath())) {
             return sounds.get(file.getAbsolutePath());
         } else {
-            Sound sound = new Sound(file.getAbsolutePath(), loops);
+            AudioClip sound = new AudioClip(file.getAbsolutePath(), loops);
             AssetPool.sounds.put(file.getAbsolutePath(), sound);
             return sound;
         }

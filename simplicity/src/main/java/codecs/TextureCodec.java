@@ -14,18 +14,14 @@ public class TextureCodec implements AssetLoader<Texture, TextureCodec.TextureDa
     public static final List<String> EXTENSIONS = List.of("png", "jpg", "jpeg", "bmp", "tga");
 
     public static class TextureData implements Disposable {
-        public final int width;
-        public final int height;
-        private ByteBuffer pixels;
+        public int width;
+        public int height;
+        public ByteBuffer pixels;
 
         public TextureData(ByteBuffer pixels, int width, int height) {
             this.pixels = pixels;
             this.width = width;
             this.height = height;
-        }
-
-        public ByteBuffer pixels() {
-            return pixels;
         }
 
         @Override
@@ -58,7 +54,7 @@ public class TextureCodec implements AssetLoader<Texture, TextureCodec.TextureDa
     @Override
     public Texture finish(TextureData decoded, AssetPoolHandler handler) {
         try {
-            return new Texture(decoded.width, decoded.height, decoded.pixels());
+            return new Texture(decoded.width, decoded.height, decoded.pixels);
         } finally {
             decoded.dispose();
         }

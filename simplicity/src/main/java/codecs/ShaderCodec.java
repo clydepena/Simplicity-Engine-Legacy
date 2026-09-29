@@ -16,7 +16,6 @@ public class ShaderCodec implements AssetLoader<Shader, Shader> {
         return EXTENSIONS;
     }
 
-    /** Splits the sources only (no GL): throws on a malformed file, so the pool marks it MISSING. */
     @Override
     public Shader decode(byte[] bytes) {
         Shader shader = new Shader();
@@ -26,7 +25,7 @@ public class ShaderCodec implements AssetLoader<Shader, Shader> {
 
     @Override
     public Shader finish(Shader decoded, AssetPoolHandler handler) {
-        if (!decoded.compile()) {   // the GL info log was already printed
+        if (!decoded.compile()) {
             decoded.dispose();
             throw new IllegalStateException("shader failed to compile or link");
         }
