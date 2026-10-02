@@ -173,6 +173,7 @@ public abstract class Application implements Observer {
         window.setVisible(true);
         float beginTime = getTime(), endTime, dt = 0f;
 
+        boolean yesFPS = true;
         int frames = 0;
         float ctr = 0;
         while (!window.shouldClose()) {
@@ -203,15 +204,17 @@ public abstract class Application implements Observer {
             } else {
                 window.awaitEvents();
             }
-
+            
             applyLayerCommands();
-            if (ctr >= 1) {
-                System.out.println(frames);
-                frames = 0;
-                ctr = 0;
+            if (yesFPS) {
+                if (ctr >= 1) {
+                    System.out.println(frames);
+                    frames = 0;
+                    ctr = 0;
+                }
+                ctr += dt;
+                frames++;
             }
-            ctr += dt;
-            frames++;
             endTime = getTime();
             dt = Math.min(endTime - beginTime, 0.1f);
             beginTime = endTime;

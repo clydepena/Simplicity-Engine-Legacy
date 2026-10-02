@@ -129,7 +129,7 @@ public class Window {
 
 
         setIcon(Resources.ICON, Resources.ICON_SMALL);
-        glfwSetWindowSizeLimits(glfwWindow, (int) (SCREEN_WIDTH * 0.75f), (int) (SCREEN_HEIGHT * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
+        restoreDefaultWindowSizeLimits();
         setWindowPos((SCREEN_WIDTH - tmpWidth) / 2, ((SCREEN_HEIGHT - tmpHeight) / 2));
         
         int[] fw = new int[1], fh = new int[1];
@@ -327,5 +327,22 @@ public class Window {
 
     public void restore() {
         glfwRestoreWindow(glfwWindow);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        glfwSetWindowTitle(glfwWindow, title);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+        glfwSetWindowSizeLimits(glfwWindow, minWidth, minHeight, maxWidth, maxHeight);
+    }
+
+    public void restoreDefaultWindowSizeLimits() {
+        glfwSetWindowSizeLimits(glfwWindow, (int) (SCREEN_WIDTH * 0.75f), (int) (SCREEN_HEIGHT * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
     }
 }

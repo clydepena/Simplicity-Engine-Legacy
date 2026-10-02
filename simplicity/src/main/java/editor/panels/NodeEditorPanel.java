@@ -7,10 +7,9 @@ import imgui.internal.ImGui;
 import imgui.type.ImLong;
 import observers.events.Event;
 import simplicity.Application.RenderContext;
+import editor.SimplicityEditorContext;
 import editor.nodes.Graph;
 import editor.nodes.Graph.GraphTuple;
-import editor.SimplicityEditor.SimplicityEditorContext;
-import editor.SimplicityEditor.SimplicityPanel;
 
 public class NodeEditorPanel extends SimplicityPanel {
 

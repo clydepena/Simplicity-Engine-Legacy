@@ -1,179 +1,166 @@
 package editor;
 
-import editor.panels.EditorPanel;
-import editor.panels.EditorSubPanel;
+import editor.Project.ProjectFile;
+import editor.panels.LauncherPanel;
 import editor.panels.LoggerPanel;
 import editor.panels.NodeEditorPanel;
+import editor.panels.SimplicityPanel;
 import editor.panels.ViewportPanel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import static observers.events.EventType.KeyInput;
 
-import asset.Asset;
-import asset.AssetPool;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import asset.AssetPoolHandler;
 import imgui.ImGui;
-import logger.Log;
-import logger.Logger;
 import observers.events.Event;
-import renderer.Texture;
 import scenes.World2DLayer;
-import simplicity.GameObject;
-import simplicity.Tasks;
 import simplicity.Application.RenderContext;
+import simplicity.KeyListener.KeyEvent;
 import util.IOHelper;
+import util.Inputs;
 
 public class SimplicityEditor extends ImGuiEditorLayer {
 
-    public static class SimplicityEditorContext extends editor.EditorContext<SimplicityEditor> {
-        public final World2DLayer world;
-        public final EditorSelection gameObjectSelection;
-        public final AssetPoolHandler assetPoolHandler;
-        public AssetPool projectAssets, engineResources;
-
-        public SimplicityEditorContext(SimplicityEditor editorLayer, World2DLayer world, EditorSelection gameObjectSelection, AssetPoolHandler assetPoolHandler) {
-            super(editorLayer);
-            this.world = world;
-            this.gameObjectSelection = gameObjectSelection;
-            this.assetPoolHandler = assetPoolHandler;
-        }
+    public enum  EditorMode {
+        LAUNCHER, EDITOR
     }
 
-    public static abstract class SimplicityPanel extends EditorPanel<SimplicityEditor, SimplicityEditorContext> {
-
-        public SimplicityPanel(SimplicityEditorContext editorContext) {
-            super(editorContext);
-        }
-    }
-
-    public static abstract class SimplicitySubPanel<P extends SimplicityPanel> extends EditorSubPanel<SimplicityEditor, SimplicityEditorContext, P> {
-
-        public SimplicitySubPanel(P parentPanel) {
-            super(parentPanel);
-        }
-    }
-
-    public static class EditorSelection {
-        
-        public enum Mode { REPLACE, ADD, TOGGLE, SUBTRACT }
-
-        public List<GameObject> selectedGameObjects = new ArrayList<>();
-
-        public EditorSelection() {}
-
-        public boolean isSingleSelection() {
-            return isNoSelection() ? false: selectedGameObjects.stream().filter(Objects::nonNull).count() == 1;
-        }
-
-        public boolean isNoSelection() {
-            return selectedGameObjects == null ? true : selectedGameObjects.stream().noneMatch(Objects::nonNull);
-        }
-
-        /** How a pick changes the selection. */
-
-        public void apply(Mode mode, Collection<GameObject> objects) {
-            switch (mode) {
-                case REPLACE -> set(objects);
-                case ADD -> add(objects);
-                case TOGGLE -> toggle(objects);
-                case SUBTRACT -> remove(objects);
-            }
-        }
-
-        public void set(Collection<GameObject> objects) {
-            list().clear();
-            add(objects);
-        }
-
-        public void add(Collection<GameObject> objects) {
-            List<GameObject> list = list();
-            for (GameObject go : objects) {
-                if (go != null && !list.contains(go)) list.add(go);
-            }
-        }
-
-        public void remove(Collection<GameObject> objects) {
-            list().removeAll(objects);
-        }
-
-        public void toggle(Collection<GameObject> objects) {
-            List<GameObject> list = list();
-            for (GameObject go : objects) {
-                if (go != null && !list.remove(go)) list.add(go);
-            }
-        }
-
-        public void clear() {
-            list().clear();
-        }
-
-        private List<GameObject> list() {
-            if (selectedGameObjects == null) selectedGameObjects = new ArrayList<>();
-            return selectedGameObjects;
-        }
-    }
-
-    private World2DLayer world = null;
-    private EditorSelection gameObjectsSelection = null;
+    private LauncherPanel launcher = null;
     private SimplicityEditorContext editorContext = null;
     private ViewportPanel viewport  = null;
     private final List<SimplicityPanel> panels = new ArrayList<>();
-    private AssetPool projectAssets, engineResources;
-    private AssetPoolHandler assetPoolHandler = AssetPoolHandler.GetInstance();
+    private EditorMode editorMode = EditorMode.EDITOR;
 
     @Override
     protected void onInitEditor() {
+        editorContext = new SimplicityEditorContext(this);
+
         World2DLayer world = context.getLayer(World2DLayer.class);
         if (world == null) throw new IllegalStateException(this.getClass().getSimpleName() + " requires a World2DLayer to be pushed first");
         world.setFrozen(true);
-        this.world = world;
-        this.gameObjectsSelection = new EditorSelection();
-        
-        engineResources = assetPoolHandler.createAssetPool("engine", null, AssetPoolHandler.FileReadingCallback.CLASSPATH);
-        projectAssets = assetPoolHandler.createAssetPool("res", "C:/", AssetPoolHandler.FileReadingCallback.FILE_SYSTEM);
-        editorContext = new SimplicityEditorContext(this, world, gameObjectsSelection, assetPoolHandler);
-        
-        editorContext.engineResources = engineResources;
-        editorContext.projectAssets = projectAssets;
+        editorContext.world = world;
 
+        AssetPoolHandler assetPoolHandler = AssetPoolHandler.GetInstance();
+        editorContext.assetPoolHandler = assetPoolHandler;
+        editorContext.engineResources = assetPoolHandler.createAssetPool("engine", null, AssetPoolHandler.FileReadingCallback.CLASSPATH);
+        
+        
+        
+        Project project = new Project(
+            Path.of("C:/"),
+            new ProjectFile(),
+            assetPoolHandler.createAssetPool("res", "C:/", AssetPoolHandler.FileReadingCallback.FILE_SYSTEM)
+        );
+        setProject(project);
+    }
+    
+    
+    protected void initLancher() {
+        onDestroyEditor();
+        launcher = new LauncherPanel(editorContext);
+        editorContext.world.setActive(false);
+        editorContext.gameObjectSelection = null;
+        editorMode = EditorMode.LAUNCHER;
+    }
+    
+    protected void initEditor() {
+        onDestroyEditor();
+        editorContext.world.setFrozen(true);
+        editorContext.world.setActive(true);
+        editorContext.gameObjectSelection = new EditorSelection();
         viewport = new ViewportPanel(editorContext);
+        panels.add(new NodeEditorPanel(editorContext));
         panels.add(viewport);
         panels.add(new LoggerPanel(editorContext));
-        // panels.add(new NodeEditorPanel(editorContext));
+        editorMode = EditorMode.EDITOR;
+    }
+
+    public void setProject(Project project) {
+        editorContext.projectAssets = project.projectAssets;
+        editorContext.project = project;
+        context.window().setTitle(project.projectData.projectName + " - " + "Simplicity");
+        initEditor();
     }
 
     @Override
     protected void onRenderEditor(RenderContext renderContext) {
-        for (SimplicityPanel panel : panels) panel.onRender(renderContext);
-        ImGui.showDemoWindow();
+        switch (editorMode) {
+            case EDITOR:
+                for (SimplicityPanel panel : panels) panel.onRender(renderContext);
+                // ImGui.showDemoWindow();
+                break;
+            case LAUNCHER: 
+                launcher.onRender(renderContext);
+                break;
+        }
     }
 
     @Override
     protected void onUpdateEditor(float dt) {
-        if (!gameObjectsSelection.isNoSelection()) {
-            gameObjectsSelection.selectedGameObjects.removeIf(go -> go == null || go.isDead());
+        switch (editorMode) {
+            case EDITOR: 
+                EditorSelection gameObjectsSelection = editorContext.gameObjectSelection;
+                if (!gameObjectsSelection.isNoSelection()) {
+                    gameObjectsSelection.selectedGameObjects.removeIf(go -> go == null || go.isDead());
+                }
+                for (SimplicityPanel panel : panels) panel.onUpdate(dt);
+                break;
+            case LAUNCHER:
+                launcher.onUpdate(dt);
+                break;
         }
-
-        for (SimplicityPanel panel : panels) panel.onUpdate(dt);
     }
     
     @Override
     protected void onDestroyEditor() {
+        if (launcher != null) {
+            launcher.destroy();
+            launcher = null;
+        }
         for (SimplicityPanel panel : panels) panel.destroy();
         panels.clear();
     }
 
     @Override
     protected void onNotifyEditor(Event event) {
-        for (SimplicityPanel panel : panels) panel.onEvent(event);
+        switch (editorMode) {
+            case EDITOR:;
+                for (SimplicityPanel panel : panels) panel.onEvent(event);
+                break;
+            case LAUNCHER:
+                launcher.onEvent(event);
+                break;
+        }
+        if (event.type == KeyInput) {
+            KeyEvent keyEvent = ((KeyEvent) event);
+            if ((keyEvent.key == Inputs.KEY_BACKSPACE && keyEvent.action == Inputs.KEY_RELEASE)) {
+                switch (editorMode) {
+                    case EDITOR: initLancher(); break;
+                    case LAUNCHER: initEditor(); break;
+                }
+            }
+        }
     }
 
     @Override
     protected boolean rendersWorldAsImage() {
-        // both viewport modes draw the world's frame as an image, so ImGui always renders into its own frame
-        return viewport != null;
+        switch (editorMode) {
+            case EDITOR: return viewport != null;
+            case LAUNCHER: return false;
+        }
+        return  false;
+    }
+
+    @Override
+    protected boolean shouldRenderDefaultDockspace() {
+        switch (editorMode) {
+            case EDITOR: return true;
+            case LAUNCHER: return false;
+        }
+        return  true;
     }
 
     @Override
@@ -181,21 +168,24 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         return viewport != null && viewport.isHovered();
     }
 
-    protected void resetAssetPools() {
-        
-    }
-
     @Override
     protected void onRenderMenuBar() {
         if(ImGui.beginMenu("File")) {
 
-            // if(ImGui.menuItem("Save", OldWindow.getScene().getFilename())) {
-            //     EventSystem.notify(new Event(EventType.SaveLevel));
-            // }
+            if(ImGui.menuItem("Save")) {
+                Project project = editorContext.project;
+                Path path = Path.of(IOHelper.saveFile(context.window(), project.projectData.projectName, "simplicity"));
+                try {
+                    project.projectData.write(path);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println(path);
+            }
 
-            // if(ImGui.menuItem("Save As")) {
-            //     EventSystem.notify(new Event(EventType.SaveLevelAs));
-            // }
+            if(ImGui.menuItem("Save As")) {
+
+            }
 
             if(ImGui.menuItem("Load")) {
                 // String result = IOHelper.openSingle(context.window(), "png");

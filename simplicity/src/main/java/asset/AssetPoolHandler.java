@@ -184,7 +184,8 @@ public final class AssetPoolHandler implements AssetPoolInterface {
      */
     public AssetPool createAssetPool(String keyPrefix, String workingDir, FileReadingCallback callback) {
         if (assetPools.containsKey(keyPrefix)) {
-            throw new IllegalStateException("an asset pool with prefix '" + keyPrefix + "' already exists");
+            assetPools.get(keyPrefix).close();
+            // throw new IllegalStateException("an asset pool with prefix '" + keyPrefix + "' already exists");
         }
         AssetPool assetPool = new AssetPool(workingDir, keyPrefix, this) {
             @Override

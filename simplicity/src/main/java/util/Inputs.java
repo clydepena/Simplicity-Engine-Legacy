@@ -9,8 +9,8 @@ public class Inputs {
     public static final int KEY_UNKNOWN = GLFW_KEY_UNKNOWN;
 
     public static final int
-        INPUT_PRESS       = GLFW_PRESS            ,
-        INPUT_RELEASE     = GLFW_RELEASE          ,
+        KEY_PRESS       = GLFW_PRESS            ,
+        KEY_RELEASE     = GLFW_RELEASE          ,
         KEY_SPACE         = GLFW_KEY_SPACE        , 
         KEY_APOSTROPHE    = GLFW_KEY_APOSTROPHE   , 
         KEY_COMMA         = GLFW_KEY_COMMA        , 

@@ -3,8 +3,7 @@ package editor.panels;
 import java.util.ArrayList;
 import java.util.List;
 
-import editor.SimplicityEditor.SimplicityEditorContext;
-import editor.SimplicityEditor.SimplicityPanel;
+import editor.SimplicityEditorContext;
 import imgui.*;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.*;

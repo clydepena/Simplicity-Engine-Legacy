@@ -86,12 +86,13 @@ public abstract class ImGuiEditorLayer implements Layer {
 
     // ImGui's own render target, only used while rendersWorldAsImage()
     private Framebuffer uiFrame;
-
     @Override
     public final void onUpdate(float dt) {
         if (!initialized) return;
         onUpdateEditor(dt);
     }
+
+    protected boolean shouldRenderDefaultDockspace() { return true; }
 
     @Override
     public final void onRender(RenderContext renderContext) {
@@ -99,6 +100,7 @@ public abstract class ImGuiEditorLayer implements Layer {
 
         // decided once per frame, so the dockspace style and the render target always agree
         final boolean worldAsImage = rendersWorldAsImage();
+        final boolean dockspace = shouldRenderDefaultDockspace();
         final Framebuffer worldFrame = renderContext.framebuffer();
 
         imGuiGlfw.newFrame();            // mouse position, display size, dt (Option A)
@@ -106,12 +108,14 @@ public abstract class ImGuiEditorLayer implements Layer {
 
         submitExternalDrop();            // before any panel, so targets can accept it this frame
 
-        beginDockspace(!worldAsImage);
-        if (ImGui.beginMenuBar()) {
-            onRenderMenuBar();
-            ImGui.endMenuBar();
+        if (dockspace) {
+            beginDockspace(!worldAsImage);
+            if (ImGui.beginMenuBar()) {
+                onRenderMenuBar();
+                ImGui.endMenuBar();
+            }
+            endDockspace();
         }
-        endDockspace();
         onRenderEditor(renderContext);   // panels read the world's frame from renderContext.framebuffer()
 
         ImGui.render();
@@ -237,7 +241,7 @@ public abstract class ImGuiEditorLayer implements Layer {
 
         if (event.type == KeyInput) {
             KeyEvent keyEvent = (KeyEvent) event;
-            boolean isPressed = keyEvent.action != INPUT_RELEASE;
+            boolean isPressed = keyEvent.action != KEY_RELEASE;
 
             io.setKeysDown(keyEvent.key, isPressed);
 

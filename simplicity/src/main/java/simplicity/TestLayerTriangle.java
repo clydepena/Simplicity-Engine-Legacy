@@ -150,7 +150,7 @@ public class TestLayerTriangle implements Layer {
         // System.out.println(event);
         if (event instanceof KeyEvent) {
             KeyEvent keyEvent = ((KeyEvent) event);
-            if (keyEvent.action == INPUT_RELEASE) {
+            if (keyEvent.action == KEY_RELEASE) {
                 if (keyEvent.key == KEY_ENTER) {
                     isHidden = !isHidden;
                 }
