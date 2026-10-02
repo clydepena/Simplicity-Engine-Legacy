@@ -339,6 +339,20 @@ public abstract class ImGuiEditorLayer implements Layer {
         return isHidden;
     }
 
+    /**
+     * Merges the Font Awesome icons into the font added just before, so icons are text: FontAwesomeIcons.Folder + " Assets".
+     * Must run right after that font's addFontFromMemoryTTF: merge mode adds to the most recently added font.
+     */
+    private static void mergeIconFont(ImFontAtlas fontAtlas, float textSize) {
+        final ImFontConfig iconConfig = new ImFontConfig();
+        iconConfig.setMergeMode(true);
+        iconConfig.setPixelSnapH(true);
+        iconConfig.setGlyphMinAdvanceX(textSize);   // every icon at least one text-height wide, so icon columns line up
+        fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.FONT_AWESOME_SOLID), textSize * 0.9f,
+                                       iconConfig, FontAwesomeIcons._IconRange);
+        iconConfig.destroy();
+    }
+
     private void initImGui() {
         // initialize ImGui
         ImGui.createContext();
@@ -431,8 +445,10 @@ public abstract class ImGuiEditorLayer implements Layer {
             fontConfig.setOversampleH(3);
             fontConfig.setOversampleV(2);
             fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.FONT_SOURCE_SANS), 16f, fontConfig);
+            mergeIconFont(fontAtlas, 16f);
         } else {
             fontAtlas.addFontFromMemoryTTF(IOHelper.ResToByteArray(Resources.FONT_RETHINK), Settings.FONT_SIZE, fontConfig);
+            mergeIconFont(fontAtlas, Settings.FONT_SIZE);
         }
         fontConfig.destroy();
 

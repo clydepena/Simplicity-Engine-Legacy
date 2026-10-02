@@ -24,6 +24,7 @@ public class Resources {
     public static final String FONT_RETHINK =       "fonts/RethinkSans-SemiBold.ttf";
     public static final String FONT_HONK =          "fonts/Honk-Regular.ttf";
     public static final String FONT_SOURCE_SANS =   "fonts/SourceSans3-Regular.ttf";   // SIL OFL, see fonts/SourceSans3-OFL.txt
+    public static final String FONT_AWESOME_SOLID = "fonts/fa-solid-900.otf";          // Font Awesome 7.3.1 Free, see fonts/fontawesome-LICENSE.txt; codepoints in editor.FontAwesomeIcons
 
     /** Editor-only resources, kept in an editor/ subfolder of each resource type folder. */
     public static class Editor {
@@ -43,5 +44,7 @@ public class Resources {
         public static final String SPRITE_ADDFOLDER=         "images/editor/add_folder.png";
         public static final String SPRITE_COLLAPSEFOLDERS=         "images/editor/collapse_folders.png";
         public static final String SPRITE_REFRESHFILES=         "images/editor/refresh_files.png";
+        public static final String SPRITE_PLAY=         "images/editor/play_button.png";
+        public static final String SPRITE_STOP=         "images/editor/stop_button.png";
     }
 }

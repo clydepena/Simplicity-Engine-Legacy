@@ -10,6 +10,7 @@ public class SimplicityEditorContext extends editor.EditorContext<SimplicityEdit
     public EditorSelection gameObjectSelection;
     public AssetPoolHandler assetPoolHandler;
     public AssetPool projectAssets, engineResources;
+    public EditorIcons icons;
 
     public SimplicityEditorContext(SimplicityEditor editorLayer) {
         super(editorLayer);

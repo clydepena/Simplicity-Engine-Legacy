@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import asset.AssetHelpers;
 import asset.AssetPoolHandler;
 import imgui.ImGui;
 import observers.events.Event;
@@ -45,8 +46,10 @@ public class SimplicityEditor extends ImGuiEditorLayer {
 
         AssetPoolHandler assetPoolHandler = AssetPoolHandler.GetInstance();
         editorContext.assetPoolHandler = assetPoolHandler;
+        AssetHelpers.setCodecs(assetPoolHandler);   // loaders for png, glsl, sheet, ogg: needed before anything loads
         editorContext.engineResources = assetPoolHandler.createAssetPool("engine", null, AssetPoolHandler.FileReadingCallback.CLASSPATH);
-        
+
+        initEngineResources();
         
         
         Project project = new Project(
@@ -56,10 +59,14 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         );
         setProject(project);
     }
-    
+
+    protected void initEngineResources() {
+        editorContext.icons = new EditorIcons(editorContext.assetPoolHandler);
+    }
     
     protected void initLancher() {
         onDestroyEditor();
+        context.window().setTitle("Simplicity Launcher");
         launcher = new LauncherPanel(editorContext);
         editorContext.world.setActive(false);
         editorContext.gameObjectSelection = null;
@@ -136,7 +143,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         }
         if (event.type == KeyInput) {
             KeyEvent keyEvent = ((KeyEvent) event);
-            if ((keyEvent.key == Inputs.KEY_BACKSPACE && keyEvent.action == Inputs.KEY_RELEASE)) {
+            if ((keyEvent.key == Inputs.KEY_DELETE && keyEvent.action == Inputs.KEY_RELEASE)) {
                 switch (editorMode) {
                     case EDITOR: initLancher(); break;
                     case LAUNCHER: initEditor(); break;
