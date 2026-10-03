@@ -3,7 +3,6 @@ package components;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.AssetPool;
 
 public class AnimationState {
     public String title;
@@ -47,9 +46,6 @@ public class AnimationState {
         return defaultSprite;
     }
 
-    public void refreshTextures() {
-        for (Frame frame : animationFrames) {
-            frame.sprite.setTexture(AssetPool.getTexture(frame.sprite.getTexture().getFilepath()));
-        }
-    }
+    // refreshTextures() removed: frames' sprites hold Asset<Texture> handles, read back by the asset adapter,
+    // so there's nothing to re-fetch after loading (it used the legacy util.AssetPool)
 }

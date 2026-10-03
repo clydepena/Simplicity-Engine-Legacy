@@ -73,11 +73,7 @@ public class StateMachine extends Component{
         }
     }
 
-    public void refreshTextures() {
-        for (AnimationState state : states) {
-            state.refreshTextures();
-        }
-    }
+    // refreshTextures() removed with AnimationState's: textures are Asset handles, nothing to re-fetch after loading
 
     @Override
     public void start() {

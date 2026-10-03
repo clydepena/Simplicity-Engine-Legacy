@@ -33,7 +33,7 @@ public final class Project {
 
         public void write(Path file) throws IOException {
             Path tmp = file.resolveSibling(file.getFileName() + ".tmp");
-            Files.writeString(tmp, GSON.toJson(this));                
+            Files.writeString(tmp, GSON.toJson(this));
             Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         }
     }
@@ -48,10 +48,21 @@ public final class Project {
         this.projectAssets = projectAssets;
     }
 
+    public Project(Path rootPath, ProjectFile projectData, AssetPoolHandler assetPoolHandler) {
+        this.rootPath = rootPath;
+        this.projectData = projectData;
+        this.projectAssets = assetPoolHandler.createAssetPool("res", rootPath.toString(), AssetPoolHandler.FileReadingCallback.FILE_SYSTEM);
+    }
+
     public static Project open(Path projectFile) throws IOException {
         ProjectFile settings = ProjectFile.read(projectFile);
         Path root = projectFile.toAbsolutePath().getParent();
         AssetPool pool = AssetPoolHandler.GetInstance().createAssetPool("", root.toString(), AssetPoolHandler.FileReadingCallback.FILE_SYSTEM);
         return new Project(root, settings, pool);
+    }
+
+    @Override
+    public String toString() {
+        return  projectData.projectName + " | " + rootPath.toString();
     }
 }

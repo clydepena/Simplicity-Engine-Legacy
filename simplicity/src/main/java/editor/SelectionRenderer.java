@@ -19,7 +19,8 @@ import renderer.Renderer;
 import renderer.Shader;
 import renderer.SpriteBatcher;
 import simplicity.Camera;
-import util.AssetPool;
+import asset.Asset;
+import asset.AssetPoolHandler;
 import util.Resources;
 
 /**
@@ -38,10 +39,11 @@ public class SelectionRenderer {
     private static final int FLAG_INSIDE = 1;
     private static final int FLAG_OUTSIDE = 2;
 
-    private final Shader pickingShader;
-    private final Shader maskShader;
-    private final Shader outlineShader;
-    private final Shader flagsShader;
+    // handles from the engine pool: .get() at each use, so a reloaded shader is picked up
+    private final Asset<Shader> pickingShader;
+    private final Asset<Shader> maskShader;
+    private final Asset<Shader> outlineShader;
+    private final Asset<Shader> flagsShader;
 
     // per-entity inside/outside flags for pickRect's non-default modes
     private final IdFlagBuffer flagBuffer = new IdFlagBuffer();
@@ -59,10 +61,17 @@ public class SelectionRenderer {
     private int outlineThickness = 2;                                               // pixels
 
     public SelectionRenderer() {
-        pickingShader = AssetPool.getShaderFromRes(Resources.Editor.SHADER_PICKING);
-        maskShader = AssetPool.getShaderFromRes(Resources.Editor.SHADER_SELECTION_MASK);
-        outlineShader = AssetPool.getShaderFromRes(Resources.Editor.SHADER_SELECTION_OUTLINE);
-        flagsShader = AssetPool.getShaderFromRes(Resources.Editor.SHADER_SELECTION_FLAGS);
+        pickingShader = loadShader(Resources.Editor.SHADER_PICKING);
+        maskShader = loadShader(Resources.Editor.SHADER_SELECTION_MASK);
+        outlineShader = loadShader(Resources.Editor.SHADER_SELECTION_OUTLINE);
+        flagsShader = loadShader(Resources.Editor.SHADER_SELECTION_FLAGS);
+    }
+
+    private static Asset<Shader> loadShader(String resource) {
+        AssetPoolHandler assets = AssetPoolHandler.GetInstance();
+        Asset<Shader> shader = assets.get("engine:" + resource, Shader.class);
+        assets.acquire(shader);   // compiled now; a failure is logged and leaves it MISSING
+        return shader;
     }
 
     /**
@@ -128,25 +137,25 @@ public class SelectionRenderer {
 
         // 1. mask: 1 where an outlined sprite is (one pass, however many there are)
         renderer.setFramebuffer(mask);
-        renderer.setShader(maskShader);
+        renderer.setShader(maskShader.get());
         renderer.setCamera(camera);
         renderer.setBlending(false);
         renderer.setClearing(true);
         renderer.setClearColor(CLEAR_ZERO);
         renderer.begin();
-        maskShader.uploadTexture("uSelected", Renderer.FIRST_EXTRA_TEXTURE_UNIT);
+        maskShader.get().uploadTexture("uSelected", Renderer.FIRST_EXTRA_TEXTURE_UNIT);
         renderer.draw(sprites, outlinedIds.getTexId());
         renderer.end();
 
         // 2. edges of the mask, blended over the target
         renderer.setFramebuffer(target);
-        renderer.setShader(outlineShader);
+        renderer.setShader(outlineShader.get());
         renderer.setBlending(true);
         renderer.setClearing(false);
         renderer.begin();
-        outlineShader.uploadTexture("uMask", 0);
-        outlineShader.uploadVec4f("uColor", outlineColor);
-        outlineShader.uploadInt("uThickness", outlineThickness);
+        outlineShader.get().uploadTexture("uMask", 0);
+        outlineShader.get().uploadVec4f("uColor", outlineColor);
+        outlineShader.get().uploadInt("uThickness", outlineThickness);
         renderer.drawFullscreen(mask.getTexId());
         renderer.end();
 
@@ -163,7 +172,7 @@ public class SelectionRenderer {
         SavedState saved = new SavedState(renderer);
 
         renderer.setFramebuffer(idBuffer);
-        renderer.setShader(pickingShader);
+        renderer.setShader(pickingShader.get());
         renderer.setCamera(camera);
         renderer.setBlending(false);   // ids must not mix
         renderer.setClearing(true);
@@ -187,13 +196,13 @@ public class SelectionRenderer {
         rect.set(Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1) + 1, Math.max(y0, y1) + 1);
 
         renderer.setFramebuffer(mask);
-        renderer.setShader(flagsShader);
+        renderer.setShader(flagsShader.get());
         renderer.setCamera(camera);
         renderer.setBlending(false);
         renderer.setClearing(false);
         flagBuffer.bind(0);
         renderer.begin();
-        flagsShader.uploadVec4f("uRect", rect);
+        flagsShader.get().uploadVec4f("uRect", rect);
         renderer.draw(sprites);
         renderer.end();
         flagBuffer.unbind();

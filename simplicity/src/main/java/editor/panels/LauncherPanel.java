@@ -1,5 +1,8 @@
 package editor.panels;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -7,10 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import editor.SImGui;
+import editor.FontAwesomeIcons;
+import editor.RecentProjects;
 import editor.SimplicityEditorContext;
+import editor.SimplicityEditorIO;
+import editor.Project.ProjectFile;
 import imgui.ImGui;
 import imgui.ImGuiViewport;
+import imgui.flag.ImGuiMouseCursor;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiSelectableFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -18,16 +25,25 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import observers.events.Event;
 import simplicity.Application.RenderContext;
+import util.IOHelper;
 
 public class LauncherPanel extends SimplicityPanel {
 
+    private final RecentProjects recent = RecentProjects.load();   // the saved list (recent.json in the user's folder)
+
     public LauncherPanel(SimplicityEditorContext editorContext) {
         super(editorContext);
-        
-        // TEMPORARY demo rows, to see the layout before the real recent list exists; delete when it does
-        // recentProjects.add(new RecentProject("My Open World", "C:/Games/MyOpenWorld/project.simplicity", Instant.now().minusSeconds(7200), false));
-        // recentProjects.add(new RecentProject("Test Project", "D:/tests/proj1/project.simplicity", Instant.now().minusSeconds(3 * 86400), false));
-        // recentProjects.add(new RecentProject("Old Prototype", "E:/old/proto/project.simplicity", Instant.now().minusSeconds(60L * 86400), true));
+        refreshList();
+        if (recent.lastLocation != null) newLocation.set(recent.lastLocation);
+    }
+
+    /** Rebuilds the rows the UI shows from the saved list; "missing" is checked on disk here. */
+    private void refreshList() {
+        recentProjects.clear();
+        for (RecentProjects.Entry e : recent.projects) {
+            recentProjects.add(new RecentProject(e.name, e.path, e.lastOpenedInstant(), e.isMissing()));
+        }
+        selected = -1;
     }
 
     @Override
@@ -54,15 +70,13 @@ public class LauncherPanel extends SimplicityPanel {
         ImGui.begin("##launcher", flags);                   
         updateCalc();
         ImGui.popStyleVar(2);
-        // launcherContent();
+        launcherContent();
 
         // SImGui.image(editorContext.icons.folder, 20, 20);
         // ImGui.sameLine();
         // ImGui.text("My Open World");
         // if (SImGui.imageButton("play", editorContext.icons.play, 24, 24)) {}
-
-
-        SImGui.showIconsExample();
+        // SImGui.showIconsExample();
 
         ImGui.end();
     }
@@ -153,6 +167,7 @@ public class LauncherPanel extends SimplicityPanel {
 
         String needle = filter.get().toLowerCase(Locale.ROOT);
         float rowHeight = ImGui.getTextLineHeightWithSpacing() * 2 + 6;
+        float playWidth = ImGui.calcTextSize(FontAwesomeIcons.Play).x;   // the play icon on the right of each row
         RecentProject toRemove = null;
 
         for (int i = 0; i < recentProjects.size(); i++) {
@@ -189,7 +204,7 @@ public class LauncherPanel extends SimplicityPanel {
             } else {
                 ImGui.text(p.name);
             }
-            ImGui.sameLine(rowWidth - 90);
+            ImGui.sameLine(rowWidth - 90 - (p.missing ? 0 : playWidth + 16));   // left of the play icon
             ImGui.textDisabled(timeAgo(p.lastOpened));
 
             // second line: the folder, dimmer; Locate / Remove for missing projects
@@ -202,14 +217,30 @@ public class LauncherPanel extends SimplicityPanel {
                 if (ImGui.smallButton("Remove")) toRemove = p;
             }
 
+            // the play icon: how a project is opened. Plain text, no button frame: an invisible click area
+            // the size of the icon, with the icon drawn on it; brighter while hovered
+            if (!p.missing) {
+                float iconHeight = ImGui.getTextLineHeight();
+                ImGui.setCursorPos(x + rowWidth - playWidth - 12, y + (rowHeight - iconHeight) / 2);
+                boolean open = ImGui.invisibleButton("##open", playWidth, iconHeight);
+                boolean hovered = ImGui.isItemHovered();
+                int color = hovered ? ImGui.colorConvertFloat4ToU32(0.51f, 1.00f, 0.59f, 1f)
+                                    : ImGui.colorConvertFloat4ToU32(0.35f, 0.84f, 0.45f, 1f);
+                ImGui.getWindowDrawList().addText(ImGui.getItemRectMinX(), ImGui.getItemRectMinY(), color, FontAwesomeIcons.Play);
+                if (hovered) {
+                    ImGui.setMouseCursor(ImGuiMouseCursor.Hand);
+                    ImGui.setTooltip("Open " + p.name);
+                }
+                if (open) onOpenRecent(p);
+            }
+
             ImGui.setCursorPos(x, y + rowHeight + 2);
             ImGui.separator();
             ImGui.popID();
         }
 
         if (toRemove != null) {                   // removed after the loop, not while iterating
-            recentProjects.remove(toRemove);
-            selected = -1;
+            recent.remove(toRemove.path);
             onRecentListChanged();
         }
     }
@@ -242,7 +273,8 @@ public class LauncherPanel extends SimplicityPanel {
         ImGui.textDisabled("Will be created at:");
         ImGui.sameLine();
         ImGui.text(previewPath());
-        ImGui.textDisabled("    contains project.simplicity, assets/, worlds/");
+        String fileName = newName.get().trim().isEmpty() ? "<name>" : newName.get().trim();
+        ImGui.textDisabled("    contains " + fileName + ".simplicity and world/");   // what createNewProjectFolder makes
 
         String problem = validateNewProject(newName.get(), newLocation.get());
         if (problem != null) {
@@ -326,25 +358,96 @@ public class LauncherPanel extends SimplicityPanel {
     }
 
     /** TODO: native dialog for a project.simplicity file, then open it. */
-    protected void onOpenProjectDialog() { }
+    protected void onOpenProjectDialog() {
+        String stringPath = IOHelper.openSingle(editorContext.editorLayer.appContext().window(), "simplicity");
+        if (stringPath != null) {
+            setProject(stringPath);
+        }
+    }
 
     /** TODO: open this recent project (Project.open), then switch to the editor. */
-    protected void onOpenRecent(RecentProject project) { }
+    protected void onOpenRecent(RecentProject project) {
+        if (!project.missing) {
+            setProject(project.path);
+        }
+    }
 
     /** TODO: native folder dialog; return the chosen folder, or null if cancelled. */
-    protected String onBrowseLocation() { return null; }
+    protected String onBrowseLocation() {
+        return IOHelper.openFolder(editorContext.editorLayer.appContext().window());
+    }
 
-    /** TODO: create the folder and files (Project.create), add to the recent list, open it. */
-    protected void onCreateProject(String name, String location) { }
+    /** Creates the project, adds it to the recent list (and remembers the location), then opens it. */
+    protected void onCreateProject(String name, String location) {
+        ProjectFile projectFile = SimplicityEditorIO.createNewProjectFolder(name, Path.of(location));
+        if (projectFile == null) {
+            errorMessage = "Couldn't create the project in " + location;
+            return;
+        }
+        Path projectPath = Path.of(location).resolve(name);
+        recent.lastLocation = location;
+        // the same file name createNewProjectFolder writes: "<name>.simplicity"
+        recent.touch(projectPath.resolve(name + ".simplicity"), projectFile.projectName);
+        recent.save();
+        editorContext.editorLayer.setProject(projectPath, projectFile);
+    }
 
-    /** TODO: pick the project's new location and update the entry. */
-    protected void onLocate(RecentProject project) { }
+    /** A missing project: pick its project file at the new location, and point the entry there. */
+    protected void onLocate(RecentProject project) {
+        String chosen = IOHelper.openSingle(editorContext.editorLayer.appContext().window(), "simplicity");
+        if (chosen == null) return;
+        try {
+            ProjectFile projectFile = ProjectFile.read(Path.of(chosen));      // also checks it really is a project file
+            recent.relocate(project.path, Path.of(chosen), projectFile.projectName);
+            onRecentListChanged();
+        } catch (Exception e) {
+            errorMessage = "Not a project file: " + chosen + " (" + e.getMessage() + ")";
+        }
+    }
 
-    /** TODO: open the project's folder in the OS file explorer. */
-    protected void onShowInExplorer(RecentProject project) { }
+    /** Opens the project's folder in the OS file manager; on Windows with its project file selected. */
+    protected void onShowInExplorer(RecentProject project) {
+        Path projectFile = Path.of(project.path).toAbsolutePath();
+        Path folder = projectFile.getParent();
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        try {
+            if (os.contains("win")) {
+                // "/select," and the path must be separate arguments: as one argument containing a space
+                // (e.g. "My Project"), Java quotes the whole thing, explorer ignores the switch and opens Documents
+                if (Files.isRegularFile(projectFile)) {
+                    new ProcessBuilder("explorer.exe", "/select,", projectFile.toString()).start();   // folder, file highlighted
+                } else {
+                    new ProcessBuilder("explorer.exe", folder.toString()).start();                    // just the folder
+                }
+            } else if (os.contains("mac")) {
+                new ProcessBuilder("open", "-R", projectFile.toString()).start();       // Finder, file revealed
+            } else {
+                new ProcessBuilder("xdg-open", folder.toString()).start();              // the desktop's file manager
+            }
+        } catch (IOException e) {
+            errorMessage = "Couldn't open " + folder + ": " + e.getMessage();
+        }
+    }
 
-    /** TODO: save the recent list (recent.json in the user's folder). */
-    protected void onRecentListChanged() { }
+    /** The list changed (an entry removed or relocated): save it and rebuild the rows. */
+    protected void onRecentListChanged() {
+        recent.save();
+        refreshList();
+    }
+
+    /** Opens a project file: on success, moves it to the top of the recent list; on failure, shows why. */
+    protected void setProject(String stringPath) {
+        try {
+            Path projectPath = Path.of(stringPath);
+            ProjectFile projectFile = ProjectFile.read(projectPath);
+            Path parentFolder = projectPath.getParent();
+            recent.touch(projectPath, projectFile.projectName);
+            recent.save();
+            editorContext.editorLayer.setProject(parentFolder, projectFile);
+        } catch (Exception e) {
+            errorMessage = "Couldn't open " + stringPath + ": " + e.getMessage();
+        }
+    }
 
     @Override
     public void destroy() {

@@ -13,11 +13,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import asset.AssetHelpers;
 import asset.AssetPoolHandler;
 import imgui.ImGui;
 import observers.events.Event;
+import scenes.LevelEditorSceneInitializer;
 import scenes.World2DLayer;
+import simplicity.Application;
+import simplicity.Window;
 import simplicity.Application.RenderContext;
 import simplicity.KeyListener.KeyEvent;
 import util.IOHelper;
@@ -46,49 +48,102 @@ public class SimplicityEditor extends ImGuiEditorLayer {
 
         AssetPoolHandler assetPoolHandler = AssetPoolHandler.GetInstance();
         editorContext.assetPoolHandler = assetPoolHandler;
-        AssetHelpers.setCodecs(assetPoolHandler);   // loaders for png, glsl, sheet, ogg: needed before anything loads
-        editorContext.engineResources = assetPoolHandler.createAssetPool("engine", null, AssetPoolHandler.FileReadingCallback.CLASSPATH);
+        // the codecs and the engine pool are set up by Application.initEngineAssets(), before the renderer starts
+        editorContext.engineResources = assetPoolHandler.getAssetPool("engine");
 
         initEngineResources();
         
         
-        Project project = new Project(
-            Path.of("C:/"),
-            new ProjectFile(),
-            assetPoolHandler.createAssetPool("res", "C:/", AssetPoolHandler.FileReadingCallback.FILE_SYSTEM)
-        );
-        setProject(project);
+        // Project project = new Project(
+        //     Path.of("C:/"),
+        //     new ProjectFile(),
+        //     assetPoolHandler.createAssetPool("res", "C:/", AssetPoolHandler.FileReadingCallback.FILE_SYSTEM)
+        // );
+        // setProject(project);
+        editorMode = EditorMode.LAUNCHER;
+        initLauncher();
     }
 
     protected void initEngineResources() {
         editorContext.icons = new EditorIcons(editorContext.assetPoolHandler);
     }
     
-    protected void initLancher() {
+    protected void initLauncher() {
         onDestroyEditor();
-        context.window().setTitle("Simplicity Launcher");
+        editorMode = EditorMode.LAUNCHER;   // first, like initEditor(): no event may reach the destroyed editor panels
+
+        Window window = context.window();
+        window.setVisible(false);
+        // try {
+        //     Thread.sleep(500);
+        // } catch (InterruptedException e) {
+        //     e.printStackTrace();
+        // }
+        window.setTitle("Simplicity Launcher");
+        window.restore();
+        int width = 650, height = 360;
+        window.setWindowSizeLimits(width , height , width , height);
+        window.allowResize(false);
+        window.centerToMonitor();
+        window.setVisible(true);
+
         launcher = new LauncherPanel(editorContext);
         editorContext.world.setActive(false);
         editorContext.gameObjectSelection = null;
-        editorMode = EditorMode.LAUNCHER;
     }
     
     protected void initEditor() {
         onDestroyEditor();
+        // set the mode now, not at the end: loading the world below logs, logs arrive as events, and an event
+        // in LAUNCHER mode would go to the launcher that onDestroyEditor() just destroyed
+        editorMode = EditorMode.EDITOR;
+        editorContext.gameObjectSelection = new EditorSelection();
+
+        Window window = context.window();
+        window.setVisible(false);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (window.getTitle().equals("Simplicity Launcher")) window.setTitle("Simplicity");
+        window.allowResize(true);
+        window.restoreDefaultWindowSizeLimits();
+        window.centerToMonitor();
+        window.setVisible(true);
+        window.maximize();
+        
+        editorContext.world.initSceneResources();
+        editorContext.world.startScene();
         editorContext.world.setFrozen(true);
         editorContext.world.setActive(true);
-        editorContext.gameObjectSelection = new EditorSelection();
         viewport = new ViewportPanel(editorContext);
         panels.add(new NodeEditorPanel(editorContext));
         panels.add(viewport);
         panels.add(new LoggerPanel(editorContext));
-        editorMode = EditorMode.EDITOR;
+    }
+
+    public void setProject(Path rootPath, ProjectFile projectFile) {
+        Project project = new Project(
+            rootPath,
+            projectFile,
+            editorContext.assetPoolHandler.createAssetPool("res", rootPath.toString(), AssetPoolHandler.FileReadingCallback.FILE_SYSTEM)
+        );
+        setProject(project);
     }
 
     public void setProject(Project project) {
         editorContext.projectAssets = project.projectAssets;
         editorContext.project = project;
         context.window().setTitle(project.projectData.projectName + " - " + "Simplicity");
+        String startingWorld = project.projectData.startingWorld;
+        if (startingWorld == null || startingWorld.isBlank()) {
+            // older or hand-made project files have no starting world: open an empty one instead of failing
+            editorContext.world.setScene(new LevelEditorSceneInitializer());
+        } else {
+            Path worldPath = project.rootPath.resolve(startingWorld);
+            editorContext.world.setScene(new LevelEditorSceneInitializer(worldPath.toString()));
+        }
         initEditor();
     }
 
@@ -100,7 +155,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
                 // ImGui.showDemoWindow();
                 break;
             case LAUNCHER: 
-                launcher.onRender(renderContext);
+                if (launcher != null) launcher.onRender(renderContext);
                 break;
         }
     }
@@ -116,7 +171,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
                 for (SimplicityPanel panel : panels) panel.onUpdate(dt);
                 break;
             case LAUNCHER:
-                launcher.onUpdate(dt);
+                if (launcher != null) launcher.onUpdate(dt);
                 break;
         }
     }
@@ -138,14 +193,14 @@ public class SimplicityEditor extends ImGuiEditorLayer {
                 for (SimplicityPanel panel : panels) panel.onEvent(event);
                 break;
             case LAUNCHER:
-                launcher.onEvent(event);
+                if (launcher != null) launcher.onEvent(event);   // none while switching modes
                 break;
         }
         if (event.type == KeyInput) {
             KeyEvent keyEvent = ((KeyEvent) event);
             if ((keyEvent.key == Inputs.KEY_DELETE && keyEvent.action == Inputs.KEY_RELEASE)) {
                 switch (editorMode) {
-                    case EDITOR: initLancher(); break;
+                    case EDITOR: initLauncher(); break;
                     case LAUNCHER: initEditor(); break;
                 }
             }
@@ -177,7 +232,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
 
     @Override
     protected void onRenderMenuBar() {
-        if(ImGui.beginMenu("File")) {
+        if(ImGui.beginMenu("Project")) {
 
             if(ImGui.menuItem("Save")) {
                 Project project = editorContext.project;
@@ -198,6 +253,10 @@ public class SimplicityEditor extends ImGuiEditorLayer {
                 // String result = IOHelper.openSingle(context.window(), "png");
                 // Asset<Texture> texture = projectAssets.get(result, Texture.class);
                 // projectAssets.acquireAsync(texture);
+            }
+
+            if(ImGui.menuItem("Close")) {
+                initLauncher();
             }
 
             ImGui.endMenu();

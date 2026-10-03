@@ -46,46 +46,48 @@ public class Texture implements Disposable {
         upload(width, height, rgba);
     }
 
-    /** Old loading path (util.AssetPool): an image inside the jar. */
-    public void initFromRes(String filepath) {
-        this.filepath = filepath;
-        loadWithStb(IOHelper.ResToByteBuffer(filepath));
-    }
-
-    /** Old loading path (util.AssetPool): an image file on disk. */
-    public void initFromExternal(String filepath) {
-        this.filepath = filepath;
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        IntBuffer channels = BufferUtils.createIntBuffer(1);
-        stbi_set_flip_vertically_on_load_thread(1);
-        ByteBuffer image = stbi_load(filepath, width, height, channels, 4);
-        uploadFromStb(image, width.get(0), height.get(0));
-    }
-
-    private void loadWithStb(ByteBuffer encoded) {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        IntBuffer channels = BufferUtils.createIntBuffer(1);
-        stbi_set_flip_vertically_on_load_thread(1);
-        if (encoded == null) {   // the file wasn't found: stb's failure reason would be left over from an older call
-            System.err.println("Error: (Texture) Could not read image '" + filepath + "'");
-            upload(0, 0, null);
-            return;
-        }
-        ByteBuffer image = stbi_load_from_memory(encoded, width, height, channels, 4);
-        uploadFromStb(image, width.get(0), height.get(0));
-    }
-
-    private void uploadFromStb(ByteBuffer image, int width, int height) {
-        if (image == null) {
-            System.err.println("Error: (Texture) Could not load image '" + filepath + "': " + stbi_failure_reason());
-            upload(0, 0, null);   // keeps the old behaviour: a valid, empty texture
-            return;
-        }
-        upload(width, height, image);
-        stbi_image_free(image);
-    }
+    // Legacy loading path, only used by util.AssetPool (moved to to-refactor/depreciated). Textures now load
+    // through TextureCodec and the asset pools; these and their two helpers are kept commented out for reference.
+//     /** Old loading path (util.AssetPool): an image inside the jar. */
+//     public void initFromRes(String filepath) {
+//         this.filepath = filepath;
+//         loadWithStb(IOHelper.ResToByteBuffer(filepath));
+//     }
+// 
+//     /** Old loading path (util.AssetPool): an image file on disk. */
+//     public void initFromExternal(String filepath) {
+//         this.filepath = filepath;
+//         IntBuffer width = BufferUtils.createIntBuffer(1);
+//         IntBuffer height = BufferUtils.createIntBuffer(1);
+//         IntBuffer channels = BufferUtils.createIntBuffer(1);
+//         stbi_set_flip_vertically_on_load_thread(1);
+//         ByteBuffer image = stbi_load(filepath, width, height, channels, 4);
+//         uploadFromStb(image, width.get(0), height.get(0));
+//     }
+// 
+//     private void loadWithStb(ByteBuffer encoded) {
+//         IntBuffer width = BufferUtils.createIntBuffer(1);
+//         IntBuffer height = BufferUtils.createIntBuffer(1);
+//         IntBuffer channels = BufferUtils.createIntBuffer(1);
+//         stbi_set_flip_vertically_on_load_thread(1);
+//         if (encoded == null) {   // the file wasn't found: stb's failure reason would be left over from an older call
+//             System.err.println("Error: (Texture) Could not read image '" + filepath + "'");
+//             upload(0, 0, null);
+//             return;
+//         }
+//         ByteBuffer image = stbi_load_from_memory(encoded, width, height, channels, 4);
+//         uploadFromStb(image, width.get(0), height.get(0));
+//     }
+// 
+//     private void uploadFromStb(ByteBuffer image, int width, int height) {
+//         if (image == null) {
+//             System.err.println("Error: (Texture) Could not load image '" + filepath + "': " + stbi_failure_reason());
+//             upload(0, 0, null);   // keeps the old behaviour: a valid, empty texture
+//             return;
+//         }
+//         upload(width, height, image);
+//         stbi_image_free(image);
+//     }
 
     /**
      * The one GPU upload every image path uses. Always RGBA: stb is asked for 4 channels,

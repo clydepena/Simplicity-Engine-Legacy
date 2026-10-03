@@ -9,18 +9,15 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
+import asset.AssetPoolHandler;
 import components.Component;
-import components.ComponentDeserializer;
 import components.Sprite;
-import components.SpriteRenderer;
 import components.Spritesheet;
-import components.StateMachine;
 import simplicity.GameObject;
-import simplicity.GameObjectDeserializer;
+import simplicity.GameObjectGson;
 // import simplicity.OldWindow;
-import util.AssetPool;
 import util.Resources;
 
 
@@ -54,14 +51,13 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
 
         // loadResources();
         
-        // tileSprites = AssetPool.getSpritesheet("app/assets/images/TilesSpritesheet.png");
-        tileSprites = AssetPool.getSpritesheet(Resources.SPRITESHEET_TILES);
-
-        // objectSprites = AssetPool.getSpritesheet("app/assets/images/ObjectsSpritesheet.png");
-        objectSprites = AssetPool.getSpritesheet(Resources.SPRITESHEET_OBJ);
+        // the .sheet files next to their images (engine resources); each loads its texture as a dependency
+        AssetPoolHandler assets = AssetPoolHandler.GetInstance();
+        tileSprites = assets.resolve("engine:" + Resources.SPRITESHEET_TILES_SHEET, Spritesheet.class);
+        objectSprites = assets.resolve("engine:" + Resources.SPRITESHEET_OBJ_SHEET, Spritesheet.class);
 
         // editor tooling moves to the ImGui/editor layer; its components still depend on OldWindow
-        // Spritesheet gizmos = AssetPool.getSpritesheetFromRes(Resources.Editor.SPRITESHEET_GIZMO);
+        // Spritesheet gizmos = assets.resolve("engine:" + Resources.Editor.SPRITESHEET_GIZMO_SHEET, Spritesheet.class);
 
         // levelEditorObj = world.createGameObject("Level Editor");
         // levelEditorObj.setSerialize(false);
@@ -81,97 +77,14 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
 
     @Override
     public void loadResources(World2DLayer world) {
-
-        AssetPool.getShaderFromRes(Resources.SHADER_GAME_DEFAULT);
-
-        // AssetPool.addSpritesheet(
-        //     "app/assets/images/TilesSpritesheet.png",
-        //     new Spritesheet(
-        //         AssetPool.getTexture("app/assets/images/TilesSpritesheet.png"),
-        //         32,
-        //         32,
-        //         48,
-        //         0
-        //     )
-        // );
-
-        AssetPool.addSpritesheetToRes(
-            Resources.SPRITESHEET_TILES,
-            new Spritesheet(
-                AssetPool.getTextureFromRes(Resources.SPRITESHEET_TILES),
-                32,
-                32,
-                48,
-                0
-            )
-        );
-
-        // AssetPool.addSpritesheet(
-        //     "app/assets/images/ObjectsSpritesheet.png",
-        //     new Spritesheet(
-        //         AssetPool.getTexture("app/assets/images/ObjectsSpritesheet.png"),
-        //         40,
-        //         30,
-        //         16,
-        //         0
-        //     )
-        // );
-
-        AssetPool.addSpritesheetToRes(
-            Resources.SPRITESHEET_OBJ,
-            new Spritesheet(
-                AssetPool.getTextureFromRes(Resources.SPRITESHEET_OBJ),
-                40,
-                30,
-                16,
-                0
-            )
-        );
-
-        AssetPool.addSpritesheetToRes(
-            Resources.Editor.SPRITESHEET_GIZMO, 
-            // new Spritesheet(
-            //     AssetPool.getTexture("app/assets/editor_res/gizmos.png"), 
-            //     24, 
-            //     48, 
-            //     3, 
-            //     0
-            // )
-            new Spritesheet(
-                AssetPool.getTextureFromRes(Resources.Editor.SPRITESHEET_GIZMO), 
-                24, 
-                48, 
-                3, 
-                0
-            )
-        );
-        
-        // AssetPool.getTexture("app/assets/images/TestPirate.png");
-    }
-
-    // deserialized textures are only filepaths; swap them for the uploaded ones in AssetPool
-    private void refreshTextures(World2DLayer world) {
-        for (GameObject go : world.getGameObjectList()) {
-            if(go.getComponent(SpriteRenderer.class) != null) {
-                SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-                if(spr.getTexture() != null) {
-                    spr.setTexture(AssetPool.getTexture(spr.getTexture().getFilepath()));
-                }
-            }
-
-            if(go.getComponent(StateMachine.class) != null) {
-                StateMachine stateMachine = go.getComponent(StateMachine.class);
-                stateMachine.refreshTextures();
-            }
-        }
+        // nothing to preload: the shaders are loaded by the renderer, and sheets and textures from the engine pool
+        // when init() and the level ask for them. The sheets that used to be built here are now .sheet files:
+        // images/TilesSpritesheet.sheet, images/ObjectsSpritesheet.sheet, images/editor/gizmos.sheet
     }
 
     private void load(String filepath, World2DLayer world) {
-        Gson gson = new GsonBuilder()
-        .setPrettyPrinting()
-        .registerTypeAdapter(Component.class, new ComponentDeserializer())
-        .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
-        .create();
+        // textures are read as Asset handles (and loaded) by the asset adapter: no fix-up after loading
+        Gson gson = GameObjectGson.GSON;
 
         String inFile = "";
         try {
@@ -183,10 +96,22 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
             logger.Logger.error("Unable to load '" + filepath + "'");
             e.printStackTrace();
         }
+        // an empty world: an empty file, or "{}" as early project creation wrote it (now "[]")
+        String trimmed = inFile.trim();
+        if (trimmed.isEmpty() || trimmed.equals("{}")) return;
+
         if(!inFile.equals("")) {
             int maxGoId = -1;
             int maxCompId = -1;
-            GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
+            GameObject[] objs;
+            try {
+                objs = gson.fromJson(inFile, GameObject[].class);
+            } catch (JsonParseException e) {
+                // a broken world file: log it and open an empty world rather than crashing the editor
+                logger.Logger.error("Can't read the world '" + filepath + "': " + e.getMessage());
+                return;
+            }
+            if (objs == null) return;
             for(int i = 0; i < objs.length; i++) {
                 world.addGameObjectToScene(objs[i]);
 
@@ -204,9 +129,6 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
             maxCompId++;
             GameObject.init(maxGoId);
             Component.init(maxCompId);
-
-            // runs after the objects exist; loadResources() is called before init() so it sees an empty world
-            refreshTextures(world);
         }
     }
 

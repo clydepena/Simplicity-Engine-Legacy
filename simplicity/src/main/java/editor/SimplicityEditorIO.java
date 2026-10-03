@@ -3,6 +3,7 @@ package editor;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +13,37 @@ import com.google.gson.GsonBuilder;
 
 import components.Component;
 import components.ComponentDeserializer;
+import editor.Project.ProjectFile;
 import imgui.app.Application;
 import scenes.LevelEditorSceneInitializer;
 import simplicity.GameObject;
 import simplicity.GameObjectDeserializer;
 
 public class SimplicityEditorIO {
+
+    public static ProjectFile createNewProjectFolder(String name, Path folderPath) {
+        Path projectPath = folderPath.resolve(name);
+        try {
+            Files.createDirectories(projectPath);
+            ProjectFile projectFile = new ProjectFile();
+            projectFile.projectName = name;
+            String worldName = name.replace(" ", "-").toLowerCase() + ".world";
+
+            Path worldPath = projectPath.resolve("world/" + worldName);
+            Path projectFilePath = projectPath.resolve(name + ".simplicity");
+
+            projectFile.startingWorld = projectPath.relativize(worldPath).normalize().toString().replace('\\', '/');
+            projectFile.write(projectFilePath);
+
+            Files.createDirectories(worldPath.getParent());
+            Files.writeString(worldPath, "[]");   // an empty world: the level loader reads a list (array) of game objects
+
+            return projectFile;
+        } catch (Exception e) {
+            System.err.println(e);
+            return null;
+        }
+    }
 
     // public void saveWorld() {
 

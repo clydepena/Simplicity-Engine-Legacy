@@ -34,7 +34,8 @@ import org.lwjgl.opengl.*;
 
 import simplicity.Camera;
 import simplicity.Window;
-import util.AssetPool;
+import asset.Asset;
+import asset.AssetPoolHandler;
 import util.Resources;
 
 
@@ -43,7 +44,7 @@ public class Renderer {
     /** First texture unit free for draw()'s extra textures; sprite batches use units 0..7 (uTextures[8]). */
     public static final int FIRST_EXTRA_TEXTURE_UNIT = 8;
 
-    private Shader defaultShader;
+    private Asset<Shader> defaultShader;   // from the engine pool; .get() when used, so a reload is picked up
     private GLCapabilities capabilities;
     private Window window;
     private Shader shader;
@@ -88,8 +89,10 @@ public class Renderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-        defaultShader = AssetPool.getShaderFromRes(Resources.MAIN_SHADER);
-        shader = defaultShader;
+        AssetPoolHandler assets = AssetPoolHandler.GetInstance();   // the engine pool exists: Application.initEngineAssets()
+        defaultShader = assets.get("engine:" + Resources.MAIN_SHADER, Shader.class);
+        assets.acquire(defaultShader);                              // compiled now, with the GL context current
+        shader = defaultShader.get();
         clearColor = new Vector4f(0, 0, 0, 1);
         camera = new Camera(new Vector2f(0, 0));
         fullscreenVao = glGenVertexArrays();
@@ -172,7 +175,7 @@ public class Renderer {
 
     public void restoreDefaultShader() {
         checkNotInPass("restoreDefaultShader()");
-        this.shader = defaultShader;
+        this.shader = defaultShader.get();
     }
 
     public void swapBuffers() {

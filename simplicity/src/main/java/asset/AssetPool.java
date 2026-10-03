@@ -16,7 +16,7 @@ import simplicity.Tasks;
 
 public abstract class AssetPool implements AssetPoolInterface {
 
-    protected final Path root;
+    protected Path root;
     protected final String prefixIdentifier;
     protected final AssetPoolHandler handler;
     protected Map<String, Asset<?>> assets = new HashMap<>();
@@ -264,6 +264,21 @@ public abstract class AssetPool implements AssetPoolInterface {
     public int unloadAll() {
         for (Asset<?> asset : assets.values()) asset.dispose(State.NOT_LOADED);
         return assets.size();
+    }
+
+    public void emptyAssets() {
+        for (Asset<?> asset : assets.values()) {
+            try {
+                asset.dispose(State.MISSING);
+            } catch (RuntimeException e) {
+                System.err.println("failed to dispose '" + asset.getPrefixedPath() + "': " + e.getMessage());
+            }
+        }
+        assets.clear();
+    }
+
+    public void setRoot(Path root) {
+        this.root = root;
     }
 
     /**

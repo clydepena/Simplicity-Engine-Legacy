@@ -31,11 +31,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -128,11 +124,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -225,11 +217,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -322,11 +310,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -419,11 +403,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -516,11 +496,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -613,11 +589,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -710,11 +682,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -807,11 +775,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -904,11 +868,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -1001,11 +961,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -1098,11 +1054,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -1195,11 +1147,7 @@
           "sprite": {
             "width": 40.0,
             "height": 30.0,
-            "texture": {
-              "filepath": "images/ObjectsSpritesheet.png",
-              "width": 320,
-              "height": 60
-            },
+            "texture": "engine:images/ObjectsSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.125,
@@ -1292,11 +1240,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -1389,11 +1333,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,
@@ -1486,11 +1426,7 @@
           "sprite": {
             "width": 32.0,
             "height": 32.0,
-            "texture": {
-              "filepath": "images/TilesSpritesheet.png",
-              "width": 384,
-              "height": 128
-            },
+            "texture": "engine:images/TilesSpritesheet.png",
             "texCoords": [
               {
                 "x": 0.16666667,

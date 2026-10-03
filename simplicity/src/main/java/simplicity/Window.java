@@ -48,6 +48,7 @@ public class Window {
 
         @Override
         public void onEnd() {
+            window.setVisible(false);
             window.confirmClose();
         }
     }
@@ -338,11 +339,23 @@ public class Window {
         return title;
     }
 
+    public void allowResize(boolean bool) {
+        glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, bool ? GLFW_TRUE : GLFW_FALSE);
+    }
+
     public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
         glfwSetWindowSizeLimits(glfwWindow, minWidth, minHeight, maxWidth, maxHeight);
     }
 
+    public void setWindowSize(int width, int height) {
+        glfwSetWindowSize(glfwWindow, width, height);
+    }
+
     public void restoreDefaultWindowSizeLimits() {
         glfwSetWindowSizeLimits(glfwWindow, (int) (SCREEN_WIDTH * 0.75f), (int) (SCREEN_HEIGHT * 0.75f), GLFW_DONT_CARE, GLFW_DONT_CARE);
+    }
+
+    public void centerToMonitor() {
+        setWindowPos((SCREEN_WIDTH - width) / 2, ((SCREEN_HEIGHT - height) / 2));
     }
 }

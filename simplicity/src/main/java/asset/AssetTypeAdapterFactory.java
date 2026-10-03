@@ -5,7 +5,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
@@ -71,10 +73,14 @@ public final class AssetTypeAdapterFactory implements TypeAdapterFactory {
 
         @Override
         public Asset<T> read(JsonReader in) throws IOException {
-            if (in.peek() != JsonToken.STRING) {
+            String path;
+            if (in.peek() == JsonToken.BEGIN_OBJECT) {
+                path = readLegacyObject(in);
+            } else if (in.peek() == JsonToken.STRING) {
+                path = in.nextString();
+            } else {
                 throw new JsonParseException("expected an asset path string at " + in.getPath() + ", found " + in.peek());
             }
-            String path = in.nextString();
             Asset<T> asset;
             try {
                 asset = handler.get(path, assetType);
@@ -90,5 +96,23 @@ public final class AssetTypeAdapterFactory implements TypeAdapterFactory {
             }
             return asset;
         }
+    }
+
+    /** Where references from files saved before the asset pools pointed: the legacy pool loaded them from the jar. */
+    public static final String LEGACY_PREFIX = "engine:";
+
+    /**
+     * Files saved with the legacy util.AssetPool stored the object itself instead of a path, e.g. a sprite's
+     * texture as {"filepath": "images/TilesSpritesheet.png", "width": 384, "height": 128}. Only its path is kept;
+     * the next save writes the plain "engine:images/TilesSpritesheet.png".
+     */
+    private static String readLegacyObject(JsonReader in) {
+        String at = in.getPath();
+        JsonElement element = JsonParser.parseReader(in);
+        JsonElement filepath = element.isJsonObject() ? element.getAsJsonObject().get("filepath") : null;
+        if (filepath == null || !filepath.isJsonPrimitive()) {
+            throw new JsonParseException("expected an asset path string at " + at + ", found an object without a \"filepath\"");
+        }
+        return LEGACY_PREFIX + filepath.getAsString();
     }
 }

@@ -13,6 +13,8 @@ public class Resources {
     public static final String SPRITESHEET_OBJ =    "images/ObjectsSpritesheet.png";
     public static final String SPRITESHEET_TEST =   "images/spritesheetTest.png";
     public static final String SPRITESHEET_TILES =  "images/TilesSpritesheet.png";
+    public static final String SPRITESHEET_OBJ_SHEET =   "images/ObjectsSpritesheet.sheet";   // the cut of SPRITESHEET_OBJ
+    public static final String SPRITESHEET_TILES_SHEET = "images/TilesSpritesheet.sheet";     // the cut of SPRITESHEET_TILES
 
     public static final String SPRITE_BALL =        "images/TestImgBall.png";
     public static final String SPRITE_PIRATE =      "images/TestPirate.png";
@@ -31,6 +33,7 @@ public class Resources {
         public static final String IMGUI_INI =          "config/editor/imgui.ini";
 
         public static final String SPRITESHEET_GIZMO =     "images/editor/gizmos.png";
+        public static final String SPRITESHEET_GIZMO_SHEET = "images/editor/gizmos.sheet";   // the cut of SPRITESHEET_GIZMO
 
         public static final String SHADER_LINE=     "shaders/editor/debugLine2D.glsl";
         public static final String SHADER_PICKING=  "shaders/editor/pickingShader.glsl";

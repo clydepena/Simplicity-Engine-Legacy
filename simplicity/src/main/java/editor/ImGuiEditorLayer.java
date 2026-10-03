@@ -490,6 +490,10 @@ public abstract class ImGuiEditorLayer implements Layer {
         if (files != null) lastDropped = "Dropped:\n" + String.join("\n", files);
         ImGui.end();
     }
+
+    public Application appContext() {
+        return context;
+    }
 }
 
 /* 

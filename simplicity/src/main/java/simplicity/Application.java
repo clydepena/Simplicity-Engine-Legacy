@@ -163,17 +163,17 @@ public abstract class Application implements Observer {
 
     public void run() {
         window.init();
+        initEngineAssets();   // before renderer.init(): the renderer loads its default shader from the engine pool
         renderer.init();
 
         mainFramebuffer = new Framebuffer(window.getFramebufferWidth(), window.getFramebufferHeight());
 
         applyLayerCommands();
 
-        window.maximize();
         window.setVisible(true);
         float beginTime = getTime(), endTime, dt = 0f;
 
-        boolean yesFPS = true;
+        boolean yesFPS = false;
         int frames = 0;
         float ctr = 0;
         while (!window.shouldClose()) {
@@ -227,6 +227,7 @@ public abstract class Application implements Observer {
         }
 
         Tasks.shutdown();   // before GL goes away: no finished work arrives after this
+        AssetPoolHandler.GetInstance().close();   // frees every pool's textures and shaders while the GL context still exists
         mainFramebuffer.destroy();
         renderer.destroy();
         window.destroy();
@@ -251,6 +252,18 @@ public abstract class Application implements Observer {
 
     public Renderer renderer() {
         return renderer;
+    }
+
+    /**
+     * The asset loaders and the engine pool (resources inside the jar, "engine:" paths). Done by the application,
+     * not the editor: the renderer, the world and a game without the editor need engine assets too.
+     */
+    protected void initEngineAssets() {
+        AssetPoolHandler assets = AssetPoolHandler.GetInstance();
+        AssetHelpers.setCodecs(assets);
+        if (assets.getAssetPool("engine") == null) {
+            assets.createAssetPool("engine", null, AssetPoolHandler.FileReadingCallback.CLASSPATH);
+        }
     }
 
     protected abstract void onClose();

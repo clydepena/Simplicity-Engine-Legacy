@@ -3,6 +3,7 @@ package components;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import asset.Asset;
 import editor.SImGui;
 // import imgui.ImGui;
 import renderer.Texture;
@@ -89,8 +90,9 @@ public class SpriteRenderer extends Component{
         this.isDirty = false;
     }
 
-    public void setTexture(Texture texture) {
+    public void setTexture(Asset<Texture> texture) {
         this.sprite.setTexture(texture);
+        this.isDirty = true;
     }
 
     @Override

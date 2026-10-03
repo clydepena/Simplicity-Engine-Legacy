@@ -25,34 +25,36 @@ public class Shader implements Disposable {
 
     }
 
-    public Shader(String externFilepath) {
-        initFromExternal(externFilepath);
-    }
-
-    /** Old loading path (util.AssetPool): errors are printed, not thrown. */
-    public void initFromExternal(String filepath) {
-        this.filepath = filepath;
-        try {
-            parseShaderSource(new String(Files.readAllBytes(Paths.get(filepath))));
-        } catch (IOException | IllegalArgumentException e) {
-            System.err.println("Error: (Shader) '" + filepath + "': " + e.getMessage());
-        }
-    }
-
-    /** Old loading path (util.AssetPool): errors are printed, not thrown. */
-    public void initFromRes(String filepath) {
-        this.filepath = filepath;
-        String source = IOHelper.ResToString(filepath);
-        if (source == null) {
-            System.err.println("Error: (Shader) could not read '" + filepath + "'");
-            return;
-        }
-        try {
-            parseShaderSource(source);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error: (Shader) '" + filepath + "': " + e.getMessage());
-        }
-    }
+    // Legacy loading path, only used by util.AssetPool (moved to to-refactor/depreciated). Shaders now load
+    // through ShaderCodec and the asset pools; the file constructor and both initFrom methods are kept for reference.
+//     public Shader(String externFilepath) {
+//         initFromExternal(externFilepath);
+//     }
+// 
+//     /** Old loading path (util.AssetPool): errors are printed, not thrown. */
+//     public void initFromExternal(String filepath) {
+//         this.filepath = filepath;
+//         try {
+//             parseShaderSource(new String(Files.readAllBytes(Paths.get(filepath))));
+//         } catch (IOException | IllegalArgumentException e) {
+//             System.err.println("Error: (Shader) '" + filepath + "': " + e.getMessage());
+//         }
+//     }
+// 
+//     /** Old loading path (util.AssetPool): errors are printed, not thrown. */
+//     public void initFromRes(String filepath) {
+//         this.filepath = filepath;
+//         String source = IOHelper.ResToString(filepath);
+//         if (source == null) {
+//             System.err.println("Error: (Shader) could not read '" + filepath + "'");
+//             return;
+//         }
+//         try {
+//             parseShaderSource(source);
+//         } catch (IllegalArgumentException e) {
+//             System.err.println("Error: (Shader) '" + filepath + "': " + e.getMessage());
+//         }
+//     }
 
     /**
      * Splits a file with "#type vertex" and "#type fragment" sections into the two sources.

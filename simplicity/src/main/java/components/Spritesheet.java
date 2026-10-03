@@ -10,25 +10,23 @@ import renderer.Texture;
 
 public class Spritesheet {
 
-    private Texture texture;
-    private Asset<Texture> textureAsset;   // null for sheets built by the legacy code from a raw Texture
+    private Asset<Texture> textureAsset;
     private List<Sprite> sprites;
     private int spriteWidth, spriteHeight, spacing;
 
-    /** A sheet on a pool texture: can be saved (SpriteSheetCodec), since it knows its texture's path. The texture must be loaded. */
-    public Spritesheet(Asset<Texture> texture, int spriteWidth, int spriteHeight, int numSprites, int spacing) {
-        this(texture.get(), spriteWidth, spriteHeight, numSprites, spacing);
-        this.textureAsset = texture;
-    }
+    // Legacy (util.AssetPool, moved to to-refactor/depreciated): a sheet on a raw Texture. Sprites now hold an
+    // Asset<Texture>, so a raw Texture can't be handed to them; build sheets from the pool or load a .sheet file.
+    // public Spritesheet(Texture texture, int spriteWidth, int spriteHeight, int numSprites, int spacing) { ... }
 
-    /** Legacy (util.AssetPool): a sheet on a raw Texture. Works for drawing, but can't be saved. */
-    public Spritesheet(Texture texture, int spriteWidth, int spriteHeight, int numSprites, int spacing) {
+    /** A sheet on a pool texture: can be saved (SpriteSheetCodec), since it knows its texture's path. The texture must be loaded. */
+    public Spritesheet(Asset<Texture> textureAsset, int spriteWidth, int spriteHeight, int numSprites, int spacing) {
         this.sprites = new ArrayList<>();
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
         this.spacing = spacing;
+        this.textureAsset = textureAsset;
 
-        this.texture = texture;
+        Texture texture = textureAsset.get();   // its size is needed to cut the sprites
         int currentX = 0;
         int currentY = texture.getHeight() - spriteHeight;
         for(int i = 0; i < numSprites; i++) {
@@ -45,7 +43,7 @@ public class Spritesheet {
             };
 
             Sprite sprite = new Sprite();
-            sprite.setTexture(this.texture);
+            sprite.setTexture(textureAsset);
             sprite.setTexCoords(texCoords);
             sprite.setWidth(spriteWidth);
             sprite.setHeight(spriteHeight);
@@ -88,13 +86,13 @@ public class Spritesheet {
         return sprites.size();
     }
 
-    /** The texture's handle, or null for a legacy sheet (built from a raw Texture). */
+    /** The texture's handle. */
     public Asset<Texture> getTextureAsset() {
         return textureAsset;
     }
 
     public Texture getTexture() {
-        return texture;
+        return textureAsset.get();
     }
 
     public int getSpriteWidth() {

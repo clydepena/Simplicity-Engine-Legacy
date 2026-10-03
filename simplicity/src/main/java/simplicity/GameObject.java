@@ -3,14 +3,9 @@ package simplicity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import components.Component;
-import components.ComponentDeserializer;
-import components.SpriteRenderer;
 import imgui.ImGui;
-import util.AssetPool;
 
 public class GameObject {
     private static int ID_COUNTER = 0;
@@ -126,21 +121,14 @@ public class GameObject {
     }
 
     public GameObject copy() {
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Component.class, new ComponentDeserializer())
-            .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
-            .create();
-
-        String objAsJson = gson.toJson(this);
-        GameObject obj = gson.fromJson(objAsJson, GameObject.class);
+        // textures are Asset handles, saved as paths: reading them back gives the same shared handles,
+        // so the copy needs no texture fix-up
+        String objAsJson = GameObjectGson.GSON.toJson(this);
+        GameObject obj = GameObjectGson.GSON.fromJson(objAsJson, GameObject.class);
         obj.generateUid();
 
         for (Component c : obj.getAllComponenets()) {
             c.generateId();
-        }
-        SpriteRenderer sprite = obj.getComponent(SpriteRenderer.class);
-        if (sprite != null && sprite.getTexture() != null) {
-            sprite.setTexture(AssetPool.getTexture(sprite.getTexture().getFilepath()));
         }
         return obj;
     }
