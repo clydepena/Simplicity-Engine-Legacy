@@ -17,6 +17,7 @@ import editor.Gizmo;
 import editor.SelectionRenderer;
 import editor.EditorSelection;
 import editor.SimplicityEditorContext;
+import editor.undo.TransformCommand;
 import imgui.ImDrawList;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -35,7 +36,6 @@ public class ViewportPanel extends SimplicityPanel {
 
     private boolean focusOnce = true;
     private boolean hovered = false;
-    private boolean isPlaying = false;
 
     // screen-space rectangle showing the world
     private final ImVec2 imagePos = new ImVec2();
@@ -97,7 +97,7 @@ public class ViewportPanel extends SimplicityPanel {
             lastGameCamera = gameCamera;
         }
 
-        if (!isPlaying) {
+        if (!isPlaying()) {
             editorContext.world.setFrozen(true);
             editorContext.world.setViewCamera(editorCamera.camera());
             editorCamera.update(dt);
@@ -149,7 +149,7 @@ public class ViewportPanel extends SimplicityPanel {
         // drawn into the world's frame now; ImGui samples it later, at render time. Not while playing: the viewport is
         // then the game view and shows the frame exactly as the game draws it (the selection itself is kept)
         Camera camera = editorContext.world.renderCamera();
-        if (!isPlaying && camera != null && renderContext.framebuffer() != null) {
+        if (!isPlaying() && camera != null && renderContext.framebuffer() != null) {
             selectionRenderer.drawOutline(renderContext.renderer(), renderContext.framebuffer(), camera,
                 editorContext.world.sprites(), selectedUids());
         }
@@ -170,7 +170,7 @@ public class ViewportPanel extends SimplicityPanel {
      * mouse, numpad '.' eases the view back to the origin. Only while editing, not playing.
      */
     private void handleCameraInput(boolean hasImage, boolean activated, boolean deactivated) {
-        if (isPlaying || !hasImage) {
+        if (isPlaying() || !hasImage) {
             panning = false;
             return;
         }
@@ -207,7 +207,7 @@ public class ViewportPanel extends SimplicityPanel {
      * (they still reach the world through isMouseOverWorld()), and a press or drag in progress is dropped.
      */
     private void handleSelectionInput(RenderContext renderContext, boolean hasImage, boolean activated, boolean deactivated) {
-        if (isPlaying || !hasImage) {
+        if (isPlaying() || !hasImage) {
             pressActive = false;
             dragging = false;
             return;
@@ -245,7 +245,7 @@ public class ViewportPanel extends SimplicityPanel {
 
     /** The object the gizmo sits on: the last live selected object; none while playing. */
     private GameObject gizmoTarget() {
-        if (isPlaying) return null;
+        if (isPlaying()) return null;
         List<GameObject> selected = editorContext.gameObjectSelection.selectedGameObjects;
         if (selected == null) return null;
         for (int i = selected.size() - 1; i >= 0; i--) {
@@ -260,8 +260,8 @@ public class ViewportPanel extends SimplicityPanel {
      * a gizmo drag, which then owns the press, so selection never sees it.
      */
     private void handleGizmoPress(GameObject target, boolean hasImage, boolean activated) {
-        if (isPlaying || !hasImage) {
-            if (gizmo.isDragging()) gizmo.end();
+        if (isPlaying() || !hasImage) {
+            if (gizmo.isDragging()) endGizmoDrag();   // a drag cut short still keeps its move
             gizmo.updateHover(null, gizmoView, 0, 0, false);
             return;
         }
@@ -291,7 +291,7 @@ public class ViewportPanel extends SimplicityPanel {
         if (ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Escape))) {
             gizmo.cancel();
         } else if (deactivated || !ImGui.isMouseDown(ImGuiMouseButton.Left)) {
-            gizmo.end();
+            endGizmoDrag();
         } else {
             ImVec2 mouse = ImGui.getMousePos();
             gizmo.drag(gizmoView, mouse.x, mouse.y, ImGui.getIO().getKeyCtrl());
@@ -407,21 +407,38 @@ public class ViewportPanel extends SimplicityPanel {
         return new int[] {px, py};
     }
 
+    /** Ends a gizmo drag and records what it changed, so it can be undone (and marks the world unsaved). */
+    private void endGizmoDrag() {
+        Gizmo.Result result = gizmo.end();
+        if (result == null) return;
+        String action = switch (result.tool()) {
+            case TRANSLATE -> "Move";
+            case ROTATE -> "Rotate";
+            case SCALE -> "Scale";
+        };
+        int count = result.targets().size();
+        String name = count == 1 ? action + " object" : action + " " + count + " objects";
+        editorContext.record(new TransformCommand(name, result.targets(), result.before()));
+    }
+
     private void play() {
-        isPlaying = true;
-        // bodies were built when the scene started; edits since then only changed transforms and components
-        editorContext.world.rebuildPhysics();
+        if (gizmo.isDragging()) endGizmoDrag();            // record it while editing is still allowed
+        editorContext.playSession.start(editorContext);   // snapshots the world, then rebuilds physics
+    }
+
+    private void stop() {
+        editorContext.playSession.stop(editorContext);    // puts the world back as it was at play()
     }
 
     private void renderMenuBar() {
         if (!ImGui.beginMenuBar()) return;
 
         // TODO: route through editor commands once they exist (was EventSystem.notify(GameEngineStartPlay/StopPlay))
-        if (ImGui.menuItem("Play", "", isPlaying, !isPlaying)) {
+        if (ImGui.menuItem("Play", "", isPlaying(), !isPlaying())) {
             play();
         }
-        if (ImGui.menuItem("Stop", "", !isPlaying, isPlaying)) {
-            isPlaying = false;
+        if (ImGui.menuItem("Stop", "", !isPlaying(), isPlaying())) {
+            stop();
         }
 
         ImGui.endMenuBar();
@@ -466,7 +483,7 @@ public class ViewportPanel extends SimplicityPanel {
     }
 
     public boolean isPlaying() {
-        return isPlaying;
+        return editorContext.playSession.isPlaying();
     }
 
     public ImVec2 getImagePos() {

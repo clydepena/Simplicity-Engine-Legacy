@@ -3,7 +3,6 @@ package simplicity;
 import org.joml.Vector2f;
 
 import components.Component;
-import editor.SImGui;
 
 public class Transform extends Component {
     public Vector2f position;
@@ -35,15 +34,6 @@ public class Transform extends Component {
         t.rotation = this.rotation;
         t.zIndex = this.zIndex;
         return t;
-    }
-
-    @Override
-    public void imgui() {
-        gameObject.name = SImGui.inputText("Name: ", gameObject.name);
-        SImGui.drawVec2fControl("Position", this.position);
-        SImGui.drawVec2fControl("Scale", this.scale, 32.0f);
-        this.rotation = SImGui.dragFloat("Rotation", this.rotation);
-        this.zIndex = SImGui.dragInt("Z-Index", this.zIndex);
     }
 
     // copies every field equals() compares, so a copy compares equal (SpriteRenderer relies on it to detect changes)

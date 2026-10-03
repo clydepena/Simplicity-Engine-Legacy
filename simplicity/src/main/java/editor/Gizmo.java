@@ -125,11 +125,23 @@ public class Gizmo {
         }
     }
 
-    /** Ends the drag, keeping the changes. */
-    public void end() {
+    /** What a finished drag changed: the transforms it moved, copies of them from the press, and the tool used. */
+    public record Result(List<Transform> targets, List<Transform> before, Tool tool) {}
+
+    /**
+     * Ends the drag, keeping the changes.
+     * @return what changed, for undo; null if nothing did (a click on a handle without a move)
+     */
+    public Result end() {
+        boolean changed = false;
+        for (int i = 0; i < targets.size() && !changed; i++) {
+            changed = !targets.get(i).equals(starts.get(i));
+        }
+        Result result = changed ? new Result(new ArrayList<>(targets), new ArrayList<>(starts), tool) : null;
         active = Handle.NONE;
         targets.clear();
         starts.clear();
+        return result;
     }
 
     /** Ends the drag and puts every target back to its values at the press. */

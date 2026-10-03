@@ -89,12 +89,17 @@ public final class WorldFile {
         Component.init(maxCompId + 1);
     }
 
+    /** The file's text; parse() reads it back. Also used for in-memory snapshots (the editor's Play). */
+    public String toJson() {
+        return GameObjectGson.GSON.toJson(this);
+    }
+
     /** Writes next to the file first, then swaps it in: a failed write never leaves a half-written world. */
     public void write(Path file) throws IOException {
         Path parent = file.toAbsolutePath().getParent();
         if (parent != null) Files.createDirectories(parent);
         Path tmp = file.resolveSibling(file.getFileName() + ".tmp");
-        Files.writeString(tmp, GameObjectGson.GSON.toJson(this));
+        Files.writeString(tmp, toJson());
         try {
             Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (AtomicMoveNotSupportedException e) {

@@ -1,11 +1,16 @@
 package editor;
 
 import editor.Project.ProjectFile;
+import editor.panels.HierarchyPanel;
+import editor.panels.InspectorPanel;
 import editor.panels.LauncherPanel;
 import editor.panels.LoggerPanel;
 import editor.panels.NodeEditorPanel;
 import editor.panels.SimplicityPanel;
+import editor.panels.SpritePalettePanel;
 import editor.panels.ViewportPanel;
+import editor.savables.WorldSavable;
+import editor.undo.UndoHistory;
 
 import static observers.events.EventType.KeyInput;
 
@@ -21,6 +26,7 @@ import scenes.LevelEditorSceneInitializer;
 import scenes.World2DLayer;
 import simplicity.Application;
 import simplicity.Window;
+import simplicity.Window.WindowCloseEvent;
 import simplicity.Application.RenderContext;
 import simplicity.KeyListener.KeyEvent;
 import util.Inputs;
@@ -121,6 +127,9 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         panels.add(new NodeEditorPanel(editorContext));
         panels.add(viewport);
         panels.add(new LoggerPanel(editorContext));
+        panels.add(new HierarchyPanel(editorContext));
+        panels.add(new InspectorPanel(editorContext));
+        panels.add(new SpritePalettePanel(editorContext));
         System.out.println("Successfully loaded " + editorContext.project.toString());
     }
 
@@ -144,11 +153,13 @@ public class SimplicityEditor extends ImGuiEditorLayer {
             editorContext.world.setScene(new LevelEditorSceneInitializer(worldPath.toString()));
             editorContext.worldSavable = new WorldSavable(editorContext.world, worldPath);
         }
+        editorContext.history = new UndoHistory(editorContext.unsavedChanges, editorContext.worldSavable);
         initEditor();
     }
 
     /** Save: writes the open world, dirty or not (Ctrl+S always writes, as in most editors). */
     private void save() {
+        if (refuseWhilePlaying()) return;
         WorldSavable world = editorContext.worldSavable;
         if (world == null) {
             logger.Logger.warn("Nothing to save: this world has no file");
@@ -156,6 +167,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         }
         try {
             editorContext.unsavedChanges.save(world);
+            afterSave();
             logger.Logger.info("Saved '" + world.displayName() + "'");
         } catch (Exception e) {
             logger.Logger.error("Can't save '" + world.displayName() + "': " + e.getMessage());
@@ -164,11 +176,107 @@ public class SimplicityEditor extends ImGuiEditorLayer {
 
     /** Save All: everything with unsaved changes; whatever fails stays dirty, so it can be saved again. */
     private void saveAll() {
+        if (refuseWhilePlaying()) return;
         UnsavedChanges changes = editorContext.unsavedChanges;
         if (changes == null || !changes.any()) return;
         List<String> failed = changes.saveAll();
+        afterSave();
         for (String failure : failed) logger.Logger.error("Can't save " + failure);
         if (failed.isEmpty()) logger.Logger.info("Saved all changes");
+    }
+
+    /** Once the world is saved, the undo history marks this point as the clean one (undoing away from it dirties). */
+    private void afterSave() {
+        WorldSavable world = editorContext.worldSavable;
+        UnsavedChanges changes = editorContext.unsavedChanges;
+        if (editorContext.history != null && world != null && changes != null && !changes.isDirty(world)) {
+            editorContext.history.markSaved();
+        }
+    }
+
+    /*
+     * Closing with unsaved changes: Close Project and closing the window both ask first, in a modal popup.
+     * ImGui can only open a popup while it builds a frame, and events arrive between frames, so a request sets a
+     * flag that onRenderEditor() turns into openPopup(). The chosen action then runs at the start of the next
+     * update (closeNow), outside the ImGui frame, so panels aren't destroyed while they're being drawn.
+     */
+
+    private enum CloseAction { CLOSE_PROJECT, QUIT }
+
+    private static final String UNSAVED_POPUP = "Unsaved changes";
+    private CloseAction pendingClose = null;    // waiting for the popup's answer
+    private boolean openUnsavedPopup = false;   // open the popup on the next frame
+    private CloseAction closeNow = null;        // run at the start of the next update
+    private String unsavedPopupError = null;    // shown in the popup when Save All fails
+
+    private boolean hasUnsavedChanges() {
+        return editorMode == EditorMode.EDITOR && editorContext.unsavedChanges != null && editorContext.unsavedChanges.any();
+    }
+
+    /** While playing, the world holds the played state: saving it would save that instead of the edits. */
+    private boolean refuseWhilePlaying() {
+        if (!editorContext.playSession.isPlaying()) return false;
+        logger.Logger.warn("Stop playing before saving");
+        return true;
+    }
+
+    /** Stops Play first (so the world is the edited one again), then asks if anything is unsaved; otherwise closes. */
+    private void requestClose(CloseAction action) {
+        editorContext.playSession.stop(editorContext);
+        if (hasUnsavedChanges()) {
+            pendingClose = action;
+            openUnsavedPopup = true;
+            unsavedPopupError = null;
+        } else {
+            closeNow = action;
+        }
+    }
+
+    private void runClose(CloseAction action) {
+        switch (action) {
+            case CLOSE_PROJECT: closeProject(); break;
+            case QUIT: context.close(); break;
+        }
+    }
+
+    /** Back to the launcher, closing the project's "res" pool so the next project can create its own. */
+    private void closeProject() {
+        initLauncher();
+        Project project = editorContext.project;
+        if (project != null && project.projectAssets != null) project.projectAssets.close();
+        editorContext.project = null;
+        editorContext.projectAssets = null;
+        if (editorContext.history != null) editorContext.history.clear();   // frees objects only the history held
+        editorContext.history = null;
+        editorContext.unsavedChanges = null;
+        editorContext.worldSavable = null;
+    }
+
+    private void renderUnsavedPopup() {
+        if (pendingClose == null) return;   // nothing asked
+        UnsavedChanges changes = editorContext.unsavedChanges;
+        String question = pendingClose == CloseAction.QUIT ? "Save changes before quitting?" : "Save changes before closing the project?";
+
+        SImGui.SaveChoice choice = SImGui.unsavedChangesModal(UNSAVED_POPUP, openUnsavedPopup, question,
+            changes == null ? List.of() : changes.displayNames(), unsavedPopupError, this::saveAllBeforeClose);
+        openUnsavedPopup = false;
+
+        switch (choice) {
+            case SAVED, DONT_SAVE -> { closeNow = pendingClose; pendingClose = null; }
+            case CANCEL -> pendingClose = null;
+            case NONE -> {}
+        }
+    }
+
+    /** Save All from the popup: true closes it; on failure the items stay dirty and the popup shows why. */
+    private boolean saveAllBeforeClose() {
+        UnsavedChanges changes = editorContext.unsavedChanges;
+        if (changes == null) return true;
+        List<String> failed = changes.saveAll();
+        afterSave();
+        for (String failure : failed) logger.Logger.error("Can't save " + failure);
+        unsavedPopupError = failed.isEmpty() ? null : "Couldn't save:\n" + String.join("\n", failed);
+        return failed.isEmpty();
     }
 
     /** "My Project* - Simplicity" while something is unsaved; only sets the title when it changes. */
@@ -186,6 +294,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         switch (editorMode) {
             case EDITOR:
                 for (SimplicityPanel panel : panels) panel.onRender(renderContext);
+                renderUnsavedPopup();
                 // ImGui.showDemoWindow();
                 break;
             case LAUNCHER: 
@@ -196,6 +305,12 @@ public class SimplicityEditor extends ImGuiEditorLayer {
 
     @Override
     protected void onUpdateEditor(float dt) {
+        if (closeNow != null) {
+            CloseAction action = closeNow;
+            closeNow = null;
+            runClose(action);
+            return;
+        }
         switch (editorMode) {
             case EDITOR: 
                 EditorSelection gameObjectsSelection = editorContext.gameObjectSelection;
@@ -238,12 +353,33 @@ public class SimplicityEditor extends ImGuiEditorLayer {
                 if ((keyEvent.mods & Inputs.MOD_SHIFT) != 0) saveAll();
                 else save();
             }
-            if ((keyEvent.key == Inputs.KEY_DELETE && keyEvent.action == Inputs.KEY_RELEASE)) {
-                switch (editorMode) {
-                    case EDITOR: initLauncher(); break;
-                    case LAUNCHER: initEditor(); break;
-                }
-            }
+            if (editorMode == EditorMode.EDITOR) handleEditShortcuts(keyEvent);
+        }
+        if (event instanceof WindowCloseEvent close && hasUnsavedChanges()) {
+            close.cancel();                        // keep the window open and ask; QUIT closes it afterwards
+            requestClose(CloseAction.QUIT);
+        }
+    }
+
+    /**
+     * Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo (both repeat while held), Ctrl+D duplicate, Delete delete.
+     * Skipped while a text field has the keyboard: there, these keys edit the text (ImGui has its own text undo).
+     */
+    private void handleEditShortcuts(KeyEvent keyEvent) {
+        if (keyEvent.action == Inputs.KEY_RELEASE || ImGui.getIO().getWantTextInput()) return;
+        boolean ctrl = (keyEvent.mods & Inputs.MOD_CONTROL) != 0;
+        boolean shift = (keyEvent.mods & Inputs.MOD_SHIFT) != 0;
+        boolean press = keyEvent.action == Inputs.KEY_PRESS;
+
+        if (ctrl && keyEvent.key == Inputs.KEY_Z) {
+            if (shift) editorContext.redo();
+            else editorContext.undo();
+        } else if (ctrl && keyEvent.key == Inputs.KEY_Y) {
+            editorContext.redo();
+        } else if (ctrl && press && keyEvent.key == Inputs.KEY_D) {
+            editorContext.duplicateSelected();
+        } else if (!ctrl && press && keyEvent.key == Inputs.KEY_DELETE) {
+            editorContext.deleteSelected();
         }
     }
 
@@ -274,12 +410,12 @@ public class SimplicityEditor extends ImGuiEditorLayer {
     protected void onRenderMenuBar() {
         if(ImGui.beginMenu("Project")) {
 
-            if(ImGui.menuItem("Save", "Ctrl+S", false, editorContext.worldSavable != null)) {
+            if(ImGui.menuItem("Save", "Ctrl+S", false, editorContext.worldSavable != null && !editorContext.playSession.isPlaying())) {
                 save();
             }
 
             UnsavedChanges changes = editorContext.unsavedChanges;
-            if(ImGui.menuItem("Save All", "Ctrl+Shift+S", false, changes != null && changes.any())) {
+            if(ImGui.menuItem("Save All", "Ctrl+Shift+S", false, changes != null && changes.any() && !editorContext.playSession.isPlaying())) {
                 saveAll();
             }
 
@@ -294,7 +430,31 @@ public class SimplicityEditor extends ImGuiEditorLayer {
             }
 
             if(ImGui.menuItem("Close")) {
-                initLauncher();
+                requestClose(CloseAction.CLOSE_PROJECT);
+            }
+
+            ImGui.endMenu();
+        }
+
+        if(ImGui.beginMenu("Edit")) {
+            UndoHistory history = editorContext.history;
+            boolean canEdit = editorContext.canEdit();
+            String undoName = history == null ? null : history.undoName();
+            String redoName = history == null ? null : history.redoName();
+
+            if (ImGui.menuItem(undoName == null ? "Undo" : "Undo " + undoName, "Ctrl+Z", false, canEdit && undoName != null)) {
+                editorContext.undo();
+            }
+            if (ImGui.menuItem(redoName == null ? "Redo" : "Redo " + redoName, "Ctrl+Y", false, canEdit && redoName != null)) {
+                editorContext.redo();
+            }
+            ImGui.separator();
+            boolean hasSelection = !editorContext.selectedObjects().isEmpty();
+            if (ImGui.menuItem("Duplicate", "Ctrl+D", false, canEdit && hasSelection)) {
+                editorContext.duplicateSelected();
+            }
+            if (ImGui.menuItem("Delete", "Delete", false, canEdit && hasSelection)) {
+                editorContext.deleteSelected();
             }
 
             ImGui.endMenu();

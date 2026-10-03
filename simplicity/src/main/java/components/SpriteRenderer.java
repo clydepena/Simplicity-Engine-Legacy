@@ -4,8 +4,6 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import asset.Asset;
-import editor.SImGui;
-// import imgui.ImGui;
 import renderer.Texture;
 import simplicity.Transform;
 
@@ -95,11 +93,10 @@ public class SpriteRenderer extends Component{
         this.isDirty = true;
     }
 
+    /** The colour or sprite was edited from outside: draw it again. */
     @Override
-    public void imgui() {
-        if(SImGui.colorPicker4("Color Picker", this.color)) {
-            this.isDirty = true;
-        }
+    public void onFieldsChanged() {
+        this.isDirty = true;
     }
 
     public void setDirty(boolean bool) {

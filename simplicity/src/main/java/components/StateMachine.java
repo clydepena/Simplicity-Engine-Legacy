@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import imgui.ImGui;
-import imgui.type.ImBoolean;
-import imgui.type.ImString;
 
 public class StateMachine extends Component{
     
@@ -107,25 +104,5 @@ public class StateMachine extends Component{
         }
     }
 
-    @Override
-    public void imgui() {
-        int index = 0;
-        for (AnimationState state : states) {
-            ImString title = new ImString(state.title);
-            ImGui.inputText("State: ", title);
-            state.title = title.get();
-
-            ImBoolean doesLoop = new ImBoolean(state.doesLoop);
-            ImGui.checkbox("Does Loop?", doesLoop);
-            state.setLoop(doesLoop.get());
-
-            for (Frame frame : state.animationFrames) {
-                float[] temp = new float[1];
-                temp[0] = frame.frameTime;
-                ImGui.dragFloat("Frame(" + index + ") Time: ", temp, 0.01f);
-                frame.frameTime = temp[0];
-                index++;
-            }
-        }
-    }
+    // its states (titles, looping, frame times) are edited in the editor's inspector, which shows nested objects
 }

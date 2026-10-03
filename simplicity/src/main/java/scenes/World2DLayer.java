@@ -166,8 +166,16 @@ public final class World2DLayer implements Layer {
         //     }
         // }
         
-        this.physics2d = new Physics2D();
         this.camera = new Camera(new Vector2f(0, 0));
+        clearGameObjects();
+    }
+
+    /**
+     * Destroys every object and stops the scene, keeping the scene initializer and the camera: add objects again,
+     * then call startScene(). The editor uses it to put the world back after Play.
+     */
+    public void clearGameObjects() {
+        this.physics2d = new Physics2D();
         sprites.clear();
         if (!gameObjects.isEmpty()) for (GameObject go : gameObjects) go.destroy();
         this.gameObjects = new ArrayList<>();
@@ -209,14 +217,30 @@ public final class World2DLayer implements Layer {
     }
 
     public void addGameObjectToScene(GameObject go) {
-        if(!sceneRunning) {
-            gameObjects.add(go);
-        } else {
-            gameObjects.add(go);
+        addGameObjectToScene(gameObjects.size(), go);
+    }
+
+    /** Adds at a position in the object list (clamped to it), e.g. to put a removed object back where it was. */
+    public void addGameObjectToScene(int index, GameObject go) {
+        gameObjects.add(Math.max(0, Math.min(index, gameObjects.size())), go);
+        if (sceneRunning) {
             go.start();
             addSprite(go);
             this.physics2d.add(go);
         }
+    }
+
+    /**
+     * Takes an object out of the world without destroying it, so it can be added back later (the editor's undo).
+     * @return the index it had, or -1 if it wasn't in this world
+     */
+    public int removeGameObject(GameObject go) {
+        int index = gameObjects.indexOf(go);
+        if (index < 0) return -1;
+        gameObjects.remove(index);
+        removeSprite(go);
+        this.physics2d.destroyGameObject(go);
+        return index;
     }
 
     public GameObject getGameObject(int uid) {
@@ -254,100 +278,4 @@ public final class World2DLayer implements Layer {
     public Camera camera() {
         return this.camera;
     }
-
-    // public void editorUpdate(float dt) {
-    //     this.camera.adjustProjection();
-
-    //     for(int i = 0; i < gameObjects.size(); i++) {
-    //         GameObject go = gameObjects.get(i);
-    //         go.editorUpdate(dt);
-
-    //         if(go.isDead()) {
-    //             gameObjects.remove(i);
-    //             this.renderer.destroyGameObject(go);
-    //             this.physics2d.destroyGameObject(go);
-    //             i--;
-    //         }
-    //     }
-    // }
-    
-    // public void save() {
-        //     if (this.currentFile != null) {
-            //         saveAs(this.currentFile);
-    //     } else {
-    //         String path = util.IOHelper.saveFile(OldWindow.get(), "level", "json");
-    //         saveAs(path);
-    //         OldWindow.changeScene(new LevelEditorSceneInitializer(path));
-    //     }
-    // }
-
-    // public void saveAs(String filepath) {
-    //     if (filepath != null) {
-    //         Gson gson = new GsonBuilder()
-    //         .setPrettyPrinting()
-    //         .registerTypeAdapter(Component.class, new ComponentDeserializer())
-    //         .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
-    //         .create();
-    //         try {
-    //             FileWriter writer = new FileWriter(filepath);
-    //             List<GameObject> objsToSerialize = new ArrayList<>();
-    //             for(GameObject go : this.gameObjects) {
-    //                 if(go.doSerialization()) {
-    //                     objsToSerialize.add(go);
-    //                 }
-    //             }
-    //             writer.write(gson.toJson(objsToSerialize));
-    //             writer.close();
-    //             logger.Logger.info("Successfully saved '" + levelName + "'");
-    //         } catch(IOException e) {
-    //             logger.Logger.error("Unable to save '" + levelName + "'");
-    //             e.printStackTrace();
-    //         }
-    //     }
-    // }
-
-    // public void load() {
-    //     load(this.currentFile);
-    // }
-
-    // private void load(String filepath) {
-    //     Gson gson = new GsonBuilder()
-    //     .setPrettyPrinting()
-    //     .registerTypeAdapter(Component.class, new ComponentDeserializer())
-    //     .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
-    //     .create();
-
-    //     String inFile = "";
-    //     try {
-    //         inFile = filepath == null ? "" : new String(Files.readAllBytes(Paths.get(filepath)));
-    //         if (filepath != null) {
-    //             logger.Logger.info("Successfully loaded '" + filepath + "'");
-    //         }
-    //     } catch(IOException e) {
-    //         logger.Logger.error("Unable to load '" + filepath + "'");
-    //         e.printStackTrace();
-    //     }
-    //     if(!inFile.equals("")) {
-    //         int maxGoId = -1;
-    //         int maxCompId = -1;
-    //         GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
-    //         for(int i = 0; i < objs.length; i++) {
-    //             addGameObjectToScene(objs[i]);
-
-    //             for(Component c : objs[i].getAllComponenets()) {
-    //                 if(c.getUid() > maxCompId) {
-    //                     maxCompId = c.getUid();
-    //                 }
-    //             }
-    //             if(objs[i].getUid() > maxGoId) {
-    //                 maxGoId = objs[i].getUid();
-    //             }
-    //         }
-
-    //         maxGoId++;
-    //         maxCompId++;
-    //         GameObject.init(maxGoId);
-    //         Component.init(maxCompId);
-    //     }
-    // }
 }

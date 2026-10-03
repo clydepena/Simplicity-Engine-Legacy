@@ -41,13 +41,21 @@ public class Window {
     public static class WindowCloseEvent extends Event {
         public final Window window;
 
+        private boolean cancelled = false;
+
         public WindowCloseEvent(Window window) {
             super(WindowClose);
             this.window = window;
         }
 
+        /** Keeps the window open, e.g. to ask about unsaved changes first; whoever cancels closes it later. */
+        public void cancel() {
+            cancelled = true;
+        }
+
         @Override
         public void onEnd() {
+            if (cancelled) return;
             window.setVisible(false);
             window.confirmClose();
         }

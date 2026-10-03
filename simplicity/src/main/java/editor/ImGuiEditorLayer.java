@@ -178,10 +178,7 @@ public abstract class ImGuiEditorLayer implements Layer {
             // menuBar.imgui(deltaTime);
             // renderMenuBar(renderContext);
         } else {
-            ImGuiViewport vp = ImGui.getMainViewport();
-            ImGui.setNextWindowPos(vp.getWorkPosX(), vp.getWorkPosY());
-            ImGui.setNextWindowSize(vp.getWorkSizeX(), vp.getWorkSizeY());
-            ImGui.setNextWindowViewport(vp.getID());
+            SImGui.fillMainViewport();
 
             int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking
                 | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize
@@ -361,10 +358,15 @@ public abstract class ImGuiEditorLayer implements Layer {
         // =======================================================
         // ImGui settings
         // =======================================================
-        ImGui.loadIniSettingsFromMemory(util.IOHelper.ResToString(util.Resources.Editor.IMGUI_INI));
-        io.setIniFilename(null); // saves window config
 
-        // io.setIniFilename("imgui.ini"); // saves window config
+        boolean memoryINI = false;
+        if (memoryINI) {
+            ImGui.loadIniSettingsFromMemory(util.IOHelper.ResToString(util.Resources.Editor.IMGUI_INI));
+            io.setIniFilename(null); // saves window config
+        } else {
+            io.setIniFilename("imgui.ini"); // saves window config
+        }
+
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);

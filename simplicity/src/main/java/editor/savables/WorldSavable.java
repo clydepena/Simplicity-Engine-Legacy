@@ -1,4 +1,4 @@
-package editor;
+package editor.savables;
 
 import java.io.IOException;
 import java.nio.file.Path;

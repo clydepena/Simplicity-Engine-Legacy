@@ -3,6 +3,7 @@ package editor.panels;
 import java.util.ArrayList;
 import java.util.List;
 
+import editor.SImGui;
 import editor.SimplicityEditorContext;
 import imgui.*;
 import imgui.flag.ImGuiInputTextFlags;
@@ -97,26 +98,22 @@ public class LoggerPanel extends SimplicityPanel {
     }
 
     private void inputArea() {
-        final String label = ">";
-        ImGui.pushID(label);
-        ImGui.columns(2);
-        ImGui.setColumnWidth(0, 20f);
-        ImGui.text(label);
-        ImGui.nextColumn();
-
-        if (ImGui.inputTextWithHint("##" + label, "Enter Command", textInput, ImGuiInputTextFlags.EnterReturnsTrue)) {
-            if (textInput != null && textInput.isNotEmpty()) {
+        // "> [command field.........] [Clear Terminal]": the field takes the width the prompt and button leave
+        final String clearLabel = "Clear Terminal";
+        float spacing = ImGui.getStyle().getItemSpacingX();
+        ImGui.alignTextToFramePadding();
+        ImGui.text(">");
+        ImGui.sameLine();
+        ImGui.setNextItemWidth(Math.max(1.0f, ImGui.getContentRegionAvailX() - SImGui.buttonWidth(clearLabel) - spacing));
+        if (ImGui.inputTextWithHint("##command", "Enter Command", textInput, ImGuiInputTextFlags.EnterReturnsTrue)) {
+            if (textInput.isNotEmpty()) {
                 print(textInput);
                 textInput.clear();
             }
-            ImGui.columns(1);
-            ImGui.popID();
-        } else {
-            ImGui.columns(1);
-            ImGui.popID();    
+            ImGui.setKeyboardFocusHere(-1);   // keep typing commands without clicking the field again
         }
         ImGui.sameLine();
-        if (ImGui.button("Clear Terminal")) {
+        if (ImGui.button(clearLabel)) {
             entries.clear();
         }
     }

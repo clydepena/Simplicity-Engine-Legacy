@@ -5,7 +5,6 @@ import java.util.List;
 
 
 import components.Component;
-import imgui.ImGui;
 
 public class GameObject {
     private static int ID_COUNTER = 0;
@@ -77,14 +76,6 @@ public class GameObject {
         }
     }
 
-    public void imgui() {
-        for(Component c : components) {
-            if (ImGui.collapsingHeader(c.getClass().getSimpleName())) {
-                c.imgui();
-            }
-        }
-    }
-
     public static void init(int maxId) {
         ID_COUNTER = maxId;
     }
@@ -127,8 +118,9 @@ public class GameObject {
         GameObject obj = GameObjectGson.GSON.fromJson(objAsJson, GameObject.class);
         obj.generateUid();
 
+        // the components were read back with the original's ids: give them their own
         for (Component c : obj.getAllComponenets()) {
-            c.generateId();
+            c.generateNewId();
         }
         return obj;
     }

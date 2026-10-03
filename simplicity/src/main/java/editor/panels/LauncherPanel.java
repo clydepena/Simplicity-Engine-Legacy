@@ -12,12 +12,11 @@ import java.util.Locale;
 
 import editor.FontAwesomeIcons;
 import editor.RecentProjects;
+import editor.SImGui;
 import editor.SimplicityEditorContext;
 import editor.SimplicityEditorIO;
 import editor.Project.ProjectFile;
 import imgui.ImGui;
-import imgui.ImGuiViewport;
-import imgui.flag.ImGuiMouseCursor;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiSelectableFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -53,10 +52,7 @@ public class LauncherPanel extends SimplicityPanel {
 
     @Override
     public void onRender(RenderContext renderContext) {
-        ImGuiViewport vp = ImGui.getMainViewport();
-        ImGui.setNextWindowPos(vp.getWorkPosX(), vp.getWorkPosY());
-        ImGui.setNextWindowSize(vp.getWorkSizeX(), vp.getWorkSizeY());
-        ImGui.setNextWindowViewport(vp.getID());
+        SImGui.fillMainViewport();
 
         int flags = ImGuiWindowFlags.NoDecoration          
                 | ImGuiWindowFlags.NoMove
@@ -113,6 +109,8 @@ public class LauncherPanel extends SimplicityPanel {
     private final ImString newLocation = new ImString(512);
 
     private static final float ACTIONS_WIDTH = 220;
+    private final int playColor = ImGui.colorConvertFloat4ToU32(0.35f, 0.84f, 0.45f, 1f);          // the play icon
+    private final int playHoveredColor = ImGui.colorConvertFloat4ToU32(0.51f, 1.00f, 0.59f, 1f);
 
     protected void launcherContent() {
         // header: engine name, version on the right
@@ -160,7 +158,8 @@ public class LauncherPanel extends SimplicityPanel {
     /** Right side: the recent projects, newest first. */
     private void recentList() {
         ImGui.text("Recent projects");
-        ImGui.sameLine(ImGui.getWindowWidth() - 200 - ImGui.getStyle().getWindowPaddingX());   // filter box on the right
+        ImGui.sameLine();
+        SImGui.alignNext(200, 1.0f);   // filter box on the right
         ImGui.setNextItemWidth(200);
         ImGui.inputTextWithHint("##filter", "filter...", filter);
         ImGui.separator();
@@ -198,7 +197,7 @@ public class LauncherPanel extends SimplicityPanel {
             // first line: name, and when it was last opened on the right
             ImGui.setCursorPos(x + 8, y + 3);
             if (p.missing) {
-                ImGui.textColored(230, 170, 60, 255, "! " + p.name);
+                SImGui.warningText(p.name);
                 ImGui.sameLine();
                 ImGui.textDisabled("(not found)");
             } else {
@@ -217,21 +216,13 @@ public class LauncherPanel extends SimplicityPanel {
                 if (ImGui.smallButton("Remove")) toRemove = p;
             }
 
-            // the play icon: how a project is opened. Plain text, no button frame: an invisible click area
-            // the size of the icon, with the icon drawn on it; brighter while hovered
+            // the play icon: how a project is opened (a text icon, no button frame), centred on the row's right
             if (!p.missing) {
                 float iconHeight = ImGui.getTextLineHeight();
                 ImGui.setCursorPos(x + rowWidth - playWidth - 12, y + (rowHeight - iconHeight) / 2);
-                boolean open = ImGui.invisibleButton("##open", playWidth, iconHeight);
-                boolean hovered = ImGui.isItemHovered();
-                int color = hovered ? ImGui.colorConvertFloat4ToU32(0.51f, 1.00f, 0.59f, 1f)
-                                    : ImGui.colorConvertFloat4ToU32(0.35f, 0.84f, 0.45f, 1f);
-                ImGui.getWindowDrawList().addText(ImGui.getItemRectMinX(), ImGui.getItemRectMinY(), color, FontAwesomeIcons.Play);
-                if (hovered) {
-                    ImGui.setMouseCursor(ImGuiMouseCursor.Hand);
-                    ImGui.setTooltip("Open " + p.name);
+                if (SImGui.iconButton("##open", FontAwesomeIcons.Play, playColor, playHoveredColor, "Open " + p.name)) {
+                    onOpenRecent(p);
                 }
-                if (open) onOpenRecent(p);
             }
 
             ImGui.setCursorPos(x, y + rowHeight + 2);
@@ -251,21 +242,13 @@ public class LauncherPanel extends SimplicityPanel {
         ImGui.separator();
         ImGui.spacing();
 
-        float fieldWidth = ImGui.getContentRegionAvailX() - 180;
-
-        ImGui.text("Name");
-        ImGui.sameLine(90);
-        ImGui.setNextItemWidth(fieldWidth);
-        ImGui.inputText("##name", newName);
-
-        ImGui.text("Location");
-        ImGui.sameLine(90);
-        ImGui.setNextItemWidth(fieldWidth);
-        ImGui.inputText("##location", newLocation);
-        ImGui.sameLine();
-        if (ImGui.button("Browse...")) {
-            String chosen = onBrowseLocation();
-            if (chosen != null) newLocation.set(chosen);
+        if (SImGui.beginProperties("newProject")) {
+            SImGui.inputText("Name", newName);
+            if (SImGui.inputTextWithButton("Location", newLocation, "Browse...")) {
+                String chosen = onBrowseLocation();
+                if (chosen != null) newLocation.set(chosen);
+            }
+            SImGui.endProperties();
         }
 
         ImGui.spacing();
@@ -279,12 +262,13 @@ public class LauncherPanel extends SimplicityPanel {
         String problem = validateNewProject(newName.get(), newLocation.get());
         if (problem != null) {
             ImGui.spacing();
-            ImGui.textColored(230, 170, 60, 255, "! " + problem);
+            SImGui.warningText(problem);
         }
 
         // Cancel / Create in the bottom-right corner
         float buttonsWidth = 90 + 90 + ImGui.getStyle().getItemSpacingX();
-        ImGui.setCursorPos(ImGui.getWindowWidth() - buttonsWidth - 12, ImGui.getWindowHeight() - ImGui.getFrameHeight() - 12);
+        ImGui.setCursorPosY(ImGui.getWindowHeight() - ImGui.getFrameHeight() - ImGui.getStyle().getWindowPaddingY());
+        SImGui.alignNext(buttonsWidth, 1.0f);
         if (ImGui.button("Cancel", 90, 0)) {
             view = View.RECENT;
         }
@@ -299,20 +283,18 @@ public class LauncherPanel extends SimplicityPanel {
     /** First launch: nothing to list, so two centred buttons instead. */
     private void welcome() {
         float buttonWidth = 300;
-        float x = (ImGui.getWindowWidth() - buttonWidth) / 2;
 
         ImGui.setCursorPosY(ImGui.getWindowHeight() * 0.35f);
-        ImGui.setCursorPosX(x);
-        ImGui.text("Welcome to Simplicity");
+        SImGui.textAligned("Welcome to Simplicity", 0.5f);
         ImGui.spacing();
         ImGui.spacing();
 
-        ImGui.setCursorPosX(x);
+        SImGui.alignNext(buttonWidth, 0.5f);
         if (ImGui.button("+  Create your first project", buttonWidth, 40)) {
             view = View.NEW_PROJECT;
         }
         ImGui.spacing();
-        ImGui.setCursorPosX(x);
+        SImGui.alignNext(buttonWidth, 0.5f);
         if (ImGui.button("Open an existing project...", buttonWidth, 40)) {
             onOpenProjectDialog();
         }
@@ -321,8 +303,9 @@ public class LauncherPanel extends SimplicityPanel {
     /** Bottom bar, only while there's an error; [x] dismisses it. */
     private void errorBar() {
         ImGui.separator();
-        ImGui.textColored(255, 90, 90, 255, "! " + errorMessage);
-        ImGui.sameLine(ImGui.getWindowWidth() - 40);
+        SImGui.errorText(errorMessage);
+        ImGui.sameLine();
+        SImGui.alignNext(SImGui.buttonWidth("x"), 1.0f);
         if (ImGui.smallButton("x")) errorMessage = null;
     }
 

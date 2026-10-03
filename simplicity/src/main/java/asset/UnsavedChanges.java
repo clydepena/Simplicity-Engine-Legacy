@@ -15,12 +15,24 @@ public class UnsavedChanges {
         dirty.add(s);
     }
 
+    /** Back to unchanged without saving, e.g. when undo returns to the saved state. */
+    public void markClean(Savable s) {
+        dirty.remove(s);
+    }
+
     public boolean isDirty(Savable s) {
         return dirty.contains(s);
     }
 
     public boolean any() {
         return !dirty.isEmpty();
+    }
+
+    /** The names of everything unsaved, in the order it was changed (for the "unsaved changes" popup). */
+    public List<String> displayNames() {
+        List<String> names = new ArrayList<>();
+        for (Savable savable : dirty) names.add(savable.displayName());
+        return names;
     }
 
     public void save(Savable s) throws IOException {
