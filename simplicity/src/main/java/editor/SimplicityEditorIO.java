@@ -16,6 +16,7 @@ import components.ComponentDeserializer;
 import editor.Project.ProjectFile;
 import imgui.app.Application;
 import scenes.LevelEditorSceneInitializer;
+import scenes.WorldFile;
 import simplicity.GameObject;
 import simplicity.GameObjectDeserializer;
 
@@ -30,13 +31,12 @@ public class SimplicityEditorIO {
             String worldName = name.replace(" ", "-").toLowerCase() + ".world";
 
             Path worldPath = projectPath.resolve("world/" + worldName);
-            Path projectFilePath = projectPath.resolve(name + ".simplicity");
+            Path projectFilePath = projectPath.resolve(ProjectFile.fileNameFor(name));
 
             projectFile.startingWorld = projectPath.relativize(worldPath).normalize().toString().replace('\\', '/');
             projectFile.write(projectFilePath);
 
-            Files.createDirectories(worldPath.getParent());
-            Files.writeString(worldPath, "[]");   // an empty world: the level loader reads a list (array) of game objects
+            new WorldFile().write(worldPath);   // an empty world, in the current world format (creates world/)
 
             return projectFile;
         } catch (Exception e) {

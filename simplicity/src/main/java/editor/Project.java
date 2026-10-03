@@ -14,8 +14,13 @@ import asset.AssetPoolHandler;
 public final class Project {
     
     public static final class ProjectFile {
-        public static final String FILE_NAME = "project.simplicity";
+        public static final String EXTENSION = "simplicity";
         public static final int FORMAT_VERSION = 1;
+
+        /** The project file's name for a project: "My Game" -> "My Game.simplicity". */
+        public static String fileNameFor(String projectName) {
+            return projectName + "." + EXTENSION;
+        }
 
         public int formatVersion = FORMAT_VERSION;
         public String projectName = "Untitled";
@@ -38,31 +43,30 @@ public final class Project {
         }
     }
 
-    public Path rootPath;
+    public final Path projectFilePath;   // the .simplicity file this project was opened from, and is saved to
+    public final Path rootPath;          // its folder: the root of the "res" pool
     public ProjectFile projectData;
     public AssetPool projectAssets;
 
-    public Project(Path rootPath, ProjectFile projectData, AssetPool projectAssets) {
-        this.rootPath = rootPath;
+    public Project(Path projectFilePath, ProjectFile projectData, AssetPool projectAssets) {
+        this.projectFilePath = projectFilePath.toAbsolutePath().normalize();
+        this.rootPath = this.projectFilePath.getParent();
         this.projectData = projectData;
         this.projectAssets = projectAssets;
     }
 
-    public Project(Path rootPath, ProjectFile projectData, AssetPoolHandler assetPoolHandler) {
-        this.rootPath = rootPath;
-        this.projectData = projectData;
+    /** Creates the project's "res" pool, rooted at the project file's folder. */
+    public Project(Path projectFilePath, ProjectFile projectData, AssetPoolHandler assetPoolHandler) {
+        this(projectFilePath, projectData, (AssetPool) null);
         this.projectAssets = assetPoolHandler.createAssetPool("res", rootPath.toString(), AssetPoolHandler.FileReadingCallback.FILE_SYSTEM);
     }
 
     public static Project open(Path projectFile) throws IOException {
-        ProjectFile settings = ProjectFile.read(projectFile);
-        Path root = projectFile.toAbsolutePath().getParent();
-        AssetPool pool = AssetPoolHandler.GetInstance().createAssetPool("", root.toString(), AssetPoolHandler.FileReadingCallback.FILE_SYSTEM);
-        return new Project(root, settings, pool);
+        return new Project(projectFile, ProjectFile.read(projectFile), AssetPoolHandler.GetInstance());
     }
 
     @Override
     public String toString() {
-        return  projectData.projectName + " | " + rootPath.toString();
+        return  projectData.projectName + " | \'" + rootPath.toString() + '\'';
     }
 }

@@ -384,12 +384,12 @@ public class LauncherPanel extends SimplicityPanel {
             errorMessage = "Couldn't create the project in " + location;
             return;
         }
-        Path projectPath = Path.of(location).resolve(name);
+        // the same file createNewProjectFolder writes: "<location>/<name>/<name>.simplicity"
+        Path projectFilePath = Path.of(location).resolve(name).resolve(ProjectFile.fileNameFor(name));
         recent.lastLocation = location;
-        // the same file name createNewProjectFolder writes: "<name>.simplicity"
-        recent.touch(projectPath.resolve(name + ".simplicity"), projectFile.projectName);
+        recent.touch(projectFilePath, projectFile.projectName);
         recent.save();
-        editorContext.editorLayer.setProject(projectPath, projectFile);
+        editorContext.editorLayer.setProject(projectFilePath, projectFile);
     }
 
     /** A missing project: pick its project file at the new location, and point the entry there. */
@@ -440,10 +440,9 @@ public class LauncherPanel extends SimplicityPanel {
         try {
             Path projectPath = Path.of(stringPath);
             ProjectFile projectFile = ProjectFile.read(projectPath);
-            Path parentFolder = projectPath.getParent();
             recent.touch(projectPath, projectFile.projectName);
             recent.save();
-            editorContext.editorLayer.setProject(parentFolder, projectFile);
+            editorContext.editorLayer.setProject(projectPath, projectFile);
         } catch (Exception e) {
             errorMessage = "Couldn't open " + stringPath + ": " + e.getMessage();
         }

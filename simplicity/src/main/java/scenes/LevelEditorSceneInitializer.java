@@ -2,21 +2,15 @@ package scenes;
 
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-
 import asset.AssetPoolHandler;
-import components.Component;
 import components.Sprite;
 import components.Spritesheet;
 import simplicity.GameObject;
-import simplicity.GameObjectGson;
 // import simplicity.OldWindow;
 import util.Resources;
 
@@ -83,52 +77,13 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
     }
 
     private void load(String filepath, World2DLayer world) {
-        // textures are read as Asset handles (and loaded) by the asset adapter: no fix-up after loading
-        Gson gson = GameObjectGson.GSON;
-
-        String inFile = "";
+        // the format (old bare arrays included) and the uid fix-up are in WorldFile, shared with the game
         try {
-            inFile = filepath == null ? "" : new String(Files.readAllBytes(Paths.get(filepath)));
-            if (filepath != null) {
-                logger.Logger.info("Successfully loaded '" + filepath + "'");
-            }
-        } catch(IOException e) {
-            logger.Logger.error("Unable to load '" + filepath + "'");
-            e.printStackTrace();
-        }
-        // an empty world: an empty file, or "{}" as early project creation wrote it (now "[]")
-        String trimmed = inFile.trim();
-        if (trimmed.isEmpty() || trimmed.equals("{}")) return;
-
-        if(!inFile.equals("")) {
-            int maxGoId = -1;
-            int maxCompId = -1;
-            GameObject[] objs;
-            try {
-                objs = gson.fromJson(inFile, GameObject[].class);
-            } catch (JsonParseException e) {
-                // a broken world file: log it and open an empty world rather than crashing the editor
-                logger.Logger.error("Can't read the world '" + filepath + "': " + e.getMessage());
-                return;
-            }
-            if (objs == null) return;
-            for(int i = 0; i < objs.length; i++) {
-                world.addGameObjectToScene(objs[i]);
-
-                for(Component c : objs[i].getAllComponenets()) {
-                    if(c.getUid() > maxCompId) {
-                        maxCompId = c.getUid();
-                    }
-                }
-                if(objs[i].getUid() > maxGoId) {
-                    maxGoId = objs[i].getUid();
-                }
-            }
-
-            maxGoId++;
-            maxCompId++;
-            GameObject.init(maxGoId);
-            Component.init(maxCompId);
+            WorldFile.read(Paths.get(filepath)).addTo(world);
+            logger.Logger.info("Successfully loaded '" + filepath + "'");
+        } catch (IOException e) {
+            // a missing or broken world file: log it and open an empty world rather than crashing the editor
+            logger.Logger.error("Can't read the world '" + filepath + "': " + e.getMessage());
         }
     }
 

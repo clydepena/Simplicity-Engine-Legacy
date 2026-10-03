@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import asset.AssetPoolHandler;
+import asset.UnsavedChanges;
 import imgui.ImGui;
 import observers.events.Event;
 import scenes.LevelEditorSceneInitializer;
@@ -22,7 +23,6 @@ import simplicity.Application;
 import simplicity.Window;
 import simplicity.Application.RenderContext;
 import simplicity.KeyListener.KeyEvent;
-import util.IOHelper;
 import util.Inputs;
 
 public class SimplicityEditor extends ImGuiEditorLayer {
@@ -121,30 +121,64 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         panels.add(new NodeEditorPanel(editorContext));
         panels.add(viewport);
         panels.add(new LoggerPanel(editorContext));
+        System.out.println("Successfully loaded " + editorContext.project.toString());
     }
 
-    public void setProject(Path rootPath, ProjectFile projectFile) {
-        Project project = new Project(
-            rootPath,
-            projectFile,
-            editorContext.assetPoolHandler.createAssetPool("res", rootPath.toString(), AssetPoolHandler.FileReadingCallback.FILE_SYSTEM)
-        );
-        setProject(project);
+    /** @param projectFilePath the project's .simplicity file; its folder is the project's root */
+    public void setProject(Path projectFilePath, ProjectFile projectFile) {
+        setProject(new Project(projectFilePath, projectFile, editorContext.assetPoolHandler));
     }
 
     public void setProject(Project project) {
         editorContext.projectAssets = project.projectAssets;
         editorContext.project = project;
         context.window().setTitle(project.projectData.projectName + " - " + "Simplicity");
+        editorContext.unsavedChanges = new UnsavedChanges();
         String startingWorld = project.projectData.startingWorld;
         if (startingWorld == null || startingWorld.isBlank()) {
             // older or hand-made project files have no starting world: open an empty one instead of failing
             editorContext.world.setScene(new LevelEditorSceneInitializer());
+            editorContext.worldSavable = null;
         } else {
             Path worldPath = project.rootPath.resolve(startingWorld);
             editorContext.world.setScene(new LevelEditorSceneInitializer(worldPath.toString()));
+            editorContext.worldSavable = new WorldSavable(editorContext.world, worldPath);
         }
         initEditor();
+    }
+
+    /** Save: writes the open world, dirty or not (Ctrl+S always writes, as in most editors). */
+    private void save() {
+        WorldSavable world = editorContext.worldSavable;
+        if (world == null) {
+            logger.Logger.warn("Nothing to save: this world has no file");
+            return;
+        }
+        try {
+            editorContext.unsavedChanges.save(world);
+            logger.Logger.info("Saved '" + world.displayName() + "'");
+        } catch (Exception e) {
+            logger.Logger.error("Can't save '" + world.displayName() + "': " + e.getMessage());
+        }
+    }
+
+    /** Save All: everything with unsaved changes; whatever fails stays dirty, so it can be saved again. */
+    private void saveAll() {
+        UnsavedChanges changes = editorContext.unsavedChanges;
+        if (changes == null || !changes.any()) return;
+        List<String> failed = changes.saveAll();
+        for (String failure : failed) logger.Logger.error("Can't save " + failure);
+        if (failed.isEmpty()) logger.Logger.info("Saved all changes");
+    }
+
+    /** "My Project* - Simplicity" while something is unsaved; only sets the title when it changes. */
+    private void updateTitle() {
+        Project project = editorContext.project;
+        if (project == null) return;
+        boolean unsaved = editorContext.unsavedChanges != null && editorContext.unsavedChanges.any();
+        String title = project.projectData.projectName + (unsaved ? "*" : "") + " - Simplicity";
+        Window window = context.window();
+        if (!title.equals(window.getTitle())) window.setTitle(title);
     }
 
     @Override
@@ -169,6 +203,7 @@ public class SimplicityEditor extends ImGuiEditorLayer {
                     gameObjectsSelection.selectedGameObjects.removeIf(go -> go == null || go.isDead());
                 }
                 for (SimplicityPanel panel : panels) panel.onUpdate(dt);
+                updateTitle();
                 break;
             case LAUNCHER:
                 if (launcher != null) launcher.onUpdate(dt);
@@ -198,6 +233,11 @@ public class SimplicityEditor extends ImGuiEditorLayer {
         }
         if (event.type == KeyInput) {
             KeyEvent keyEvent = ((KeyEvent) event);
+            boolean ctrl = (keyEvent.mods & Inputs.MOD_CONTROL) != 0;
+            if (editorMode == EditorMode.EDITOR && ctrl && keyEvent.key == Inputs.KEY_S && keyEvent.action == Inputs.KEY_PRESS) {
+                if ((keyEvent.mods & Inputs.MOD_SHIFT) != 0) saveAll();
+                else save();
+            }
             if ((keyEvent.key == Inputs.KEY_DELETE && keyEvent.action == Inputs.KEY_RELEASE)) {
                 switch (editorMode) {
                     case EDITOR: initLauncher(); break;
@@ -234,15 +274,13 @@ public class SimplicityEditor extends ImGuiEditorLayer {
     protected void onRenderMenuBar() {
         if(ImGui.beginMenu("Project")) {
 
-            if(ImGui.menuItem("Save")) {
-                Project project = editorContext.project;
-                Path path = Path.of(IOHelper.saveFile(context.window(), project.projectData.projectName, "simplicity"));
-                try {
-                    project.projectData.write(path);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.out.println(path);
+            if(ImGui.menuItem("Save", "Ctrl+S", false, editorContext.worldSavable != null)) {
+                save();
+            }
+
+            UnsavedChanges changes = editorContext.unsavedChanges;
+            if(ImGui.menuItem("Save All", "Ctrl+Shift+S", false, changes != null && changes.any())) {
+                saveAll();
             }
 
             if(ImGui.menuItem("Save As")) {
